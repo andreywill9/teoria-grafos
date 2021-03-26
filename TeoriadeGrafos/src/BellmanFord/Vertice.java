@@ -29,6 +29,8 @@ public class Vertice {
     public String toString() {
         return this.nome;
     }
+    
+    //metodos de acesso
 
     public String getNome() {
         return nome;

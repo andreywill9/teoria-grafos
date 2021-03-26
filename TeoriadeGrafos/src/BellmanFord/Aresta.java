@@ -17,6 +17,8 @@ public class Aresta {
         this.hops = 1;
         this.ativa = true;
     }
+    
+    //metodos de acesso
 
     public int getHops() {
         return hops;
