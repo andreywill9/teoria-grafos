@@ -1,4 +1,4 @@
-package BellmanFord;
+package model;
 
 public class Aresta {
 
