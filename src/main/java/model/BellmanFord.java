@@ -26,7 +26,7 @@ public class BellmanFord {
     }
 
     public void adicionarAresta(int distancia, int custo,
-            String origem, String fim) {
+                                String origem, String fim) {
 
         Vertice inicio = getVertice(origem);//busca o vertice na lista
         Vertice destino = getVertice(fim);//busca o vertice na lista
@@ -78,8 +78,9 @@ public class BellmanFord {
         }
         for (Aresta a : arestas) {
 
-            if (destino.getSaltos() == Integer.MAX_VALUE) {
+            if (destino.getSaltos() == Integer.MAX_VALUE || destino.getSaltos() == 0) {
                 System.out.println("não há caminho da origem até o destino");
+                break;
             } else {
                 System.out.println("O numero de hops até o destino é: " + destino.getSaltos());
                 break;
@@ -105,10 +106,10 @@ public class BellmanFord {
 
                 Vertice v = a.getOrigem();//armazena o vertice origem
                 Vertice u = a.getDestino();//armazena o vertice destino
-                
+
                 //soma a distancia minima = 0 + a distancia do vertice da vez "a"
                 int novaDistancia = v.getDistanciaMinima() + a.getDistancia();
-                
+
                 //se o valor for menor do que a distancia minima de destino(max)
                 if (novaDistancia < u.getDistanciaMinima()) {
                     u.setDistanciaMinima(novaDistancia);//a distancia do destino
@@ -118,16 +119,16 @@ public class BellmanFord {
 
         }
         for (Aresta a : arestas) {
- 
-            if (destino.getDistanciaMinima() == Integer.MAX_VALUE) {
+
+            if (destino.getDistanciaMinima() == Integer.MAX_VALUE || destino.getDistanciaMinima() == 0) {
                 System.out.println("não há caminho da origem até o destino");
+                break;
             } else {
                 System.out.println("O caminho mais curto é: " + destino.getDistanciaMinima());
                 break;// sai do ciclo
             }
         }
     }
-
 
 
     public void menorCusto(String inicio, String fim) {
@@ -159,15 +160,15 @@ public class BellmanFord {
         }
         for (Aresta a : arestas) {
 
-            if (destino.getCustoMinimo() == Integer.MAX_VALUE) {
+            if (destino.getCustoMinimo() == Integer.MAX_VALUE || destino.getCustoMinimo() == 0) {
                 System.out.println("não há caminho da origem até o destino");
+                break;
             } else {
                 System.out.println("O caminho mais barato é: " + destino.getCustoMinimo());
                 break;
             }
         }
     }
-
 
 
     public List<Vertice> getVertices() {
