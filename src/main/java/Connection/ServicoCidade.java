@@ -2,9 +2,7 @@ package Connection;
 
 import model.Vertice;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,50 +57,20 @@ public class ServicoCidade {
     }
   }
 
-  public void listarCidades(ConnectionFactory conexao) throws Exception {
-    this.conexao = conexao;
-    listar();
-  }
-
-  public List<Vertice> listar() {
-    ResultSet rs = null;
+  public List<Vertice> listarCidades() throws Exception {
     String sql = "SELECT * FROM cidades";
-
-    List<Vertice> cidades = new ArrayList();
-    try {
-
-      rs = conexao.buscar(sql);
-
-      while (rs.next()) {
-        Vertice cidade = new Vertice("","");
-        cidade.setNome_cidade(rs.getString("nome_cidade"));
-        cidade.setSigla(rs.getString("sigla"));
-        cidade.setId_cidade(rs.getInt("Id_cidade"));
-        cidade.setAtivo(rs.getBoolean("ativo"));
-        cidades.add(cidade);
-      }
-    } catch (Exception e) {
-      System.out.println("Erro não foi possivel Exibir a lista de cidades " + e);
+    List<Vertice> cidades = new ArrayList<>();
+    ResultSet rs = conexao.buscar(sql);
+    while (rs.next()) {
+      cidades.add(Vertice.instanciarDeResultSet(rs));
     }
-
     return cidades;
-
   }
-  public boolean inserir(Vertice cidade){
-  String sql ="INSERT INTO cidades (nome_cidade, sigla) VALUES\n" +
-            "\t\t(\"\",\"\");";
-    PreparedStatement stmt = null;
-    try {
-      stmt = conexao.prepareStatement(sql) //verificar tirar duvida
-      stmt.setString(1, cidade.getNome_cidade());
-      stmt.setString(2, cidade.getSigla());
 
-      stmt.executeUpdate();
-      return true;
-    } catch (SQLException ex) {
-      System.out.println("não foi possivel inserir o produto" + ex);
-      return false;
-    }
+  public void inserir(Vertice cidade) throws Exception {
+    String sql = String.format("INSERT INTO cidades (nome_cidade, sigla) VALUES (%s, %s)",
+        cidade.getNomeCidade(), cidade.getSigla());
+    conexao.executar(sql);
   }
 
 }
