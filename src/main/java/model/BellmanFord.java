@@ -37,10 +37,10 @@ public class BellmanFord {
 
     //metodo de busca de vertices 
     private Vertice getVertice(String nome) {
-        Vertice v = new Vertice("null");//cria retorno
+        Vertice v = new Vertice("null","null");//cria retorno
 
         for (int i = 0; i < this.vertices.size(); i++) {//percorre
-            if (this.vertices.get(i).getNome().equals(nome)) {//compara
+            if (this.vertices.get(i).getSigla().equals(nome)) {//compara
                 v = this.vertices.get(i);//clona valor encontrado
                 break;//sai do for de busca
             }

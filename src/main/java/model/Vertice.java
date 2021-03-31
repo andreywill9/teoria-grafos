@@ -5,8 +5,10 @@ import java.util.List;
 
 public class Vertice {
 
-    private String nome;
+    private String sigla;
+    private String nome_cidade;
     private Boolean ativo;
+    private int id_cidade;
     private List<Aresta> listaAdjascencia;
     int distanciaMinima = Integer.MAX_VALUE;
     int custoMinimo = Integer.MAX_VALUE;
@@ -14,8 +16,9 @@ public class Vertice {
     private Vertice procedente;
     
 
-    public Vertice(String nome) {
-        this.nome = nome;
+    public Vertice(String sigla, String nome_cidade) {
+        this.sigla = sigla;
+        this.nome_cidade = nome_cidade;
         this.listaAdjascencia = new ArrayList();
         this.ativo = true;
 
@@ -27,20 +30,36 @@ public class Vertice {
 
     @Override
     public String toString() {
-        return this.nome;
+        return this.sigla;
     }
     
     //metodos de acesso
 
-    public String getNome() {
-        return nome;
+
+
+    public String getSigla() {
+        return sigla;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public String getNome_cidade() {
+        return nome_cidade;
     }
 
+    public void setNome_cidade(String nome_cidade) {
+        this.nome_cidade = nome_cidade;
+    }
 
+    public void setSigla(String sigla) {
+        this.sigla = sigla;
+    }
+
+    public int getId_cidade() {
+        return id_cidade;
+    }
+
+    public void setId_cidade(int id_cidade) {
+        this.id_cidade = id_cidade;
+    }
 
     public List<Aresta> getListaAdjascencia() {
         return listaAdjascencia;

@@ -19,7 +19,7 @@ public class ConnectionFactory {
     conexao = getConnection(URL_BANCO);
   }
 
-  public static Connection getConnection(String url) {
+  public  Connection getConnection(String url) {
     try {
       Class.forName(DRIVER);
       return DriverManager.getConnection(url, USER, PASS);
@@ -33,7 +33,7 @@ public class ConnectionFactory {
     return ps.executeQuery();
   }
 
-  public void executar(String query) throws Exception {
+  public  void executar(String query) throws Exception {
     PreparedStatement ps = conexao.prepareStatement(query);
     if (ps.executeUpdate() < 0) {
       throw new Exception("Erro ao executar a query");

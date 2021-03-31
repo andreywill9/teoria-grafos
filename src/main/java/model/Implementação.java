@@ -6,26 +6,26 @@ public class Implementação {
 
         BellmanFord bf = new BellmanFord();
         //vertices
-        bf.adicionarVertice(new Vertice("POA"));
-        bf.adicionarVertice(new Vertice("FLO"));
-        bf.adicionarVertice(new Vertice("BLU"));
-        bf.adicionarVertice(new Vertice("CUR"));
-        bf.adicionarVertice(new Vertice("LON"));
-        bf.adicionarVertice(new Vertice("SPO"));
-        bf.adicionarVertice(new Vertice("SJC"));
-        bf.adicionarVertice(new Vertice("RJO"));
-        bf.adicionarVertice(new Vertice("BHO"));
-        bf.adicionarVertice(new Vertice("CMP"));
-        bf.adicionarVertice(new Vertice("RBP"));
-        bf.adicionarVertice(new Vertice("BAU"));
-        bf.adicionarVertice(new Vertice("CPG"));
-        bf.adicionarVertice(new Vertice("CUI"));
-        bf.adicionarVertice(new Vertice("MAN"));
-        bf.adicionarVertice(new Vertice("BEL"));
-        bf.adicionarVertice(new Vertice("BSB"));
-        bf.adicionarVertice(new Vertice("NTL"));
-        bf.adicionarVertice(new Vertice("REC"));
-        bf.adicionarVertice(new Vertice("SLV"));
+        bf.adicionarVertice(new Vertice("POA","Porto Alegre"));
+        bf.adicionarVertice(new Vertice("FLO","Florianópolis"));
+        bf.adicionarVertice(new Vertice("BLU","Blumenal"));
+        bf.adicionarVertice(new Vertice("CUR","Curitiba"));
+        bf.adicionarVertice(new Vertice("LON","Londrina"));
+        bf.adicionarVertice(new Vertice("SPO","São Paulo"));
+        bf.adicionarVertice(new Vertice("SJC","São José dos Campos"));
+        bf.adicionarVertice(new Vertice("RJO","Rio de Janeiro"));
+        bf.adicionarVertice(new Vertice("BHO","Belo Horizonte"));
+        bf.adicionarVertice(new Vertice("CMP","Campinas"));
+        bf.adicionarVertice(new Vertice("RBP","Ribeirão Preto"));
+        bf.adicionarVertice(new Vertice("BAU","Bauro"));
+        bf.adicionarVertice(new Vertice("CPG","Campo Grande"));
+        bf.adicionarVertice(new Vertice("CUI","Cuiabá"));
+        bf.adicionarVertice(new Vertice("MAN","Manaus"));
+        bf.adicionarVertice(new Vertice("BEL","Belém"));
+        bf.adicionarVertice(new Vertice("BSB","Brasília"));
+        bf.adicionarVertice(new Vertice("NTL","Natal"));
+        bf.adicionarVertice(new Vertice("REC","Recife"));
+        bf.adicionarVertice(new Vertice("SLV","Salvador"));
         
         //arestas
         bf.adicionarAresta(6, 2, "POA", "FLO");
