@@ -26,7 +26,7 @@ public class Implementação {
         bf.adicionarVertice(new Vertice("NTL","Natal"));
         bf.adicionarVertice(new Vertice("REC","Recife"));
         bf.adicionarVertice(new Vertice("SLV","Salvador"));
-        
+
         //arestas
         bf.adicionarAresta(6, 2, "POA", "FLO");
         bf.adicionarAresta(7, 2, "POA", "BLU");
@@ -60,9 +60,6 @@ public class Implementação {
         bf.adicionarAresta(4, 3, "NTL", "REC");
         bf.adicionarAresta(8, 5, "REC", "SLV");
         bf.adicionarAresta(15, 4, "SLV", "NTL");
-        
-
-        
 
         bf.menorNumerodeSaltos("MAN", "NTL");//hops        
         bf.menorDistancia("MAN", "NTL");//distancia
@@ -73,8 +70,5 @@ public class Implementação {
         
        
 
-
-        
     }
-
 }
