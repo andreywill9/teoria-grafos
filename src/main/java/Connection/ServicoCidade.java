@@ -1,8 +1,10 @@
 package Connection;
 
+import java.sql.ResultSet;
+
 public class ServicoCidade {
 
-  private static final String CREATE = "CREATE TABLE `cidades` (\n" +
+  private static final String CREATE = "CREATE TABLE IF NOT EXISTS`cidades` (\n" +
       "  `Id_cidade` int NOT NULL AUTO_INCREMENT,\n" +
       "  `nome_cidade` varchar(45) NOT NULL,\n" +
       "  `status` tinyint NOT NULL DEFAULT '1',\n" +
@@ -39,7 +41,16 @@ public class ServicoCidade {
   public ServicoCidade(ConnectionFactory conexao) throws Exception {
     this.conexao = conexao;
     this.conexao.executar(CREATE);
+    popularBanco();
   }
 
+  public void popularBanco() throws Exception {
+    String queryContar = "SELECT COUNT(*) FROM cidades";
+    ResultSet rsBusca = conexao.buscar(queryContar);
+    rsBusca.next();
+    if (rsBusca.getInt("COUNT(*)") == 0) {
+      conexao.executar(INSERT_PADRAO);
+    }
+  }
 
 }
