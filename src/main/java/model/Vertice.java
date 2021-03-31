@@ -14,7 +14,7 @@ public class Vertice {
     cidade.setNomeCidade(rs.getString("nome_cidade"));
     cidade.setSigla(rs.getString("sigla"));
     cidade.setIdCidade(rs.getInt("Id_cidade"));
-    cidade.setAtivo(rs.getBoolean("ativo"));
+    cidade.setAtivo(rs.getBoolean("status"));
     return cidade;
   }
 

@@ -68,8 +68,9 @@ public class ServicoCidade {
   }
 
   public void inserir(Vertice cidade) throws Exception {
-    String sql = String.format("INSERT INTO cidades (nome_cidade, sigla) VALUES (%s, %s)",
+    String sql = String.format("INSERT INTO cidades (nome_cidade, sigla) VALUES ('%s', '%s')",
         cidade.getNomeCidade(), cidade.getSigla());
+    System.out.println(sql);
     conexao.executar(sql);
   }
 
