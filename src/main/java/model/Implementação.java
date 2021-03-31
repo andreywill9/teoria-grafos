@@ -67,6 +67,8 @@ public class Implementação {
         bf.menorNumerodeSaltos("MAN", "NTL");//hops        
         bf.menorDistancia("MAN", "NTL");//distancia
         bf.menorCusto("MAN", "NTL");//custo
+
+
         
         
        

@@ -19,7 +19,7 @@ public class ConnectionFactory {
     conexao = getConnection(URL_BANCO);
   }
 
-  private Connection getConnection(String url) {
+  public static Connection getConnection(String url) {
     try {
       Class.forName(DRIVER);
       return DriverManager.getConnection(url, USER, PASS);
@@ -49,4 +49,6 @@ public class ConnectionFactory {
       conexao = getConnection(URL_BANCO);
     }
   }
+
+
 }
