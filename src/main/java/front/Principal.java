@@ -283,12 +283,7 @@ public class Principal extends javax.swing.JFrame {
         }
         //</editor-fold>
 
-        // create our mysql database connection
-        //</editor-fold>
 
-        // create our mysql database connection
-        
-        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
