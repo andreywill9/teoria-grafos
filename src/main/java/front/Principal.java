@@ -42,7 +42,6 @@ public class Principal extends javax.swing.JFrame {
         this.conn = DriverManager.getConnection(this.myUrl, "root", "");
         
         initComponents();
-        initComponents2();
         
     }
 
@@ -139,10 +138,6 @@ public class Principal extends javax.swing.JFrame {
         
     }//GEN-LAST:event_jLabel1KeyPressed
 
-    private void initComponents2(){
-        setSize(800,800);
-       
-    }
     
     private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
         this.clicks +=1;
