@@ -21,23 +21,19 @@ public class CaminhoMinimo {
     Node nodeOrigem = getNode(origem, verticesDisponiveis);
     Node nodeDestino = getNode(destino, verticesDisponiveis);
     if (nodeDestino == null || nodeOrigem == null) throw new Exception("Origem ou destino está inativo");
-    List<Node> visitados = new ArrayList<>();
-    bellmanFord(nodeOrigem, nodeDestino, verticesDisponiveis, arestasDisponiveis, metrica, visitados);
-    visitados.forEach(node -> {
-      System.out.println(node.getVerticeAtual());
-    });
+    bellmanFord(nodeOrigem, verticesDisponiveis, arestasDisponiveis, metrica);
+    nodeDestino.getCaminho().forEach(System.out::println);
+    System.out.println(nodeDestino.getValorPercorrido());
   }
 
-  public static model.bellman.ford.Node getNode(Vertice vertice, List<Node> nodes) {
+  public static Node getNode(Vertice vertice, List<Node> nodes) {
     return nodes.stream().filter(node -> node.getVerticeAtual().getIdCidade() == vertice.getIdCidade()).findFirst()
         .orElse(null);
   }
 
-  private static void bellmanFord(Node origem, Node destino, List<Node> vertices, List<Edge> arestas, MetricaCalculo metrica, List<Node> visitados) {
-
+  private static void bellmanFord(Node origem, List<Node> vertices, List<Edge> arestas, MetricaCalculo metrica) {
     origem.setValorPercorrido(0);
-
-    for (Node node : vertices) {
+    for (int i = 0; i < vertices.size() - 1; i++) {
       for (Edge aresta : arestas) {
         if (aresta.getOrigem().getValorPercorrido() == null) {
           continue;
@@ -49,20 +45,9 @@ public class CaminhoMinimo {
             destinoAresta.getValorPercorrido() : Integer.MAX_VALUE;
         if (novoValor < valorDestino) {
           destinoAresta.setValorPercorrido(novoValor);
-          adicionarAoCaminho(origemAresta, visitados);
-        }
-        if (destinoAresta.getVerticeAtual().getSigla().equals(destino.getVerticeAtual().getSigla())) {
-          adicionarAoCaminho(destino, visitados);
-          return;
+          destinoAresta.atualizarCaminho(origemAresta);
         }
       }
-    }
-  }
-
-  private static void adicionarAoCaminho(Node novoNode, List<Node> listaNodes) {
-    if (!listaNodes.stream().map(Node::getVerticeAtual).map(Vertice::getIdCidade).collect(Collectors.toList())
-        .contains(novoNode.getVerticeAtual().getIdCidade())) {
-      listaNodes.add(novoNode);
     }
   }
 

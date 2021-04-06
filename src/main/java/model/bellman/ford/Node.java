@@ -3,6 +3,7 @@ package model.bellman.ford;
 import model.Vertice;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Node {
@@ -14,8 +15,8 @@ public class Node {
   private Integer valorPercorrido;
 
   public Node(Vertice vertice) {
-    caminho = new ArrayList<>();
     verticeAtual = vertice;
+    caminho = Collections.singletonList(vertice);
   }
 
   public List<Vertice> getCaminho() {
@@ -44,5 +45,11 @@ public class Node {
 
   public void adicionarArestaCaminho(Vertice novoNode) {
     caminho.add(novoNode);
+  }
+
+  public void atualizarCaminho(Node node) {
+    List<Vertice> novoCaminho = new ArrayList<>(node.getCaminho());
+    novoCaminho.add(getVerticeAtual());
+    caminho = novoCaminho;
   }
 }
