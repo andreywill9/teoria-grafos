@@ -1,5 +1,7 @@
 package model;
 
+import model.bellman.ford.MetricaCalculo;
+
 import java.sql.ResultSet;
 import java.util.Map;
 
@@ -21,6 +23,17 @@ public class Aresta {
     conexao.setCusto(rs.getInt("custo"));
     conexao.setAtiva(rs.getBoolean("ativo"));
     return conexao;
+  }
+
+  public static Aresta instanciarInversa(Aresta aresta) {
+    Aresta novaAresta = new Aresta();
+    novaAresta.setIdConexao(aresta.getIdConexao());
+    novaAresta.setOrigem(aresta.getDestino());
+    novaAresta.setDestino(aresta.getOrigem());
+    novaAresta.setDistancia(aresta.getDistancia());
+    novaAresta.setCusto(aresta.getCusto());
+    novaAresta.setAtiva(aresta.isAtiva());
+    return novaAresta;
   }
 
   public Aresta(int distancia, int custo, Vertice origem, Vertice destino) {
@@ -79,5 +92,16 @@ public class Aresta {
 
   public void setIdConexao(int idConexao) {
     this.idConexao = idConexao;
+  }
+
+  public boolean getArestaDisponivel() {
+    return ativa && getOrigem().getAtivo() && getDestino().getAtivo();
+  }
+
+  public int getPeso(MetricaCalculo metrica) {
+    return metrica == MetricaCalculo.CUSTO ?
+        getCusto() :
+        metrica == MetricaCalculo.DISTANCIA ?
+            getDistancia() : 1;
   }
 }

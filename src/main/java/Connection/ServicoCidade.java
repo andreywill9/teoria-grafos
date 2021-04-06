@@ -19,26 +19,28 @@ public class ServicoCidade {
       " )";
 
   private static final String INSERT_PADRAO = "INSERT INTO cidades (nome_cidade, sigla) values\n" +
-      "\t('Porto Alegre','POA'),\n" +
-      "    ('Florianópolis','FLO'),\n" +
-      "    ('Blumenal','BLU'),\n" +
-      "    ('Curitiba','CUR'),\n" +
-      "    ('Londrina','LON'),\n" +
-      "    ('São Paulo','SPO'),\n" +
-      "    ('São José dos Campos','SJC'),\n" +
-      "    ('Rio de Janeiro','RJO'),\n" +
-      "    ('Belo Horizonte','BHO'),\n" +
-      "    ('Campinas','CMP'),\n" +
-      "    ('São José dos Campos','RBO'),\n" +
-      "    ('Bauru','BAU'),\n" +
-      "    ('Campo Grande','CPG'),\n" +
-      "    ('Cuiabá','CUI'),\n" +
-      "    ('Manaus','MAN'),\n" +
-      "    ('Belém','BEL'),\n" +
-      "    ('Brasília','BSB'),\n" +
-      "    ('Natal','NTL'),\n" +
-      "    ('Recife','REC'),\n" +
-      "    ('Salvador','SLV')";
+      "\t('Porto Alegre','POA'), \n" +
+      "  ('Florianópolis','FLO'), \n" +
+      "  ('Blumenal','BLU'), \n" +
+      "  ('Curitiba','CUR'), \n" +
+      "  ('Londrina','LON'), \n" +
+      "  ('São Paulo','SPO'), \n" +
+      "  ('São José dos Campos','SJC'),\n" +
+      "  ('Rio de Janeiro','RJO'), \n" +
+      "  ('Belo Horizonte','BHO'), \n" +
+      "  ('Campinas','CMP'), \n" +
+      "  ('Ribeirão Preto','RBP'), \n" +
+      "  ('Bauru','BAU'), \n" +
+      "  ('Campo Grande','CPG'), \n" +
+      "  ('Cuiabá','CUI'), \n" +
+      "  ('Manaus','MAN'), \n" +
+      "  ('Belém','BEL'),\n" +
+      "  ('Brasília','BSB'), \n" +
+      "  ('Natal','NTL'), \n" +
+      "  ('Recife','REC'), \n" +
+      "  ('Salvador','SLV')";
+
+  private static final String MAIOR_ID = "SELECT MAX(Id_cidade) FROM cidades;";
 
   private ConnectionFactory conexao;
 
@@ -72,6 +74,12 @@ public class ServicoCidade {
         cidade.getNomeCidade(), cidade.getSigla());
     System.out.println(sql);
     conexao.executar(sql);
+    cidade.setIdCidade(ultimoId());
+  }
+
+  private int ultimoId() throws Exception {
+    ResultSet rs = conexao.buscar(MAIOR_ID);
+    return rs.getInt(0);
   }
 
 }

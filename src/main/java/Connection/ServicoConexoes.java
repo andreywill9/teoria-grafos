@@ -25,7 +25,7 @@ public class ServicoConexoes {
 
   private static final String INSERT_CONEXOES = "INSERT INTO conexoes (Id_cidade1, Id_cidade2, distancia, custo) VALUES\n" +
       "\t(1 , 2, 6 , 2),\n" +
-      "  (1 , 3, 7 , 2),\n" +
+      "\t(1 , 3, 7 , 2),\n" +
       "  (2 , 3, 1 , 3),\n" +
       "  (2 , 4, 2 , 5),\n" +
       "  (2 , 8, 12 , 10),\n" +
