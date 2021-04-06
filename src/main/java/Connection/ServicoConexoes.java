@@ -1,8 +1,12 @@
 package Connection;
 
 import model.Aresta;
+import model.Vertice;
 
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public class ServicoConexoes {
 
@@ -68,6 +72,16 @@ public class ServicoConexoes {
     if (rsBusca.getInt("COUNT(*)") == 0) {
       conexao.executar(INSERT_CONEXOES);
     }
+  }
+
+  public List<Aresta> buscarTodas(Map<Integer, Vertice> mapaCidades) throws Exception {
+    String query = "SELECT * FROM conexoes";
+    List<Aresta> listaAresta = new ArrayList<>();
+    ResultSet rs = conexao.buscar(query);
+    while(rs.next()) {
+      listaAresta.add(Aresta.instanciarDeResultSet(rs, mapaCidades));
+    }
+    return listaAresta;
   }
 
   public void inserir(Aresta aresta) throws Exception {
