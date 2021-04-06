@@ -4,6 +4,7 @@ import model.bellman.ford.MetricaCalculo;
 
 import java.sql.ResultSet;
 import java.util.Map;
+import java.util.Objects;
 
 public class Aresta {
 
@@ -104,4 +105,14 @@ public class Aresta {
         metrica == MetricaCalculo.DISTANCIA ?
             getDistancia() : 1;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Aresta)) return false;
+    Aresta aresta = (Aresta) o;
+    return getDistancia() == aresta.getDistancia() && getCusto() == aresta.getCusto() && isAtiva() == aresta.isAtiva() && getOrigem().equals(aresta.getOrigem()) && getDestino().equals(aresta.getDestino());
+  }
+
+
 }
