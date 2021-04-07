@@ -7,8 +7,10 @@ package front;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
 import java.beans.Statement;
 import java.sql.Connection;
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 
 /**
  *
@@ -42,6 +45,7 @@ public class Principal extends javax.swing.JFrame {
         this.conn = DriverManager.getConnection(this.myUrl, "root", "");
         
         initComponents();
+        initComponents2();
         
     }
 
@@ -54,98 +58,157 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jLabel2 = new javax.swing.JLabel();
-        jButton3 = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        jButton4 = new javax.swing.JButton();
+        PanelMap = new javax.swing.JPanel();
+        Title1 = new javax.swing.JLabel();
+        Map = new javax.swing.JLabel();
+        SuperiorMenu = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem3 = new javax.swing.JMenuItem();
+        jMenuItem4 = new javax.swing.JMenuItem();
+        jMenu3 = new javax.swing.JMenu();
+        jMenuItem5 = new javax.swing.JMenuItem();
+        jMenuItem6 = new javax.swing.JMenuItem();
+        jMenu4 = new javax.swing.JMenu();
+        jMenuItem7 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Algoritmo");
+        setBackground(new java.awt.Color(127, 127, 127));
         setMinimumSize(new java.awt.Dimension(999, 934));
+        setResizable(false);
         getContentPane().setLayout(null);
 
-        jLabel1.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Desktop\\Processamento de Imagens\\Python\\imgs\\mapa.jpg")); // NOI18N
-        jLabel1.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+        PanelMap.setBackground(new java.awt.Color(102, 102, 102));
+        PanelMap.setLayout(null);
+
+        Title1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        Title1.setForeground(new java.awt.Color(255, 255, 255));
+        Title1.setText("Mapa Interativo:");
+        PanelMap.add(Title1);
+        Title1.setBounds(0, 10, 190, 19);
+
+        Map.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Desktop\\Processamento de Imagens\\Python\\imgs\\mapa.jpg")); // NOI18N
+        Map.setOpaque(true);
+        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                jLabel1MouseWheelMoved(evt);
+                MapMouseWheelMoved(evt);
             }
         });
-        jLabel1.addMouseListener(new java.awt.event.MouseAdapter() {
+        Map.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jLabel1MouseClicked(evt);
+                MapMouseClicked(evt);
             }
         });
-        jLabel1.addKeyListener(new java.awt.event.KeyAdapter() {
+        Map.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                jLabel1KeyPressed(evt);
+                MapKeyPressed(evt);
             }
         });
-        getContentPane().add(jLabel1);
-        jLabel1.setBounds(0, 110, 1000, 824);
+        PanelMap.add(Map);
+        Map.setBounds(0, 40, 1000, 824);
 
-        jButton1.setText("Pontos");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        getContentPane().add(PanelMap);
+        PanelMap.setBounds(0, 0, 1000, 860);
+
+        SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
+        SuperiorMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        SuperiorMenu.setForeground(new java.awt.Color(255, 255, 255));
+        SuperiorMenu.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
+        SuperiorMenu.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
+        SuperiorMenu.setMinimumSize(new java.awt.Dimension(0, 10));
+        SuperiorMenu.setPreferredSize(new java.awt.Dimension(200, 35));
+        SuperiorMenu.setSelectionModel(null);
+
+        jMenu1.setBackground(new java.awt.Color(51, 51, 51));
+        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu1.setText("Ponto");
+        jMenu1.setOpaque(true);
+
+        jMenuItem1.setText("Adicionar Ponto");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1);
-        jButton1.setBounds(10, 30, 134, 50);
+        jMenu1.add(jMenuItem1);
 
-        jButton2.setText("Enlaces");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton2);
-        jButton2.setBounds(160, 30, 162, 52);
+        jMenuItem2.setText("Remover Ponto");
+        jMenu1.add(jMenuItem2);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel2.setText("Criação ou Edição:");
-        getContentPane().add(jLabel2);
-        jLabel2.setBounds(10, 10, 118, 16);
+        SuperiorMenu.add(jMenu1);
 
-        jButton3.setText("Relatar Erro");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton3);
-        jButton3.setBounds(330, 30, 162, 52);
+        jMenu2.setBackground(new java.awt.Color(51, 51, 51));
+        jMenu2.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu2.setText("Enlace");
+        jMenu2.setOpaque(true);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 13)); // NOI18N
-        jLabel3.setText("Mapa Interativo:");
-        getContentPane().add(jLabel3);
-        jLabel3.setBounds(10, 90, 110, 16);
+        jMenuItem3.setText("Adicionar Enlace");
+        jMenu2.add(jMenuItem3);
 
-        jButton4.setText("Caminho Mínimo");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
-            }
-        });
-        getContentPane().add(jButton4);
-        jButton4.setBounds(820, 30, 162, 52);
+        jMenuItem4.setText("Remover Enlace");
+        jMenu2.add(jMenuItem4);
+
+        SuperiorMenu.add(jMenu2);
+
+        jMenu3.setBackground(new java.awt.Color(51, 51, 51));
+        jMenu3.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu3.setText("Erro");
+        jMenu3.setOpaque(true);
+
+        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.SHIFT_MASK));
+        jMenuItem5.setText("Reportar Ponto");
+        jMenu3.add(jMenuItem5);
+
+        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.SHIFT_MASK));
+        jMenuItem6.setText("Reportar Enlace");
+        jMenu3.add(jMenuItem6);
+
+        SuperiorMenu.add(jMenu3);
+
+        jMenu4.setBackground(new java.awt.Color(51, 51, 51));
+        jMenu4.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu4.setText("Caminho");
+        jMenu4.setOpaque(true);
+
+        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem7.setText("Realizar Caminho Minimo");
+        jMenu4.add(jMenuItem7);
+
+        SuperiorMenu.add(jMenu4);
+
+        setJMenuBar(SuperiorMenu);
+        UIManager.put("MenuBar.background" , new java.awt.Color(51, 51, 51));
+        SuperiorMenu.setOpaque(true);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jLabel1KeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jLabel1KeyPressed
-        
-    }//GEN-LAST:event_jLabel1KeyPressed
-
+    private void initComponents2(){
+        setSize(800,800);
+       
+    }
     
-    private void jLabel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel1MouseClicked
-        this.clicks +=1;
-        search_city(this.getGraphics(),evt);
+    void add_point(java.awt.event.MouseEvent evt){
+        int x=evt.getX();
+        int y=evt.getY();
+        javax.swing.JButton new_point = new javax.swing.JButton();
+        new_point.setBackground(Color.yellow);
         
-      
-    }//GEN-LAST:event_jLabel1MouseClicked
-
+        
+        new_point.setBounds(x, y, 20, 20);
+        new_point.setMinimumSize(new Dimension(50, 50));
+        new_point.setPreferredSize(new Dimension(50, 50));
+        new_point.setVisible(true);
+        Map.add(new_point);
+        Map.repaint();
+        System.out.println("add");
+        
+        
+        
+    }
     
     void search_city(Graphics g, java.awt.event.MouseEvent evt){
     int x=evt.getX();
@@ -159,11 +222,11 @@ public class Principal extends javax.swing.JFrame {
     }
     
     if(this.clicks == 2){
-        
+        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
         ((Graphics2D)g).setStroke(new BasicStroke(3));
         
-        ((Graphics2D)g).setColor(Color.BLUE);
-        Line2D.Float line = new Line2D.Float(this.x_old+8, this.y_old+jLabel1.getY()+37, x+8, y+jLabel1.getY()+37);
+        
+        Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
         this.lines.add(line);
         ((Graphics2D)g).draw(line);
         this.clicks = 0;
@@ -194,35 +257,29 @@ public class Principal extends javax.swing.JFrame {
     }
 
       
-    private void jLabel1MouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_jLabel1MouseWheelMoved
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jLabel1MouseWheelMoved
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        Map.paint(Map.getGraphics());
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        Graphics g = this.getGraphics();
-        ((Graphics2D)g).setColor(Color.RED);
-        ((Graphics2D)g).setStroke(new BasicStroke(3));
-        ((Graphics2D)g).draw(this.lines.get(0));
-        
-        new Adicionar_Pontos_1().setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void MapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MapKeyPressed
+
+    }//GEN-LAST:event_MapKeyPressed
+
+    private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
+        this.clicks +=1;
+        add_point(evt);
+        //search_city(this.Map.getGraphics(),evt);
+
+    }//GEN-LAST:event_MapMouseClicked
+
+    private void MapMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_MapMouseWheelMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MapMouseWheelMoved
 
     void paint_red(){
     
     }
     
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        new Adicionar_Enlaces().setVisible(true);
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        new Remover_Enlaces().setVisible(true);
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
-
     public void viewTable(double latitude , double longitude) throws SQLException {
     double compare = 1.5;
     double latitude_max = latitude + compare;
@@ -267,7 +324,7 @@ public class Principal extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
+                if ("Metal".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -283,7 +340,12 @@ public class Principal extends javax.swing.JFrame {
         }
         //</editor-fold>
 
+        // create our mysql database connection
+        //</editor-fold>
 
+        // create our mysql database connection
+        
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -299,12 +361,20 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel Map;
+    private javax.swing.JPanel PanelMap;
+    private javax.swing.JMenuBar SuperiorMenu;
+    private javax.swing.JLabel Title1;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu3;
+    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
+    private javax.swing.JMenuItem jMenuItem4;
+    private javax.swing.JMenuItem jMenuItem5;
+    private javax.swing.JMenuItem jMenuItem6;
+    private javax.swing.JMenuItem jMenuItem7;
     // End of variables declaration//GEN-END:variables
 }
