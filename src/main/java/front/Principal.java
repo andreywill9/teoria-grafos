@@ -90,8 +90,7 @@ public class Principal extends javax.swing.JFrame {
         PanelMap.add(Title1);
         Title1.setBounds(0, 10, 190, 19);
 
-        Map.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Desktop\\Processamento de Imagens\\Python\\imgs\\mapa.jpg")); // NOI18N
-        Map.setOpaque(true);
+        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/front/imgs/mapa_brasil.png"))); // NOI18N
         Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 MapMouseWheelMoved(evt);
@@ -108,7 +107,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         PanelMap.add(Map);
-        Map.setBounds(0, 40, 1000, 824);
+        Map.setBounds(60, 40, 1000, 824);
 
         getContentPane().add(PanelMap);
         PanelMap.setBounds(0, 0, 1000, 860);
