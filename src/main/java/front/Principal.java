@@ -28,12 +28,13 @@ import javax.swing.UIManager;
  * @author 55119
  */
 public class Principal extends javax.swing.JFrame {
-    String myDriver = "com.mysql.jdbc.Driver";
+    String myDriver = "com.mysql.cj.jdbc.Driver";
     String myUrl = "jdbc:mysql://localhost:3306/MAPA?useUnicode=true&characterEncoding=utf-8";
     Connection conn;
     int clicks = 0;
     int x_old = 0;
     int y_old=0;
+    Graphics universal_graph;
     ArrayList<Line2D.Float> lines = new ArrayList();
     
     
@@ -48,6 +49,7 @@ public class Principal extends javax.swing.JFrame {
         initComponents2();
         
     }
+   
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -90,7 +92,7 @@ public class Principal extends javax.swing.JFrame {
         PanelMap.add(Title1);
         Title1.setBounds(0, 10, 190, 19);
 
-        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/front/imgs/mapa_brasil.png"))); // NOI18N
+        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mapa_brasil.png"))); // NOI18N
         Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 MapMouseWheelMoved(evt);
@@ -187,48 +189,76 @@ public class Principal extends javax.swing.JFrame {
 
     private void initComponents2(){
         setSize(800,800);
+        universal_graph =  Map.getGraphics();
        
     }
     
-    void add_point(java.awt.event.MouseEvent evt){
-        int x=evt.getX();
-        int y=evt.getY();
+    void add_point(String name_city, int x, int y, java.awt.event.MouseEvent evt){
+        System.out.println("x:" +x + ", y:"+y);
         javax.swing.JButton new_point = new javax.swing.JButton();
         new_point.setBackground(Color.yellow);
         
-        
-        new_point.setBounds(x, y, 20, 20);
+        new_point.setBounds(x-10, y-10, 20, 20);
         new_point.setMinimumSize(new Dimension(50, 50));
         new_point.setPreferredSize(new Dimension(50, 50));
         new_point.setVisible(true);
+        new_point.setName(name_city);
+        new_point.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                System.out.println(new_point.getName());
+                set_click();
+                add_line_aresta(x, y);
+            }
+        });
         Map.add(new_point);
-        Map.repaint();
-        System.out.println("add");
-        
-        
+        //Map.paint(universal_graph);
         
     }
     
-    void search_city(Graphics g, java.awt.event.MouseEvent evt){
-    int x=evt.getX();
-    int y=evt.getY();
+    void reset_graph(){
+        universal_graph = Map.getGraphics();
+        Map.paint(Map.getGraphics());
+    }
     
+    Graphics get_graph(){
+        return Map.getGraphics();
+    }
     
+    void set_click(){
+        this.clicks +=1;
+    }
     
+    private String search_city(int x, int y){
+    
+    System.out.println(x + "," + y);
+    String name_city = "";
+    double latitude = 5.48155495 + (y*-0.04885256);
+    double longitude = -74.28821548 + (x*0.04895532);
+    try {
+        name_city = viewTable(latitude, longitude);
+    } catch (SQLException ex) {
+        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        System.out.println(ex);
+    }
+    return name_city;
+    }
+    
+    private void add_line_aresta(int x, int y){
     if(this.clicks == 1){
         this.x_old = x;
         this.y_old = y;
     }
     
     if(this.clicks == 2){
-        ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-        ((Graphics2D)g).setStroke(new BasicStroke(3));
+        ((Graphics2D)universal_graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+        ((Graphics2D)universal_graph).setStroke(new BasicStroke(3));
         
         
         Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
         this.lines.add(line);
-        ((Graphics2D)g).draw(line);
+        ((Graphics2D)universal_graph).draw(line);
         this.clicks = 0;
+    }
     }
 
     
@@ -236,28 +266,10 @@ public class Principal extends javax.swing.JFrame {
     //2: y origem
     //3: x destino
     //4: y destino
-    
-    
-    System.out.println(x + "," + y);
-
-
-
-
-
-    double latitude = 5.48155495 + (y*-0.04885256);
-    double longitude = -74.28821548 + (x*0.04895532);
-    try {
-        viewTable(latitude, longitude);
-    } catch (SQLException ex) {
-        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        System.out.println(ex);
-    }
-    
-    }
 
       
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        Map.paint(Map.getGraphics());
+        
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void MapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MapKeyPressed
@@ -265,8 +277,10 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_MapKeyPressed
 
     private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
-        this.clicks +=1;
-        add_point(evt);
+        int x=evt.getX();
+        int y=evt.getY();
+        String name_city = search_city(x, y);
+        add_point(name_city, x, y, evt);
         //search_city(this.Map.getGraphics(),evt);
 
     }//GEN-LAST:event_MapMouseClicked
@@ -279,8 +293,8 @@ public class Principal extends javax.swing.JFrame {
     
     }
     
-    public void viewTable(double latitude , double longitude) throws SQLException {
-    double compare = 1.5;
+    public String viewTable(double latitude , double longitude) throws SQLException {
+    double compare = 0.8;
     double latitude_max = latitude + compare;
     double latitude_min = latitude - compare;
     double longitude_max = longitude + compare;
@@ -310,10 +324,11 @@ public class Principal extends javax.swing.JFrame {
             }
         }
       }
-    System.out.println(nome_definitivo);
+    return nome_definitivo;
     } catch (SQLException e) {
         System.out.println(e);
     }
+    return "";
   }
     public static void main(String args[]) throws SQLException, ClassNotFoundException {
         /* Set the Nimbus look and feel */
@@ -349,6 +364,7 @@ public class Principal extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
+                    System.out.println(getClass());
                     new Principal().setVisible(true);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
