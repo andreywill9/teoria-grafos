@@ -49,7 +49,7 @@ public class Principal extends javax.swing.JFrame {
         initComponents2();
         
     }
-   
+ 
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -119,7 +119,7 @@ public class Principal extends javax.swing.JFrame {
         SuperiorMenu.setForeground(new java.awt.Color(255, 255, 255));
         SuperiorMenu.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
         SuperiorMenu.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
-        SuperiorMenu.setMinimumSize(new java.awt.Dimension(0, 10));
+        SuperiorMenu.setMinimumSize(new java.awt.Dimension(0, 15));
         SuperiorMenu.setPreferredSize(new java.awt.Dimension(200, 35));
         SuperiorMenu.setSelectionModel(null);
 
@@ -194,24 +194,28 @@ public class Principal extends javax.swing.JFrame {
     }
     
     void add_point(String name_city, int x, int y, java.awt.event.MouseEvent evt){
-        System.out.println("x:" +x + ", y:"+y);
-        javax.swing.JButton new_point = new javax.swing.JButton();
-        new_point.setBackground(Color.yellow);
+        if(name_city != ""){
+            int tam_img = 45;
+            System.out.println("x:" +x + ", y:"+y);
+            javax.swing.JButton new_point = new javax.swing.JButton();
+            new_point.setBackground(Color.yellow);
+            new_point.setBounds(x-tam_img/2, y-tam_img/2, tam_img, tam_img);
+            new_point.setMinimumSize(new Dimension(50, 50));
+            new_point.setPreferredSize(new Dimension(50, 50));
+            new_point.setVisible(true);
+            new_point.setName(name_city);
+            new_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    System.out.println(new_point.getName());
+                    set_click();
+                    add_line_aresta(x, y);
+                }
+            });
+            Map.add(new_point);
+            Map.paintComponents(universal_graph);
         
-        new_point.setBounds(x-10, y-10, 20, 20);
-        new_point.setMinimumSize(new Dimension(50, 50));
-        new_point.setPreferredSize(new Dimension(50, 50));
-        new_point.setVisible(true);
-        new_point.setName(name_city);
-        new_point.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                System.out.println(new_point.getName());
-                set_click();
-                add_line_aresta(x, y);
-            }
-        });
-        Map.add(new_point);
-        //Map.paint(universal_graph);
+        }
+        
         
     }
     
@@ -229,7 +233,6 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private String search_city(int x, int y){
-    
     System.out.println(x + "," + y);
     String name_city = "";
     double latitude = 5.48155495 + (y*-0.04885256);
@@ -240,6 +243,7 @@ public class Principal extends javax.swing.JFrame {
         Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         System.out.println(ex);
     }
+    
     return name_city;
     }
     
@@ -250,8 +254,8 @@ public class Principal extends javax.swing.JFrame {
     }
     
     if(this.clicks == 2){
-        ((Graphics2D)universal_graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-        ((Graphics2D)universal_graph).setStroke(new BasicStroke(3));
+        //((Graphics2D)universal_graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+        ((Graphics2D)universal_graph).setStroke(new BasicStroke(4));
         
         
         Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
@@ -279,8 +283,10 @@ public class Principal extends javax.swing.JFrame {
     private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
         int x=evt.getX();
         int y=evt.getY();
+        this.clicks = 0;
         String name_city = search_city(x, y);
         add_point(name_city, x, y, evt);
+        
         //search_city(this.Map.getGraphics(),evt);
 
     }//GEN-LAST:event_MapMouseClicked
@@ -294,7 +300,7 @@ public class Principal extends javax.swing.JFrame {
     }
     
     public String viewTable(double latitude , double longitude) throws SQLException {
-    double compare = 0.8;
+    double compare = 1.5;
     double latitude_max = latitude + compare;
     double latitude_min = latitude - compare;
     double longitude_max = longitude + compare;
@@ -364,7 +370,6 @@ public class Principal extends javax.swing.JFrame {
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    System.out.println(getClass());
                     new Principal().setVisible(true);
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
