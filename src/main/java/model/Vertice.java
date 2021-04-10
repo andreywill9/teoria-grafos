@@ -18,6 +18,13 @@ public class Vertice {
     return cidade;
   }
 
+  public static Vertice instanciarNovo(String nomeCidade, String sigla) {
+    Vertice cidade = new Vertice();
+    cidade.setNomeCidade(nomeCidade);
+    cidade.setSigla(sigla);
+    return cidade;
+  }
+
   public Vertice(String sigla, String nomeCidade) {
     this.sigla = sigla;
     this.nomeCidade = nomeCidade;

@@ -26,6 +26,15 @@ public class Aresta {
     return conexao;
   }
 
+  public static Aresta instanciarNova(Vertice cidade1, Vertice cidade2, int distancia, int custo) {
+    Aresta conexao = new Aresta();
+    conexao.setOrigem(cidade1);
+    conexao.setDestino(cidade2);
+    conexao.setDistancia(distancia);
+    conexao.setCusto(custo);
+    return conexao;
+  }
+
   public static Aresta instanciarInversa(Aresta aresta) {
     Aresta novaAresta = new Aresta();
     novaAresta.setIdConexao(aresta.getIdConexao());
