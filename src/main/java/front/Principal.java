@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JComponent;
 import javax.swing.UIManager;
+import java.lang.*;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -30,10 +32,14 @@ import javax.swing.UIManager;
 public class Principal extends javax.swing.JFrame {
     String myDriver = "com.mysql.cj.jdbc.Driver";
     String myUrl = "jdbc:mysql://localhost:3306/MAPA?useUnicode=true&characterEncoding=utf-8";
-    Connection conn;
+    Connection conn = DriverManager.getConnection(this.myUrl, "root", "");
     int clicks = 0;
     int x_old = 0;
     int y_old=0;
+    int x_now = 0;
+    int y_now = 0;
+    
+    boolean allow_add_points = false;
     Graphics universal_graph;
     ArrayList<Line2D.Float> lines = new ArrayList();
     
@@ -43,13 +49,13 @@ public class Principal extends javax.swing.JFrame {
      */
     public Principal() throws ClassNotFoundException, SQLException {
         Class.forName(this.myDriver);
-        this.conn = DriverManager.getConnection(this.myUrl, "root", "");
         
         initComponents();
         initComponents2();
         
     }
- 
+    
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -63,6 +69,10 @@ public class Principal extends javax.swing.JFrame {
         PanelMap = new javax.swing.JPanel();
         Title1 = new javax.swing.JLabel();
         Map = new javax.swing.JLabel();
+        AdicionarPontos = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        ComboCitys = new javax.swing.JComboBox<>();
+        jButton1 = new javax.swing.JButton();
         SuperiorMenu = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -114,6 +124,39 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().add(PanelMap);
         PanelMap.setBounds(0, 0, 1000, 860);
 
+        AdicionarPontos.setBackground(new java.awt.Color(102, 102, 102));
+        AdicionarPontos.setEnabled(false);
+        AdicionarPontos.setMinimumSize(new java.awt.Dimension(400, 205));
+        AdicionarPontos.setLayout(null);
+
+        jLabel2.setText("Cidade");
+        AdicionarPontos.add(jLabel2);
+        jLabel2.setBounds(260, 200, 39, 16);
+
+        ComboCitys.setBackground(new java.awt.Color(51, 51, 51));
+        ComboCitys.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
+        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboCitysActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(ComboCitys);
+        ComboCitys.setBounds(250, 230, 510, 40);
+
+        jButton1.setText("Adicionar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(jButton1);
+        jButton1.setBounds(350, 340, 340, 40);
+
+        getContentPane().add(AdicionarPontos);
+        AdicionarPontos.setBounds(0, -40, 1000, 890);
+        AdicionarPontos.setVisible(false);
+
         SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
         SuperiorMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         SuperiorMenu.setForeground(new java.awt.Color(255, 255, 255));
@@ -137,6 +180,11 @@ public class Principal extends javax.swing.JFrame {
         jMenu1.add(jMenuItem1);
 
         jMenuItem2.setText("Remover Ponto");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
         jMenu1.add(jMenuItem2);
 
         SuperiorMenu.add(jMenu1);
@@ -181,8 +229,6 @@ public class Principal extends javax.swing.JFrame {
         SuperiorMenu.add(jMenu4);
 
         setJMenuBar(SuperiorMenu);
-        UIManager.put("MenuBar.background" , new java.awt.Color(51, 51, 51));
-        SuperiorMenu.setOpaque(true);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -193,10 +239,120 @@ public class Principal extends javax.swing.JFrame {
        
     }
     
-    void add_point(String name_city, int x, int y, java.awt.event.MouseEvent evt){
+    
+    
+    void reset_graph(){
+        universal_graph = Map.getGraphics();
+        Map.paint(Map.getGraphics());
+    }
+    
+    Graphics get_graph(){
+        return Map.getGraphics();
+    }
+    
+    void set_click(){
+        this.clicks +=1;
+    }
+    
+    private ArrayList<String> search_city(int x, int y){
+        System.out.println(x + "," + y);
+        ArrayList<String>  names_city = new ArrayList();
+        double latitude = 5.48155495 + (y*-0.04885256);
+        double longitude = -74.28821548 + (x*0.04895532);
+        try {
+            names_city = viewTable(latitude, longitude);
+        } catch (SQLException ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            System.out.println(ex);
+        }
+
+        return names_city;
+    }
+    
+    private void add_line_aresta(int x, int y){
+        if(this.clicks == 1){
+            this.x_old = x;
+            this.y_old = y;
+        }
+
+        if(this.clicks == 2){
+            //((Graphics2D)universal_graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
+            ((Graphics2D)universal_graph).setStroke(new BasicStroke(4));
+
+
+            Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
+            this.lines.add(line);
+            ((Graphics2D)universal_graph).draw(line);
+            this.clicks = 0;
+        }
+    }
+
+    
+    //1: comprimento
+    //2: y origem
+    //3: x destino
+    //4: y destino
+
+      
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        this.allow_add_points = true;
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void MapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MapKeyPressed
+
+    }//GEN-LAST:event_MapKeyPressed
+
+    private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
+        if(this.allow_add_points){
+            this.x_now=evt.getX();
+            this.y_now=evt.getY();
+            this.clicks = 0;
+            ArrayList<String> names_city = search_city(this.x_now, this.y_now);
+            //Adicionar_Pontos_1 adc_pontos = ;
+            //adc_pontos.setVisible(true);
+            //this.setVisible(false);
+
+            ComboCitys.removeAllItems();
+            for (int i=0;i<names_city.size();i++){
+                ComboCitys.addItem(names_city.get(i));
+            }
+
+            AdicionarPontos.setVisible(true);
+            SuperiorMenu.setVisible(false);
+            PanelMap.setVisible(false);
+        
+        }
+        
+        
+        
+        //add_point(adc_pontos.return_city(), x, y);
+        
+        //search_city(this.Map.getGraphics(),evt);
+
+    }//GEN-LAST:event_MapMouseClicked
+
+    private void MapMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_MapMouseWheelMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MapMouseWheelMoved
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        add_point(ComboCitys.getSelectedItem().toString(), this.x_now, this.y_now);
+        AdicionarPontos.setVisible(false);
+        SuperiorMenu.setVisible(true);
+        PanelMap.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void ComboCitysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboCitysActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboCitysActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    void add_point(String name_city, int x, int y){
         if(name_city != ""){
-            int tam_img = 45;
-            System.out.println("x:" +x + ", y:"+y);
+            int tam_img = 20;
             javax.swing.JButton new_point = new javax.swing.JButton();
             new_point.setBackground(Color.yellow);
             new_point.setBounds(x-tam_img/2, y-tam_img/2, tam_img, tam_img);
@@ -219,88 +375,10 @@ public class Principal extends javax.swing.JFrame {
         
     }
     
-    void reset_graph(){
-        universal_graph = Map.getGraphics();
-        Map.paint(Map.getGraphics());
-    }
+    public ArrayList<String> viewTable(double latitude , double longitude) throws SQLException {
+    ArrayList<String> names_citys_around = new ArrayList();    
     
-    Graphics get_graph(){
-        return Map.getGraphics();
-    }
-    
-    void set_click(){
-        this.clicks +=1;
-    }
-    
-    private String search_city(int x, int y){
-    System.out.println(x + "," + y);
-    String name_city = "";
-    double latitude = 5.48155495 + (y*-0.04885256);
-    double longitude = -74.28821548 + (x*0.04895532);
-    try {
-        name_city = viewTable(latitude, longitude);
-    } catch (SQLException ex) {
-        Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        System.out.println(ex);
-    }
-    
-    return name_city;
-    }
-    
-    private void add_line_aresta(int x, int y){
-    if(this.clicks == 1){
-        this.x_old = x;
-        this.y_old = y;
-    }
-    
-    if(this.clicks == 2){
-        //((Graphics2D)universal_graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-        ((Graphics2D)universal_graph).setStroke(new BasicStroke(4));
-        
-        
-        Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
-        this.lines.add(line);
-        ((Graphics2D)universal_graph).draw(line);
-        this.clicks = 0;
-    }
-    }
-
-    
-    //1: comprimento
-    //2: y origem
-    //3: x destino
-    //4: y destino
-
-      
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void MapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MapKeyPressed
-
-    }//GEN-LAST:event_MapKeyPressed
-
-    private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
-        int x=evt.getX();
-        int y=evt.getY();
-        this.clicks = 0;
-        String name_city = search_city(x, y);
-        add_point(name_city, x, y, evt);
-        
-        //search_city(this.Map.getGraphics(),evt);
-
-    }//GEN-LAST:event_MapMouseClicked
-
-    private void MapMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_MapMouseWheelMoved
-        // TODO add your handling code here:
-    }//GEN-LAST:event_MapMouseWheelMoved
-
-    void paint_red(){
-    
-    }
-    
-    public String viewTable(double latitude , double longitude) throws SQLException {
-    double compare = 1.5;
+    double compare = 3;
     double latitude_max = latitude + compare;
     double latitude_min = latitude - compare;
     double longitude_max = longitude + compare;
@@ -318,23 +396,23 @@ public class Principal extends javax.swing.JFrame {
       ResultSet rs = stmt.executeQuery(query);
       while (rs.next()) {
         String nome = rs.getString("nome");
-        double latitude_now = Double.parseDouble(rs.getString("latitude"));
-        double longitude_now = Double.parseDouble(rs.getString("longitude"));
-        double diff1 = Math.abs(Math.abs(latitude_now) - Math.abs(latitude));
-        double diff2 = Math.abs(Math.abs(longitude_now) - Math.abs(longitude));
-        if(diff1 < diff_latitude_menor){
-            if(diff2  < diff_longitude_menor){
-                diff_latitude_menor = diff1;
-                diff_longitude_menor = diff2;
-                nome_definitivo = nome;
-            }
-        }
+        //double latitude_now = Double.parseDouble(rs.getString("latitude"));
+        //double longitude_now = Double.parseDouble(rs.getString("longitude"));
+        //double diff1 = Math.abs(Math.abs(latitude_now) - Math.abs(latitude));
+        //double diff2 = Math.abs(Math.abs(longitude_now) - Math.abs(longitude));
+        names_citys_around.add(nome);
+        //#if(diff1 < diff_latitude_menor){
+        //    if(diff2  < diff_longitude_menor){
+        //        diff_latitude_menor = diff1;
+        //        diff_longitude_menor = diff2;
+        //        s
+        //    }
+        //}
       }
-    return nome_definitivo;
     } catch (SQLException e) {
         System.out.println(e);
     }
-    return "";
+    return names_citys_around;
   }
     public static void main(String args[]) throws SQLException, ClassNotFoundException {
         /* Set the Nimbus look and feel */
@@ -381,10 +459,14 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel AdicionarPontos;
+    private javax.swing.JComboBox<String> ComboCitys;
     private javax.swing.JLabel Map;
     private javax.swing.JPanel PanelMap;
     private javax.swing.JMenuBar SuperiorMenu;
     private javax.swing.JLabel Title1;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JLabel jLabel2;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
