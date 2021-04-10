@@ -44,6 +44,8 @@ public class ServicoCidade {
 
   private static final String ALTERAR_STATUS = "UPDATE cidades SET status = %s WHERE Id_cidade = %s";
 
+  private static final String EXCLUIR_CIDADE = "DELETE FROM cidades WHERE Id_cidade = %s";
+
   private ConnectionFactory conexao;
 
   public ServicoCidade(ConnectionFactory conexao) throws Exception {
@@ -91,6 +93,14 @@ public class ServicoCidade {
     );
     conexao.executar(sql);
     cidade.setAtivo(novoStatus);
+  }
+
+  public void excluirCidade(Vertice cidade) throws Exception {
+    String sql = String.format(
+        EXCLUIR_CIDADE,
+        cidade.getIdCidade()
+    );
+    conexao.executar(sql);
   }
 
 }

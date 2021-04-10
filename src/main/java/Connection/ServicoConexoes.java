@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ServicoConexoes {
 
@@ -60,6 +61,10 @@ public class ServicoConexoes {
   private static final String MAIOR_ID = "SELECT MAX(Id_conexao) FROM conexoes";
 
   private static final String ALTERAR_STATUS = "UPDATE conexoes SET ativo = %s WHERE Id_conexao = %s";
+
+  private static final String EXCLUIR_CONEXAO = "DELETE FROM conexoes WHERE Id_conexao = %s";
+
+  private static final String EXCLUIR_CONEXOES_LISTA = "DELETE from conexoes WHERE Id_conexao IN (%s)";
 
   private ConnectionFactory conexao;
 
@@ -119,5 +124,19 @@ public class ServicoConexoes {
     aresta.setAtiva(novoStatus);
   }
 
+  public void excluirConexao(Aresta aresta) throws Exception {
+    String sql = String.format(
+        EXCLUIR_CONEXAO,
+        aresta.getIdConexao()
+    );
+    conexao.executar(sql);
+  }
+
+  public void excluirConexoes(List<Aresta> listaArestas) throws Exception {
+    String idsExcuir = listaArestas.stream().map(Aresta::getIdConexao)
+        .map(String::valueOf).collect(Collectors.joining(","));
+    String sql = String.format(EXCLUIR_CONEXOES_LISTA, idsExcuir);
+    conexao.executar(sql);
+  }
 
 }
