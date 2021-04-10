@@ -50,4 +50,16 @@ public class ApplicationFactory {
   public List<Vertice> getTodasCidades() {
     return todasCidades;
   }
+
+  public void cadastrarCidade(String nomeCidade, String sigla) throws Exception {
+    Vertice novaCidade = Vertice.instanciarNovo(nomeCidade, sigla);
+    svcCidade.inserir(novaCidade);
+    todasCidades.add(novaCidade);
+  }
+
+  public void cadastrarConexao(Vertice cidade1, Vertice cidade2, int distancia, int custo) throws Exception {
+    Aresta novaConexao = Aresta.instanciarNova(cidade1, cidade2, distancia, custo);
+    svcConexoes.inserir(novaConexao, todasConexoes);
+    todasConexoes.add(novaConexao);
+  }
 }

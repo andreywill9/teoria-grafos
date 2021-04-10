@@ -18,6 +18,13 @@ public class Vertice {
     return cidade;
   }
 
+  public static Vertice instanciarNovo(String nomeCidade, String sigla) {
+    Vertice cidade = new Vertice();
+    cidade.setNomeCidade(nomeCidade);
+    cidade.setSigla(sigla);
+    return cidade;
+  }
+
   public Vertice(String sigla, String nomeCidade) {
     this.sigla = sigla;
     this.nomeCidade = nomeCidade;
@@ -61,5 +68,20 @@ public class Vertice {
 
   public void setIdCidade(int idCidade) {
     this.idCidade = idCidade;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Vertice vertice = (Vertice) o;
+
+    return idCidade == vertice.idCidade;
+  }
+
+  @Override
+  public int hashCode() {
+    return idCidade;
   }
 }

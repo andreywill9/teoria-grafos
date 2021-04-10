@@ -26,6 +26,15 @@ public class Aresta {
     return conexao;
   }
 
+  public static Aresta instanciarNova(Vertice cidade1, Vertice cidade2, int distancia, int custo) {
+    Aresta conexao = new Aresta();
+    conexao.setOrigem(cidade1);
+    conexao.setDestino(cidade2);
+    conexao.setDistancia(distancia);
+    conexao.setCusto(custo);
+    return conexao;
+  }
+
   public static Aresta instanciarInversa(Aresta aresta) {
     Aresta novaAresta = new Aresta();
     novaAresta.setIdConexao(aresta.getIdConexao());
@@ -111,7 +120,13 @@ public class Aresta {
     if (this == o) return true;
     if (!(o instanceof Aresta)) return false;
     Aresta aresta = (Aresta) o;
-    return getDistancia() == aresta.getDistancia() && getCusto() == aresta.getCusto() && isAtiva() == aresta.isAtiva() && getOrigem().equals(aresta.getOrigem()) && getDestino().equals(aresta.getDestino());
+    return getDistancia() == aresta.getDistancia() && getCusto() == aresta.getCusto() && isAtiva() == aresta.isAtiva()
+        && cidadesIguais(aresta);
+  }
+
+  private boolean cidadesIguais(Aresta aresta) {
+    return (getOrigem().equals(aresta.getOrigem()) && getDestino().equals(aresta.getDestino())) ||
+        (getOrigem().equals(aresta.getDestino()) && getDestino().equals(aresta.getOrigem()));
   }
 
 
