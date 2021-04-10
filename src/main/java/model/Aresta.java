@@ -121,7 +121,7 @@ public class Aresta {
     if (!(o instanceof Aresta)) return false;
     Aresta aresta = (Aresta) o;
     return getDistancia() == aresta.getDistancia() && getCusto() == aresta.getCusto() && isAtiva() == aresta.isAtiva()
-        && getOrigem().equals(aresta.getOrigem()) && getDestino().equals(aresta.getDestino());
+        && cidadesIguais(aresta);
   }
 
   private boolean cidadesIguais(Aresta aresta) {
