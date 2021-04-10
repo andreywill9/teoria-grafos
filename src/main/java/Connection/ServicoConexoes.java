@@ -59,6 +59,8 @@ public class ServicoConexoes {
 
   private static final String MAIOR_ID = "SELECT MAX(Id_conexao) FROM conexoes";
 
+  private static final String ALTERAR_STATUS = "UPDATE conexoes SET ativo = %s WHERE Id_conexao = %s";
+
   private ConnectionFactory conexao;
 
   public ServicoConexoes(ConnectionFactory conexao) throws Exception {
@@ -105,6 +107,16 @@ public class ServicoConexoes {
   private int ultimoId() throws Exception {
     ResultSet rs = conexao.buscar(MAIOR_ID);
     return rs.getInt(0);
+  }
+
+  public void alterarStatus(Aresta aresta, boolean novoStatus) throws Exception {
+    String sql = String.format(
+        ALTERAR_STATUS,
+        novoStatus ? 1 : 0,
+        aresta.getIdConexao()
+    );
+    conexao.executar(sql);
+    aresta.setAtiva(novoStatus);
   }
 
 
