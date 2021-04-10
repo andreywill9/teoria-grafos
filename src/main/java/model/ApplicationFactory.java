@@ -51,8 +51,8 @@ public class ApplicationFactory {
     return todasCidades;
   }
 
-  public void cadastrarCidade(String nomeCidade, String sigla) throws Exception {
-    Vertice novaCidade = Vertice.instanciarNovo(nomeCidade, sigla);
+  public void cadastrarCidade(String nomeCidade, String sigla, int cordenadaX, int cordenadaY) throws Exception {
+    Vertice novaCidade = Vertice.instanciarNovo(nomeCidade, sigla, cordenadaX, cordenadaY);
     svcCidade.inserir(novaCidade);
     todasCidades.add(novaCidade);
   }
