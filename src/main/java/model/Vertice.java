@@ -69,4 +69,19 @@ public class Vertice {
   public void setIdCidade(int idCidade) {
     this.idCidade = idCidade;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Vertice vertice = (Vertice) o;
+
+    return idCidade == vertice.idCidade;
+  }
+
+  @Override
+  public int hashCode() {
+    return idCidade;
+  }
 }
