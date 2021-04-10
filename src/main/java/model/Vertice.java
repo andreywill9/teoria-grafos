@@ -7,7 +7,7 @@ public class Vertice {
   private String sigla;
   private String nomeCidade;
   private Boolean ativo;
-  private int idCidade;
+  private int idCidade, cordenadaX, cordenadaY;
 
   public static Vertice instanciarDeResultSet(ResultSet rs) throws Exception {
     Vertice cidade = new Vertice();
@@ -15,13 +15,17 @@ public class Vertice {
     cidade.setSigla(rs.getString("sigla"));
     cidade.setIdCidade(rs.getInt("Id_cidade"));
     cidade.setAtivo(rs.getBoolean("status"));
+    cidade.setCordenadaX(rs.getInt("cordenada_x"));
+    cidade.setCordenadaY(rs.getInt("cordenada_y"));
     return cidade;
   }
 
-  public static Vertice instanciarNovo(String nomeCidade, String sigla) {
+  public static Vertice instanciarNovo(String nomeCidade, String sigla, int cordenadaX, int cordenadaY) {
     Vertice cidade = new Vertice();
     cidade.setNomeCidade(nomeCidade);
     cidade.setSigla(sigla);
+    cidade.setCordenadaX(cordenadaX);
+    cidade.setCordenadaY(cordenadaY);
     return cidade;
   }
 
@@ -68,6 +72,22 @@ public class Vertice {
 
   public void setIdCidade(int idCidade) {
     this.idCidade = idCidade;
+  }
+
+  public int getCordenadaX() {
+    return cordenadaX;
+  }
+
+  public void setCordenadaX(int cordenadaX) {
+    this.cordenadaX = cordenadaX;
+  }
+
+  public int getCordenadaY() {
+    return cordenadaY;
+  }
+
+  public void setCordenadaY(int cordenadaY) {
+    this.cordenadaY = cordenadaY;
   }
 
   @Override
