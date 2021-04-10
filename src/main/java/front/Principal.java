@@ -66,13 +66,15 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        PanelMap = new javax.swing.JPanel();
-        Title1 = new javax.swing.JLabel();
-        Map = new javax.swing.JLabel();
         AdicionarPontos = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         ComboCitys = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
+        PanelMap = new javax.swing.JPanel();
+        Title1 = new javax.swing.JLabel();
+        Map = new javax.swing.JLabel();
         SuperiorMenu = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -93,7 +95,57 @@ public class Principal extends javax.swing.JFrame {
         setResizable(false);
         getContentPane().setLayout(null);
 
-        PanelMap.setBackground(new java.awt.Color(102, 102, 102));
+        AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
+        AdicionarPontos.setEnabled(false);
+        AdicionarPontos.setMinimumSize(new java.awt.Dimension(400, 205));
+        AdicionarPontos.setLayout(null);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Sigla");
+        AdicionarPontos.add(jLabel2);
+        jLabel2.setBounds(250, 280, 60, 22);
+
+        ComboCitys.setBackground(new java.awt.Color(51, 51, 51));
+        ComboCitys.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
+        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboCitysActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(ComboCitys);
+        ComboCitys.setBounds(250, 230, 510, 40);
+
+        jButton1.setBackground(new java.awt.Color(255, 255, 255));
+        jButton1.setText("Adicionar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(jButton1);
+        jButton1.setBounds(250, 380, 510, 40);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Cidade");
+        AdicionarPontos.add(jLabel3);
+        jLabel3.setBounds(250, 200, 60, 22);
+
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(jTextField1);
+        jTextField1.setBounds(250, 310, 510, 40);
+
+        getContentPane().add(AdicionarPontos);
+        AdicionarPontos.setBounds(0, -40, 1000, 890);
+        AdicionarPontos.setVisible(false);
+
+        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
         PanelMap.setLayout(null);
 
         Title1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
@@ -119,51 +171,18 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         PanelMap.add(Map);
-        Map.setBounds(60, 40, 1000, 824);
+        Map.setBounds(70, 40, 940, 824);
 
         getContentPane().add(PanelMap);
         PanelMap.setBounds(0, 0, 1000, 860);
 
-        AdicionarPontos.setBackground(new java.awt.Color(102, 102, 102));
-        AdicionarPontos.setEnabled(false);
-        AdicionarPontos.setMinimumSize(new java.awt.Dimension(400, 205));
-        AdicionarPontos.setLayout(null);
-
-        jLabel2.setText("Cidade");
-        AdicionarPontos.add(jLabel2);
-        jLabel2.setBounds(260, 200, 39, 16);
-
-        ComboCitys.setBackground(new java.awt.Color(51, 51, 51));
-        ComboCitys.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
-        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboCitysActionPerformed(evt);
-            }
-        });
-        AdicionarPontos.add(ComboCitys);
-        ComboCitys.setBounds(250, 230, 510, 40);
-
-        jButton1.setText("Adicionar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        AdicionarPontos.add(jButton1);
-        jButton1.setBounds(350, 340, 340, 40);
-
-        getContentPane().add(AdicionarPontos);
-        AdicionarPontos.setBounds(0, -40, 1000, 890);
-        AdicionarPontos.setVisible(false);
-
         SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
-        SuperiorMenu.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        SuperiorMenu.setBorder(null);
         SuperiorMenu.setForeground(new java.awt.Color(255, 255, 255));
         SuperiorMenu.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
         SuperiorMenu.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
         SuperiorMenu.setMinimumSize(new java.awt.Dimension(0, 15));
-        SuperiorMenu.setPreferredSize(new java.awt.Dimension(200, 35));
+        SuperiorMenu.setPreferredSize(new java.awt.Dimension(200, 50));
         SuperiorMenu.setSelectionModel(null);
 
         jMenu1.setBackground(new java.awt.Color(51, 51, 51));
@@ -298,6 +317,25 @@ public class Principal extends javax.swing.JFrame {
         this.allow_add_points = true;
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        add_point(ComboCitys.getSelectedItem().toString(), this.x_now, this.y_now);
+        AdicionarPontos.setVisible(false);
+        SuperiorMenu.setVisible(true);
+        PanelMap.setVisible(true);
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void ComboCitysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboCitysActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ComboCitysActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
     private void MapKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_MapKeyPressed
 
     }//GEN-LAST:event_MapKeyPressed
@@ -320,35 +358,17 @@ public class Principal extends javax.swing.JFrame {
             AdicionarPontos.setVisible(true);
             SuperiorMenu.setVisible(false);
             PanelMap.setVisible(false);
-        
-        }
-        
-        
-        
-        //add_point(adc_pontos.return_city(), x, y);
-        
-        //search_city(this.Map.getGraphics(),evt);
 
+        }
+
+        //add_point(adc_pontos.return_city(), x, y);
+
+        //search_city(this.Map.getGraphics(),evt);
     }//GEN-LAST:event_MapMouseClicked
 
     private void MapMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_MapMouseWheelMoved
         // TODO add your handling code here:
     }//GEN-LAST:event_MapMouseWheelMoved
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        add_point(ComboCitys.getSelectedItem().toString(), this.x_now, this.y_now);
-        AdicionarPontos.setVisible(false);
-        SuperiorMenu.setVisible(true);
-        PanelMap.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void ComboCitysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboCitysActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_ComboCitysActionPerformed
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     void add_point(String name_city, int x, int y){
         if(name_city != ""){
@@ -396,18 +416,7 @@ public class Principal extends javax.swing.JFrame {
       ResultSet rs = stmt.executeQuery(query);
       while (rs.next()) {
         String nome = rs.getString("nome");
-        //double latitude_now = Double.parseDouble(rs.getString("latitude"));
-        //double longitude_now = Double.parseDouble(rs.getString("longitude"));
-        //double diff1 = Math.abs(Math.abs(latitude_now) - Math.abs(latitude));
-        //double diff2 = Math.abs(Math.abs(longitude_now) - Math.abs(longitude));
         names_citys_around.add(nome);
-        //#if(diff1 < diff_latitude_menor){
-        //    if(diff2  < diff_longitude_menor){
-        //        diff_latitude_menor = diff1;
-        //        diff_longitude_menor = diff2;
-        //        s
-        //    }
-        //}
       }
     } catch (SQLException e) {
         System.out.println(e);
@@ -467,6 +476,7 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JLabel Title1;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
@@ -478,5 +488,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem6;
     private javax.swing.JMenuItem jMenuItem7;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
