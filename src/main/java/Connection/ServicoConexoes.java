@@ -57,6 +57,8 @@ public class ServicoConexoes {
       "  (19 , 20, 8 , 5),\n" +
       "  (20 , 18, 15 , 4)";
 
+  private static final String MAIOR_ID = "SELECT MAX(Id_conexao) FROM conexoes";
+
   private ConnectionFactory conexao;
 
   public ServicoConexoes(ConnectionFactory conexao) throws Exception {
@@ -85,23 +87,24 @@ public class ServicoConexoes {
   }
 
   public void inserir(Aresta aresta, List<Aresta> listaAresta) throws Exception {
-    if (arestaValida(aresta) && naoContemAresta(aresta, listaAresta)) {
-      String query = String.format("INSERT INTO conexoes (Id_cidade1, Id_cidade2, distancia, custo) VALUES (" +
-          "%s, %s, %s, %s)", aresta.getOrigem().getIdCidade(), aresta.getDestino().getIdCidade(), aresta.getDistancia(), aresta.getCusto());
-      conexao.executar(query);
-    } else {
-      throw new Exception("Aresta invalida");
-    }
-
+    if (!arestaValida(aresta) || !naoContemAresta(aresta, listaAresta)) throw new Exception("Aresta inválida");
+    String query = String.format("INSERT INTO conexoes (Id_cidade1, Id_cidade2, distancia, custo) VALUES (" +
+        "%s, %s, %s, %s)", aresta.getOrigem().getIdCidade(), aresta.getDestino().getIdCidade(), aresta.getDistancia(), aresta.getCusto());
+    conexao.executar(query);
+    aresta.setIdConexao(ultimoId());
   }
 
   private static boolean arestaValida(Aresta aresta) {
-
     return !aresta.getOrigem().equals(aresta.getDestino());
   }
 
   private static boolean naoContemAresta(Aresta aresta, List<Aresta> listaAresta) {
     return listaAresta.stream().noneMatch(aresta::equals);
+  }
+
+  private int ultimoId() throws Exception {
+    ResultSet rs = conexao.buscar(MAIOR_ID);
+    return rs.getInt(0);
   }
 
 
