@@ -109,10 +109,10 @@ public class Aresta {
   }
 
   public int getPeso(MetricaCalculo metrica) {
-    return metrica == MetricaCalculo.CUSTO ?
-        getCusto() :
-        metrica == MetricaCalculo.DISTANCIA ?
-            getDistancia() : 1;
+    if (metrica == MetricaCalculo.SALTO) return 1;
+    return metrica == MetricaCalculo.DISTANCIA ?
+        getDistancia() :
+        getCusto();
   }
 
   @Override

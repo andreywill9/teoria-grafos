@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 public class CaminhoMinimo {
 
   public static void bellmanFord(List<Aresta> arestas, List<Vertice> vertices, Vertice origem, Vertice destino, MetricaCalculo metrica) throws Exception {
-    List<Node> verticesDisponiveis = vertices.stream().filter(Vertice::getAtivo).map(model.bellman.ford.Node::new).collect(Collectors.toList());
+    List<Node> verticesDisponiveis = vertices.stream().filter(Vertice::getAtivo).map(Node::new).collect(Collectors.toList());
     List<Edge> arestasDisponiveis = new ArrayList<>();
     arestas.stream().filter(Aresta::getArestaDisponivel).forEach(aresta -> {
       Node node1 = getNode(aresta.getOrigem(), verticesDisponiveis);
