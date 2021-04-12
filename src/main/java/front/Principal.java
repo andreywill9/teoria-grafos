@@ -66,15 +66,15 @@ public class Principal extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        PanelMap = new javax.swing.JPanel();
+        Title1 = new javax.swing.JLabel();
+        Map = new javax.swing.JLabel();
         AdicionarPontos = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         ComboCitys = new javax.swing.JComboBox<>();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        PanelMap = new javax.swing.JPanel();
-        Title1 = new javax.swing.JLabel();
-        Map = new javax.swing.JLabel();
         SuperiorMenu = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
@@ -94,6 +94,37 @@ public class Principal extends javax.swing.JFrame {
         setMinimumSize(new java.awt.Dimension(999, 934));
         setResizable(false);
         getContentPane().setLayout(null);
+
+        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
+        PanelMap.setLayout(null);
+
+        Title1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        Title1.setForeground(new java.awt.Color(255, 255, 255));
+        Title1.setText("Mapa Interativo:");
+        PanelMap.add(Title1);
+        Title1.setBounds(0, 10, 190, 19);
+
+        Map.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Documents\\mapa_esse.png")); // NOI18N
+        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                MapMouseWheelMoved(evt);
+            }
+        });
+        Map.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MapMouseClicked(evt);
+            }
+        });
+        Map.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                MapKeyPressed(evt);
+            }
+        });
+        PanelMap.add(Map);
+        Map.setBounds(70, 40, 1090, 824);
+
+        getContentPane().add(PanelMap);
+        PanelMap.setBounds(0, 0, 1000, 860);
 
         AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
         AdicionarPontos.setEnabled(false);
@@ -144,37 +175,6 @@ public class Principal extends javax.swing.JFrame {
         getContentPane().add(AdicionarPontos);
         AdicionarPontos.setBounds(0, -40, 1000, 890);
         AdicionarPontos.setVisible(false);
-
-        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
-        PanelMap.setLayout(null);
-
-        Title1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
-        Title1.setForeground(new java.awt.Color(255, 255, 255));
-        Title1.setText("Mapa Interativo:");
-        PanelMap.add(Title1);
-        Title1.setBounds(0, 10, 190, 19);
-
-        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/mapa_brasil.png"))); // NOI18N
-        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                MapMouseWheelMoved(evt);
-            }
-        });
-        Map.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MapMouseClicked(evt);
-            }
-        });
-        Map.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                MapKeyPressed(evt);
-            }
-        });
-        PanelMap.add(Map);
-        Map.setBounds(70, 40, 940, 824);
-
-        getContentPane().add(PanelMap);
-        PanelMap.setBounds(0, 0, 1000, 860);
 
         SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
         SuperiorMenu.setBorder(null);
@@ -255,7 +255,7 @@ public class Principal extends javax.swing.JFrame {
     private void initComponents2(){
         setSize(800,800);
         universal_graph =  Map.getGraphics();
-       
+        //Map.setLocation(-100,0); // NOI18N
     }
     
     
