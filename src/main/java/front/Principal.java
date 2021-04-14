@@ -5,39 +5,34 @@
  */
 package front;
 
+import Connection.ConnectionFactory;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.geom.Line2D;
-import java.beans.Statement;
-import java.sql.Connection;
-import java.sql.DriverManager;
+import Connection.ServicoCidade;
+import Connection.ServicoConexoes;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JComponent;
-import javax.swing.UIManager;
-import java.lang.*;
-import javax.swing.JOptionPane;
-
+import javax.swing.SwingUtilities;
 /**
  *
  * @author 55119
  */
-public class Principal extends javax.swing.JFrame {
+public class Principal extends javax.swing.JFrame{
     String myDriver = "com.mysql.cj.jdbc.Driver";
     String myUrl = "jdbc:mysql://localhost:3306/MAPA?useUnicode=true&characterEncoding=utf-8";
-    Connection conn = DriverManager.getConnection(this.myUrl, "root", "");
     int clicks = 0;
     int x_old = 0;
     int y_old=0;
     int x_now = 0;
     int y_now = 0;
+    ConnectionFactory conn;
     
     boolean allow_add_points = false;
     Graphics universal_graph;
@@ -47,12 +42,13 @@ public class Principal extends javax.swing.JFrame {
     /**
      * Creates new form Principal
      */
-    public Principal() throws ClassNotFoundException, SQLException {
-        Class.forName(this.myDriver);
-        
+    public Principal() throws Exception {
+        setSize(800,800);
+        conn = new ConnectionFactory();
+        ServicoCidade sc = new ServicoCidade(this.conn);
         initComponents();
         initComponents2();
-        
+        initPopulation();
     }
     
     
@@ -72,26 +68,21 @@ public class Principal extends javax.swing.JFrame {
         AdicionarPontos = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         ComboCitys = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        ButtonCancel = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        ButtonAdd = new javax.swing.JButton();
         SuperiorMenu = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        jMenu5 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
         jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem6 = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem7 = new javax.swing.JMenuItem();
+        jMenu6 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algoritmo");
         setBackground(new java.awt.Color(127, 127, 127));
-        setMinimumSize(new java.awt.Dimension(999, 934));
+        setMinimumSize(new java.awt.Dimension(900, 934));
+        setPreferredSize(new java.awt.Dimension(900, 934));
         setResizable(false);
         getContentPane().setLayout(null);
 
@@ -104,7 +95,8 @@ public class Principal extends javax.swing.JFrame {
         PanelMap.add(Title1);
         Title1.setBounds(0, 10, 190, 19);
 
-        Map.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Documents\\mapa_esse.png")); // NOI18N
+        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
+        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 MapMouseWheelMoved(evt);
@@ -121,21 +113,22 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         PanelMap.add(Map);
-        Map.setBounds(70, 40, 1090, 824);
+        Map.setBounds(0, 40, 900, 1200);
 
         getContentPane().add(PanelMap);
-        PanelMap.setBounds(0, 0, 1000, 860);
+        PanelMap.setBounds(0, 0, 900, 860);
 
         AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
         AdicionarPontos.setEnabled(false);
-        AdicionarPontos.setMinimumSize(new java.awt.Dimension(400, 205));
+        AdicionarPontos.setMinimumSize(new java.awt.Dimension(900, 934));
+        AdicionarPontos.setPreferredSize(new java.awt.Dimension(900, 934));
         AdicionarPontos.setLayout(null);
 
         jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
         jLabel2.setText("Sigla");
         AdicionarPontos.add(jLabel2);
-        jLabel2.setBounds(250, 280, 60, 22);
+        jLabel2.setBounds(190, 330, 60, 22);
 
         ComboCitys.setBackground(new java.awt.Color(51, 51, 51));
         ComboCitys.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -146,23 +139,28 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         AdicionarPontos.add(ComboCitys);
-        ComboCitys.setBounds(250, 230, 510, 40);
+        ComboCitys.setBounds(190, 280, 510, 40);
 
-        jButton1.setBackground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Adicionar");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+        ButtonCancel.setBackground(new java.awt.Color(255, 255, 255));
+        ButtonCancel.setText("Cancelar");
+        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonCancelMouseClicked(evt);
             }
         });
-        AdicionarPontos.add(jButton1);
-        jButton1.setBounds(250, 380, 510, 40);
+        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonCancelActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(ButtonCancel);
+        ButtonCancel.setBounds(450, 430, 250, 40);
 
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Cidade");
         AdicionarPontos.add(jLabel3);
-        jLabel3.setBounds(250, 200, 60, 22);
+        jLabel3.setBounds(190, 250, 60, 22);
 
         jTextField1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -170,82 +168,57 @@ public class Principal extends javax.swing.JFrame {
             }
         });
         AdicionarPontos.add(jTextField1);
-        jTextField1.setBounds(250, 310, 510, 40);
+        jTextField1.setBounds(190, 360, 510, 40);
+
+        ButtonAdd.setBackground(new java.awt.Color(255, 255, 255));
+        ButtonAdd.setText("Adicionar");
+        ButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonAddActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(ButtonAdd);
+        ButtonAdd.setBounds(190, 430, 250, 40);
 
         getContentPane().add(AdicionarPontos);
-        AdicionarPontos.setBounds(0, -40, 1000, 890);
+        AdicionarPontos.setBounds(0, -50, 900, 890);
         AdicionarPontos.setVisible(false);
 
         SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
         SuperiorMenu.setBorder(null);
         SuperiorMenu.setForeground(new java.awt.Color(255, 255, 255));
-        SuperiorMenu.setDebugGraphicsOptions(javax.swing.DebugGraphics.NONE_OPTION);
-        SuperiorMenu.setFont(new java.awt.Font("Tahoma", 0, 15)); // NOI18N
-        SuperiorMenu.setMinimumSize(new java.awt.Dimension(0, 15));
-        SuperiorMenu.setPreferredSize(new java.awt.Dimension(200, 50));
-        SuperiorMenu.setSelectionModel(null);
+        SuperiorMenu.setPreferredSize(new java.awt.Dimension(66, 45));
 
-        jMenu1.setBackground(new java.awt.Color(51, 51, 51));
-        jMenu1.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu1.setText("Ponto");
-        jMenu1.setOpaque(true);
+        jMenu5.setBackground(new java.awt.Color(51, 51, 51));
+        jMenu5.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu5.setText("Pontos");
+        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jMenu5MouseClicked(evt);
+            }
+        });
 
+        jMenuItem1.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItem1.setForeground(new java.awt.Color(255, 255, 255));
         jMenuItem1.setText("Adicionar Ponto");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu5.add(jMenuItem1);
 
+        jMenuItem2.setBackground(new java.awt.Color(51, 51, 51));
+        jMenuItem2.setForeground(new java.awt.Color(255, 255, 255));
         jMenuItem2.setText("Remover Ponto");
-        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem2ActionPerformed(evt);
-            }
-        });
-        jMenu1.add(jMenuItem2);
+        jMenu5.add(jMenuItem2);
 
-        SuperiorMenu.add(jMenu1);
+        SuperiorMenu.add(jMenu5);
 
-        jMenu2.setBackground(new java.awt.Color(51, 51, 51));
-        jMenu2.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu2.setText("Enlace");
-        jMenu2.setOpaque(true);
-
-        jMenuItem3.setText("Adicionar Enlace");
-        jMenu2.add(jMenuItem3);
-
-        jMenuItem4.setText("Remover Enlace");
-        jMenu2.add(jMenuItem4);
-
-        SuperiorMenu.add(jMenu2);
-
-        jMenu3.setBackground(new java.awt.Color(51, 51, 51));
-        jMenu3.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu3.setText("Erro");
-        jMenu3.setOpaque(true);
-
-        jMenuItem5.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, java.awt.event.InputEvent.SHIFT_MASK));
-        jMenuItem5.setText("Reportar Ponto");
-        jMenu3.add(jMenuItem5);
-
-        jMenuItem6.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_E, java.awt.event.InputEvent.SHIFT_MASK));
-        jMenuItem6.setText("Reportar Enlace");
-        jMenu3.add(jMenuItem6);
-
-        SuperiorMenu.add(jMenu3);
-
-        jMenu4.setBackground(new java.awt.Color(51, 51, 51));
-        jMenu4.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu4.setText("Caminho");
-        jMenu4.setOpaque(true);
-
-        jMenuItem7.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_M, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem7.setText("Realizar Caminho Minimo");
-        jMenu4.add(jMenuItem7);
-
-        SuperiorMenu.add(jMenu4);
+        jMenu6.setBackground(new java.awt.Color(51, 51, 51));
+        jMenu6.setForeground(new java.awt.Color(255, 255, 255));
+        jMenu6.setText("Enlaces");
+        SuperiorMenu.add(jMenu6);
 
         setJMenuBar(SuperiorMenu);
 
@@ -253,27 +226,39 @@ public class Principal extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponents2(){
-        setSize(800,800);
         universal_graph =  Map.getGraphics();
         //Map.setLocation(-100,0); // NOI18N
     }
     
+    private void initPopulation() throws Exception{
+        String query = "select * from cidades";
+
+        ResultSet rs = this.conn.buscar(query);
+        while (rs.next()) {
+          String nome_cidade = rs.getString("nome_cidade");
+          int cordenada_x = rs.getInt("cordenada_x");
+          int cordenada_y = rs.getInt("cordenada_y");
+          add_point(nome_cidade, cordenada_x, cordenada_y);
+          //names_citys_around.add(nome);
+        }
+        Map.repaint();
+        Map.paintComponents(universal_graph);
+    }    
     
-    
-    void reset_graph(){
+    private void reset_graph(){
         universal_graph = Map.getGraphics();
         Map.paint(Map.getGraphics());
     }
     
-    Graphics get_graph(){
+    private Graphics get_graph(){
         return Map.getGraphics();
     }
     
-    void set_click(){
+    private void set_click(){
         this.clicks +=1;
     }
     
-    private ArrayList<String> search_city(int x, int y){
+    private ArrayList<String> search_city(int x, int y) throws Exception{
         System.out.println(x + "," + y);
         ArrayList<String>  names_city = new ArrayList();
         double latitude = 5.48155495 + (y*-0.04885256);
@@ -289,6 +274,7 @@ public class Principal extends javax.swing.JFrame {
     }
     
     private void add_line_aresta(int x, int y){
+        //Função: Adicionar linha de aresta
         if(this.clicks == 1){
             this.x_old = x;
             this.y_old = y;
@@ -307,30 +293,16 @@ public class Principal extends javax.swing.JFrame {
     }
 
     
-    //1: comprimento
-    //2: y origem
-    //3: x destino
-    //4: y destino
-
-      
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        this.allow_add_points = true;
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void ButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCancelActionPerformed
         add_point(ComboCitys.getSelectedItem().toString(), this.x_now, this.y_now);
         AdicionarPontos.setVisible(false);
         SuperiorMenu.setVisible(true);
         PanelMap.setVisible(true);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_ButtonCancelActionPerformed
 
     private void ComboCitysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboCitysActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_ComboCitysActionPerformed
-
-    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
-
-    }//GEN-LAST:event_jMenuItem2ActionPerformed
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
@@ -345,13 +317,22 @@ public class Principal extends javax.swing.JFrame {
             this.x_now=evt.getX();
             this.y_now=evt.getY();
             this.clicks = 0;
-            ArrayList<String> names_city = search_city(this.x_now, this.y_now);
-            //Adicionar_Pontos_1 adc_pontos = ;
-            //adc_pontos.setVisible(true);
-            //this.setVisible(false);
+            int limite = 0;
+            ArrayList<String> names_city = new ArrayList();
+            try {
+                names_city = search_city(this.x_now, this.y_now);
+                //Adicionar_Pontos_1 adc_pontos = ;
+                //adc_pontos.setVisible(true);
+                //this.setVisible(false);
+            } catch (Exception ex) {
+                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            
+            if(names_city.size() > 10){limite = 10;}
+            else{limite = names_city.size();}
 
             ComboCitys.removeAllItems();
-            for (int i=0;i<names_city.size();i++){
+            for (int i=0;i<limite;i++){
                 ComboCitys.addItem(names_city.get(i));
             }
 
@@ -370,35 +351,32 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_MapMouseWheelMoved
 
+    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
+        
+    }//GEN-LAST:event_jMenu5MouseClicked
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        this.allow_add_points = true;
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void ButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAddActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonAddActionPerformed
+
+    private void ButtonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancelMouseClicked
+        AdicionarPontos.setVisible(false);
+        SuperiorMenu.setVisible(true);
+        PanelMap.setVisible(true);
+    }//GEN-LAST:event_ButtonCancelMouseClicked
+
     void add_point(String name_city, int x, int y){
-        if(name_city != ""){
-            int tam_img = 20;
-            javax.swing.JButton new_point = new javax.swing.JButton();
-            new_point.setBackground(Color.yellow);
-            new_point.setBounds(x-tam_img/2, y-tam_img/2, tam_img, tam_img);
-            new_point.setMinimumSize(new Dimension(50, 50));
-            new_point.setPreferredSize(new Dimension(50, 50));
-            new_point.setVisible(true);
-            new_point.setName(name_city);
-            new_point.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    System.out.println(new_point.getName());
-                    set_click();
-                    add_line_aresta(x, y);
-                }
-            });
-            Map.add(new_point);
-            Map.paintComponents(universal_graph);
-        
-        }
-        
-        
+        Point point = new Point(name_city, x, y);
     }
     
-    public ArrayList<String> viewTable(double latitude , double longitude) throws SQLException {
+    public ArrayList<String> viewTable(double latitude , double longitude) throws Exception {
     ArrayList<String> names_citys_around = new ArrayList();    
     
-    double compare = 3;
+    double compare = 1.5;
     double latitude_max = latitude + compare;
     double latitude_min = latitude - compare;
     double longitude_max = longitude + compare;
@@ -412,18 +390,14 @@ public class Principal extends javax.swing.JFrame {
     String query = "select * from municipios WHERE latitude BETWEEN " + latitude_min + " and " + latitude_max + "" + " and " +
             "longitude BETWEEN " + longitude_min + " and " + longitude_max + "";
     
-    try (java.sql.Statement stmt = this.conn.createStatement()) {
-      ResultSet rs = stmt.executeQuery(query);
-      while (rs.next()) {
-        String nome = rs.getString("nome");
-        names_citys_around.add(nome);
-      }
-    } catch (SQLException e) {
-        System.out.println(e);
+    ResultSet rs = this.conn.buscar(query);
+    while (rs.next()) {
+      String nome = rs.getString("nome");
+      names_citys_around.add(nome);
     }
     return names_citys_around;
   }
-    public static void main(String args[]) throws SQLException, ClassNotFoundException {
+    public static void main(String args[]) throws Exception {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -431,7 +405,7 @@ public class Principal extends javax.swing.JFrame {
          */
         try {
             for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Metal".equals(info.getName())) {
+                if ("Windows Classic".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
@@ -454,40 +428,87 @@ public class Principal extends javax.swing.JFrame {
         
         
         /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
                 try {
                     new Principal().setVisible(true);
-                } catch (ClassNotFoundException ex) {
+                    
+                } catch (ClassNotFoundException | SQLException ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (SQLException ex) {
+                } catch (Exception ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
         });
     }
+    
+    class Point{
+        static final long serialVersionUID = 1;
+        private int coordinates_x = 0;
+        private int coordinates_y = 0;
+        private String name = "";
+        private javax.swing.JPanel princ;
+        
+        Point(String name_city, int x, int y){
+            if(name_city != ""){
+                princ = new javax.swing.JPanel();
+                int tam_img = 20;
+                this.coordinates_x = x;
+                this.coordinates_y = y;
+                this.name = name_city;
+                princ.setLayout(null);
+                princ.setBackground(Color.BLUE);
+                //this.setPreferredSize(new Dimension(30, 30));
+                //this.setMinimumSize(new Dimension(30, 30));
+                princ.setBounds(x-tam_img/2, y-tam_img/2, tam_img, tam_img);
+                princ.setVisible(true);
+                princ.addMouseListener(new java.awt.event.MouseAdapter() {
+                    public void mouseClicked(java.awt.event.MouseEvent evt) {
+                        System.out.println(name);
+                        set_click();
+                        add_line_aresta(x, y);
+                        princ.setVisible(false);
+                        princ.setVisible(true);
+                    }
+                });
+            }
+            
+            Map.add(princ);
+            System.out.println("Added");
+            Map.paintComponents(universal_graph);
+        }
+        
+        
+        public int getX(){
+         return this.coordinates_x;
+        }
+        
+        public int getY(){
+         return this.coordinates_y;
+        }
+        
+        public String getName(){
+         return this.name;
+        }
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel AdicionarPontos;
+    private javax.swing.JButton ButtonAdd;
+    private javax.swing.JButton ButtonCancel;
     private javax.swing.JComboBox<String> ComboCitys;
     private javax.swing.JLabel Map;
     private javax.swing.JPanel PanelMap;
     private javax.swing.JMenuBar SuperiorMenu;
     private javax.swing.JLabel Title1;
-    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }
