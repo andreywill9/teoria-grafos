@@ -6,17 +6,17 @@
 package front;
 
 import Connection.ConnectionFactory;
+import model.*;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.geom.Line2D;
-import Connection.ServicoCidade;
-import Connection.ServicoConexoes;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.SwingUtilities;
@@ -25,30 +25,31 @@ import javax.swing.SwingUtilities;
  * @author 55119
  */
 public class Principal extends javax.swing.JFrame{
-    String myDriver = "com.mysql.cj.jdbc.Driver";
-    String myUrl = "jdbc:mysql://localhost:3306/MAPA?useUnicode=true&characterEncoding=utf-8";
-    int clicks = 0;
-    int x_old = 0;
-    int y_old=0;
-    int x_now = 0;
-    int y_now = 0;
+    ApplicationFactory app = new ApplicationFactory(); //Aplicação do grafo
+    ArrayList<Point> array_points = new ArrayList(); //Armazenando pontos adicionados no mapa
+    Color color_activated  = Color.BLUE; //Cor quando a aresta está ativada
+    Color color_deactivated  = Color.RED; //Cor quando a aresta está desativada
+    int clicks = 0; //Ajuda a adicionar a aresta, sendo o segundo click em um vértice, que vai adicionar a aresta
+    int x_old = 0; //Armazenando X do vertice clicado anteriormente
+    int y_old=0; //Armazenando Y do vertice clicado anteriormente
+    int x_now = 0; //Armazenando X do vertice clicado atualmente
+    int y_now = 0; //Armazenando Y do vertice clicado atualmente
     ConnectionFactory conn;
-    
-    boolean allow_add_points = false;
-    Graphics universal_graph;
-    ArrayList<Line2D.Float> lines = new ArrayList();
+    boolean allow_add_points = false; //permitir adicionar vértice
+    Graphics universal_graph; //grafico para desenhos das arestas e vértices
+    ArrayList<Line2D.Float> lines = new ArrayList(); 
     
     
     /**
      * Creates new form Principal
      */
     public Principal() throws Exception {
-        setSize(800,800);
+        
         conn = new ConnectionFactory();
-        ServicoCidade sc = new ServicoCidade(this.conn);
         initComponents();
         initComponents2();
-        initPopulation();
+        
+        Listar.doClick();
     }
     
     
@@ -63,6 +64,7 @@ public class Principal extends javax.swing.JFrame{
     private void initComponents() {
 
         PanelMap = new javax.swing.JPanel();
+        Listar = new javax.swing.JButton();
         Title1 = new javax.swing.JLabel();
         Map = new javax.swing.JLabel();
         AdicionarPontos = new javax.swing.JPanel();
@@ -89,6 +91,15 @@ public class Principal extends javax.swing.JFrame{
         PanelMap.setBackground(new java.awt.Color(51, 51, 51));
         PanelMap.setLayout(null);
 
+        Listar.setText("Listar conexões");
+        Listar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ListarMouseClicked(evt);
+            }
+        });
+        PanelMap.add(Listar);
+        Listar.setBounds(760, 10, 130, 25);
+
         Title1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
         Title1.setForeground(new java.awt.Color(255, 255, 255));
         Title1.setText("Mapa Interativo:");
@@ -96,7 +107,13 @@ public class Principal extends javax.swing.JFrame{
         Title1.setBounds(0, 10, 190, 19);
 
         Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
+        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                MapMouseMoved(evt);
+            }
+        });
         Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
             public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
                 MapMouseWheelMoved(evt);
@@ -226,39 +243,47 @@ public class Principal extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponents2(){
+        //Capturando grafico inicial para conseguir serem feitas as alterações a partir de um segundo grafico
         universal_graph =  Map.getGraphics();
-        //Map.setLocation(-100,0); // NOI18N
     }
     
-    private void initPopulation() throws Exception{
-        String query = "select * from cidades";
-
-        ResultSet rs = this.conn.buscar(query);
-        while (rs.next()) {
-          String nome_cidade = rs.getString("nome_cidade");
-          int cordenada_x = rs.getInt("cordenada_x");
-          int cordenada_y = rs.getInt("cordenada_y");
-          add_point(nome_cidade, cordenada_x, cordenada_y);
-          //names_citys_around.add(nome);
+    private void initVertices(){
+        //Adicionando os vertices ao grafico
+        List<Vertice> vertices = app.getTodasCidades();
+        for (int i=0; i<vertices.size(); i++) {
+          add_point(vertices.get(i));
         }
-        Map.repaint();
-        Map.paintComponents(universal_graph);
-    }    
+    }
+    
+    private void initConections(){
+        //Adicionando as arestas ao grafico
+        List<Aresta> conexoes = app.getTodasConexoes();
+        for (int i=0; i<conexoes.size(); i++) {
+            Vertice origem = conexoes.get(i).getOrigem();
+            Vertice destino = conexoes.get(i).getDestino();
+            add_line_aresta(origem.getCordenadaX(), origem.getCordenadaY(), destino.getCordenadaX(),destino.getCordenadaY());
+        }
+    }
+    
+    void add_point(Vertice vertice){
+        //Cria objeto point e adiciona na lista de pontos
+        Point point = new Point(vertice);
+        array_points.add(point);
+    }
     
     private void reset_graph(){
+        //Irá resetar o grafico, removendo arestas
         universal_graph = Map.getGraphics();
         Map.paint(Map.getGraphics());
     }
     
-    private Graphics get_graph(){
-        return Map.getGraphics();
-    }
-    
     private void set_click(){
+        //Adiciona um click, contabilizando os clicks em vértices
         this.clicks +=1;
     }
     
     private ArrayList<String> search_city(int x, int y) throws Exception{
+        //Realiza os cálculos de longitude e latitude e procura as cidades
         System.out.println(x + "," + y);
         ArrayList<String>  names_city = new ArrayList();
         double latitude = 5.48155495 + (y*-0.04885256);
@@ -274,15 +299,16 @@ public class Principal extends javax.swing.JFrame{
     }
     
     private void add_line_aresta(int x, int y){
-        //Função: Adicionar linha de aresta
+        //Adiciona linha de aresta a partir dos cliques
         if(this.clicks == 1){
+            System.out.println("a");
             this.x_old = x;
             this.y_old = y;
         }
 
         if(this.clicks == 2){
-            //((Graphics2D)universal_graph).setRenderingHint(RenderingHints.KEY_ANTIALIASING,  RenderingHints.VALUE_ANTIALIAS_ON);
-            ((Graphics2D)universal_graph).setStroke(new BasicStroke(4));
+            System.out.println("a2");
+            ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
 
 
             Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
@@ -291,10 +317,23 @@ public class Principal extends javax.swing.JFrame{
             this.clicks = 0;
         }
     }
+    
+    private void add_line_aresta(int x1, int y1, int x2, int y2){
+        //Adiciona linha de aresta a partir de coordenadas já conseguidas.
+        ((Graphics2D)universal_graph).setColor(color_activated);
+        ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
+        
+        System.out.println("Desenhando: " + x1 + ","+ y1+","+ x2 +","+ y2);
+        Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
+        this.lines.add(line);
+        ((Graphics2D)universal_graph).draw(line);
+        Map.paintComponents(universal_graph);
+    }
 
     
     private void ButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCancelActionPerformed
-        add_point(ComboCitys.getSelectedItem().toString(), this.x_now, this.y_now);
+        //Adiciona novo ponto ao grafico a partir da entrada do usuário
+        //add_point(0,ComboCitys.getSelectedItem().toString(), this.x_now, this.y_now);
         AdicionarPontos.setVisible(false);
         SuperiorMenu.setVisible(true);
         PanelMap.setVisible(true);
@@ -313,6 +352,7 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_MapKeyPressed
 
     private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
+        //Se permitida a inserção de ponto por clique, dará as opções de cidades para adição dos pontos
         if(this.allow_add_points){
             this.x_now=evt.getX();
             this.y_now=evt.getY();
@@ -341,10 +381,6 @@ public class Principal extends javax.swing.JFrame{
             PanelMap.setVisible(false);
 
         }
-
-        //add_point(adc_pontos.return_city(), x, y);
-
-        //search_city(this.Map.getGraphics(),evt);
     }//GEN-LAST:event_MapMouseClicked
 
     private void MapMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_MapMouseWheelMoved
@@ -356,6 +392,7 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_jMenu5MouseClicked
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        //Permitindo o clique para adição de novo ponto
         this.allow_add_points = true;
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
@@ -364,39 +401,50 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_ButtonAddActionPerformed
 
     private void ButtonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancelMouseClicked
+        //Cancelando operação de adição de novo ponto
         AdicionarPontos.setVisible(false);
         SuperiorMenu.setVisible(true);
         PanelMap.setVisible(true);
     }//GEN-LAST:event_ButtonCancelMouseClicked
 
-    void add_point(String name_city, int x, int y){
-        Point point = new Point(name_city, x, y);
-    }
+    private void ListarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ListarMouseClicked
+        //Inicializando e mostrando grafo.
+        initVertices();
+        initConections();
+        Listar.setVisible(false);
+    }//GEN-LAST:event_ListarMouseClicked
+
+    private void MapMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseMoved
+        // TODO add your handling code here:
+    }//GEN-LAST:event_MapMouseMoved
+
+    
     
     public ArrayList<String> viewTable(double latitude , double longitude) throws Exception {
-    ArrayList<String> names_citys_around = new ArrayList();    
+        //Após a identificação da latitude e longitude, recolhe as cidades mais próximas das quais foi clicado.
+        ArrayList<String> names_citys_around = new ArrayList();    
     
-    double compare = 1.5;
-    double latitude_max = latitude + compare;
-    double latitude_min = latitude - compare;
-    double longitude_max = longitude + compare;
-    double longitude_min = longitude - compare;
-    
-    
-    double diff_longitude_menor = 100000;
-    double diff_latitude_menor = 100000;
-    String nome_definitivo = "";
-    
-    String query = "select * from municipios WHERE latitude BETWEEN " + latitude_min + " and " + latitude_max + "" + " and " +
-            "longitude BETWEEN " + longitude_min + " and " + longitude_max + "";
-    
-    ResultSet rs = this.conn.buscar(query);
-    while (rs.next()) {
-      String nome = rs.getString("nome");
-      names_citys_around.add(nome);
+        double compare = 1.5;
+        double latitude_max = latitude + compare;
+        double latitude_min = latitude - compare;
+        double longitude_max = longitude + compare;
+        double longitude_min = longitude - compare;
+
+
+        double diff_longitude_menor = 100000;
+        double diff_latitude_menor = 100000;
+        String nome_definitivo = "";
+
+        String query = "select * from municipios WHERE latitude BETWEEN " + latitude_min + " and " + latitude_max + "" + " and " +
+                "longitude BETWEEN " + longitude_min + " and " + longitude_max + "";
+
+        ResultSet rs = this.conn.buscar(query);
+        while (rs.next()) {
+          String nome = rs.getString("nome");
+          names_citys_around.add(nome);
+        }
+        return names_citys_around;
     }
-    return names_citys_around;
-  }
     public static void main(String args[]) throws Exception {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -444,52 +492,112 @@ public class Principal extends javax.swing.JFrame{
     }
     
     class Point{
-        static final long serialVersionUID = 1;
+        //Classe de pontos, nos diz a respeito do vértice, mas armazenando suas propriedades para que possamos mudar ou excluir durante a vontade do usuário.
         private int coordinates_x = 0;
         private int coordinates_y = 0;
         private String name = "";
-        private javax.swing.JPanel princ;
+        private int id_cidade = 0;
+        private javax.swing.JPanel princ; //Painel que armazena o ponto e sua sigla
+        private javax.swing.JLabel princ_point; //Label que representa o pontp
         
-        Point(String name_city, int x, int y){
-            if(name_city != ""){
-                princ = new javax.swing.JPanel();
-                int tam_img = 20;
-                this.coordinates_x = x;
-                this.coordinates_y = y;
-                this.name = name_city;
-                princ.setLayout(null);
-                princ.setBackground(Color.BLUE);
-                //this.setPreferredSize(new Dimension(30, 30));
-                //this.setMinimumSize(new Dimension(30, 30));
-                princ.setBounds(x-tam_img/2, y-tam_img/2, tam_img, tam_img);
-                princ.setVisible(true);
-                princ.addMouseListener(new java.awt.event.MouseAdapter() {
-                    public void mouseClicked(java.awt.event.MouseEvent evt) {
-                        System.out.println(name);
-                        set_click();
-                        add_line_aresta(x, y);
-                        princ.setVisible(false);
-                        princ.setVisible(true);
-                    }
-                });
-            }
+        Point(Vertice vertice){
+            princ = new javax.swing.JPanel();
+            princ_point = new javax.swing.JLabel();
             
+            int tam_img = 20; //Tamanho da imagem referentes ao ponto
+            
+            //Armazenando informações principais do vertice
+            this.coordinates_x = vertice.getCordenadaX();
+            this.coordinates_y = vertice.getCordenadaY();
+            this.name = vertice.getNomeCidade();
+            this.id_cidade = vertice.getIdCidade();
+            
+            //Calculando as coordenadas do X, Y do Painel
+            int x_locate = (coordinates_x-tam_img); 
+            int y_locate = (coordinates_y-tam_img/2)-tam_img;
+            
+            //Configurando JLabel, que mostra a sigla do ponto
+            javax.swing.JLabel label_name = new javax.swing.JLabel();
+            label_name.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
+            label_name.setForeground(new java.awt.Color(255, 255, 255));
+            label_name.setText(vertice.getSigla());
+            label_name.setBounds(10, 0, 190, 19);
+            label_name.setVisible(true);
+            princ.add(label_name);
+            
+            //Configurando Ponto em si
+            princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point.png")));
+            princ_point.setLayout(null);
+            princ_point.setBounds(10, 20, tam_img, tam_img);
+            princ_point.setVisible(true);
+            
+            //Configurando Painel principal
+            princ.setBounds(x_locate, y_locate, tam_img*2, tam_img*2);
+            princ.setVisible(true);
+            princ.setOpaque(false);
+            princ.setLayout(null);
+            
+            princ.add(princ_point);
+            
+            
+            //Quando o mouse passa por cima do ponto
+            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point_mouseon.png")));
+                    princ_point.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+                }
+            });
+            
+            //Quando o mouse sai de cima do ponto
+            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point.png")));
+                }
+            });
+            
+            //Quando o mouse é clicado
+            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    System.out.println(name);
+                    set_click();
+                    add_line_aresta(coordinates_x, coordinates_y);
+                }
+            });
+            
+            //Quando o mouse é pressionado (clicando ou segurando)
+            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mousePressed(java.awt.event.MouseEvent evt) {
+                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mouse_clicking.png")));
+                }
+            });
+            
+            //Quando o mouse para de ser pressionado
+            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseReleased(java.awt.event.MouseEvent evt) {
+                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point.png")));
+                }
+            });
+            
+            //Adicionando o componentes e renovando grafico
             Map.add(princ);
-            System.out.println("Added");
             Map.paintComponents(universal_graph);
         }
-        
+       
         
         public int getX(){
-         return this.coordinates_x;
+            return this.coordinates_x;
         }
         
         public int getY(){
-         return this.coordinates_y;
+            return this.coordinates_y;
         }
         
         public String getName(){
-         return this.name;
+            return this.name;
+        }
+        
+        public int getId(){
+            return this.id_cidade;
         }
         
     }
@@ -499,6 +607,7 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JButton ButtonAdd;
     private javax.swing.JButton ButtonCancel;
     private javax.swing.JComboBox<String> ComboCitys;
+    private javax.swing.JButton Listar;
     private javax.swing.JLabel Map;
     private javax.swing.JPanel PanelMap;
     private javax.swing.JMenuBar SuperiorMenu;
