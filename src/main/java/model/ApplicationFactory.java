@@ -8,6 +8,7 @@ import model.bellman.ford.MetricaCalculo;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ApplicationFactory {
 
@@ -61,5 +62,20 @@ public class ApplicationFactory {
     Aresta novaConexao = Aresta.instanciarNova(cidade1, cidade2, distancia, custo);
     svcConexoes.inserir(novaConexao, todasConexoes);
     todasConexoes.add(novaConexao);
+  }
+
+  public void excluirCidade(Vertice cidade) throws Exception {
+    List<Aresta> listaArestas = getTodasConexoes().stream()
+        .filter(aresta -> aresta.getOrigem().equals(cidade) || aresta.getDestino().equals(cidade))
+        .collect(Collectors.toList());
+    svcConexoes.excluirConexoes(listaArestas);
+    svcCidade.excluirCidade(cidade);
+    getTodasConexoes().removeAll(listaArestas);
+    getTodasCidades().remove(cidade);
+  }
+
+  public void excluirConexao(Aresta aresta) throws Exception {
+    svcConexoes.excluirConexao(aresta);
+    getTodasConexoes().remove(aresta);
   }
 }
