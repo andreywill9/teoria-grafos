@@ -74,8 +74,16 @@ public class ApplicationFactory {
     getTodasCidades().remove(cidade);
   }
 
-  public void excluirConexao(Aresta aresta) throws Exception {
-    svcConexoes.excluirConexao(aresta);
-    getTodasConexoes().remove(aresta);
+  public void excluirConexao(Aresta conexao) throws Exception {
+    svcConexoes.excluirConexao(conexao);
+    getTodasConexoes().remove(conexao);
+  }
+
+  public void alterarStatusCidade(Vertice cidade) throws Exception {
+    svcCidade.alterarStatus(cidade, !cidade.getAtivo());
+  }
+  
+  public void alterarStatusConexao(Aresta conexao) throws Exception {
+    svcConexoes.alterarStatus(conexao, !conexao.isAtiva());
   }
 }
