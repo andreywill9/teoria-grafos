@@ -12,6 +12,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Toolkit;
 import java.awt.geom.Line2D;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -19,9 +20,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Box;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import model.bellman.ford.MetricaCalculo;
+import model.bellman.ford.ResultCaminho;
 /**
  *
  * @author 55119
@@ -31,15 +34,24 @@ public class Principal extends javax.swing.JFrame{
     ArrayList<Point> array_points = new ArrayList(); //Armazenando pontos adicionados no mapa
     Color color_activated  = Color.BLUE; //Cor quando a aresta está ativada
     Color color_deactivated  = Color.RED; //Cor quando a aresta está desativada
+    MetricaCalculo metrica = MetricaCalculo.CUSTO;
     int clicks = 0; //Ajuda a adicionar a aresta, sendo o segundo click em um vértice, que vai adicionar a aresta
-    int x_old = 0; //Armazenando X do vertice clicado anteriormente
-    int y_old=0; //Armazenando Y do vertice clicado anteriormente
-    int x_now = 0; //Armazenando X do vertice clicado atualmente
-    int y_now = 0; //Armazenando Y do vertice clicado atualmente
+    Vertice vertice_old = null;
+    Vertice vertice_now = null;
+    int x_now = 0;
+    int y_now = 0;
     ConnectionFactory conn;
     boolean allow_add_points = false; //permitir adicionar vértice
+    boolean allow_remove_points = false;
+    boolean allow_add_conexion = false;
+    boolean allow_remove_conexion = false;
+    boolean allow_do_way_minimum = false;
+    boolean allow_report_erro_point = false;
+    boolean allow_report_erro_enlace = false;
     Graphics universal_graph; //grafico para desenhos das arestas e vértices
-    ArrayList<Line2D.Float> lines = new ArrayList(); 
+    ArrayList<Line2D.Float> lines = new ArrayList();
+    
+    List<Aresta> conexoes = null;
     
     
     /**
@@ -66,29 +78,54 @@ public class Principal extends javax.swing.JFrame{
     private void initComponents() {
 
         minimizar = new javax.swing.JLabel();
-        AdicionarPontos = new javax.swing.JPanel();
-        jLabel2 = new javax.swing.JLabel();
-        ComboCitys = new javax.swing.JComboBox<>();
-        ButtonCancel = new javax.swing.JButton();
-        jLabel3 = new javax.swing.JLabel();
-        ButtonAdd = new javax.swing.JButton();
-        SiglaAdd = new javax.swing.JFormattedTextField();
+        AdicionarEnlaces = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        ButtonAdd1 = new javax.swing.JButton();
+        ButtonCancel1 = new javax.swing.JButton();
+        Hops = new javax.swing.JFormattedTextField();
+        HopsLabel = new javax.swing.JLabel();
+        CidadeCity1 = new javax.swing.JLabel();
+        CidadeCity2 = new javax.swing.JLabel();
+        SiglaCity2 = new javax.swing.JLabel();
+        Distancia = new javax.swing.JFormattedTextField();
+        Custo = new javax.swing.JFormattedTextField();
+        SiglaCity1 = new javax.swing.JLabel();
+        DistanciaLabel = new javax.swing.JLabel();
+        CuatoLabel = new javax.swing.JLabel();
         PanelMap = new javax.swing.JPanel();
         Listar = new javax.swing.JButton();
         Title1 = new javax.swing.JLabel();
         Map = new javax.swing.JLabel();
+        AdicionarPontos = new javax.swing.JPanel();
+        ComboCitys = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        ButtonAdd = new javax.swing.JButton();
+        ButtonCancel = new javax.swing.JButton();
+        SiglaAdd = new javax.swing.JFormattedTextField();
+        jLabel2 = new javax.swing.JLabel();
         SuperiorMenu = new javax.swing.JMenuBar();
-        jMenu5 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
-        jMenu6 = new javax.swing.JMenu();
+        PontosMenu = new javax.swing.JMenu();
+        AddPontos = new javax.swing.JMenuItem();
+        RemovePontos = new javax.swing.JMenuItem();
+        EnlacesMenu = new javax.swing.JMenu();
+        AddEnlaces = new javax.swing.JMenuItem();
+        RemoveEnlaces = new javax.swing.JMenuItem();
+        CaminhoMinimo = new javax.swing.JMenu();
+        AplicarDistancia = new javax.swing.JMenuItem();
+        AplicarCusto = new javax.swing.JMenuItem();
+        AplicarHops = new javax.swing.JMenuItem();
+        ReportErro = new javax.swing.JMenu();
+        ErroPonto = new javax.swing.JMenuItem();
+        ErroEnlace = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algoritmo");
         setBackground(new java.awt.Color(127, 127, 127));
-        setMinimumSize(new java.awt.Dimension(900, 934));
-        setPreferredSize(new java.awt.Dimension(900, 934));
+        setMinimumSize(new java.awt.Dimension(900, 920));
+        setPreferredSize(new java.awt.Dimension(900, 920));
         setResizable(false);
+        setSize(new java.awt.Dimension(900, 920));
         getContentPane().setLayout(null);
 
         minimizar.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Documents\\NetBeansProjects\\Estrutura_De_Dados_2\\Liquid\\icones\\minimizar.png")); // NOI18N
@@ -102,97 +139,165 @@ public class Principal extends javax.swing.JFrame{
         getContentPane().add(minimizar);
         minimizar.setBounds(540, 10, 20, 20);
 
-        AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
-        AdicionarPontos.setEnabled(false);
-        AdicionarPontos.setMinimumSize(new java.awt.Dimension(900, 934));
-        AdicionarPontos.setPreferredSize(new java.awt.Dimension(900, 934));
-        AdicionarPontos.setLayout(null);
+        AdicionarEnlaces.setBackground(new java.awt.Color(51, 51, 51));
+        AdicionarEnlaces.setEnabled(false);
+        AdicionarEnlaces.setMinimumSize(new java.awt.Dimension(900, 934));
+        AdicionarEnlaces.setLayout(null);
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Sigla");
-        AdicionarPontos.add(jLabel2);
-        jLabel2.setBounds(190, 330, 60, 22);
+        jPanel2.setBackground(new java.awt.Color(49, 49, 49));
+        jPanel2.setLayout(null);
 
-        ComboCitys.setBackground(new java.awt.Color(51, 51, 51));
-        ComboCitys.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
-        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboCitysActionPerformed(evt);
-            }
-        });
-        AdicionarPontos.add(ComboCitys);
-        ComboCitys.setBounds(190, 280, 510, 40);
-
-        ButtonCancel.setBackground(new java.awt.Color(255, 255, 255));
-        ButtonCancel.setText("Cancelar");
-        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+        ButtonAdd1.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonAdd1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonAdd1.setText("Adicionar");
+        ButtonAdd1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ButtonCancelMouseClicked(evt);
+                ButtonAdd1MouseClicked(evt);
             }
         });
-        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+        ButtonAdd1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonCancelActionPerformed(evt);
+                ButtonAdd1ActionPerformed(evt);
             }
         });
-        AdicionarPontos.add(ButtonCancel);
-        ButtonCancel.setBounds(450, 430, 250, 40);
+        jPanel2.add(ButtonAdd1);
+        ButtonAdd1.setBounds(80, 380, 250, 40);
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Cidade");
-        AdicionarPontos.add(jLabel3);
-        jLabel3.setBounds(190, 250, 60, 22);
-
-        ButtonAdd.setBackground(new java.awt.Color(255, 255, 255));
-        ButtonAdd.setText("Adicionar");
-        ButtonAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+        ButtonCancel1.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonCancel1.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonCancel1.setText("Cancelar");
+        ButtonCancel1.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ButtonAddMouseClicked(evt);
+                ButtonCancel1MouseClicked(evt);
             }
         });
-        ButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+        ButtonCancel1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonAddActionPerformed(evt);
+                ButtonCancel1ActionPerformed(evt);
             }
         });
-        AdicionarPontos.add(ButtonAdd);
-        ButtonAdd.setBounds(190, 430, 250, 40);
+        jPanel2.add(ButtonCancel1);
+        ButtonCancel1.setBounds(340, 380, 250, 40);
 
-        try {
-            SiglaAdd.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("UUU")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        AdicionarPontos.add(SiglaAdd);
-        SiglaAdd.setBounds(190, 370, 510, 40);
+        Hops.setEditable(false);
+        Hops.setBackground(new java.awt.Color(204, 204, 204));
+        Hops.setForeground(new java.awt.Color(0, 0, 0));
+        Hops.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat(""))));
+        Hops.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        Hops.setText("1");
+        Hops.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jPanel2.add(Hops);
+        Hops.setBounds(480, 220, 170, 40);
 
-        getContentPane().add(AdicionarPontos);
-        AdicionarPontos.setBounds(0, -50, 900, 980);
-        AdicionarPontos.setVisible(false);
+        HopsLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        HopsLabel.setForeground(new java.awt.Color(255, 255, 255));
+        HopsLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        HopsLabel.setText("Hops");
+        jPanel2.add(HopsLabel);
+        HopsLabel.setBounds(480, 190, 170, 22);
+
+        CidadeCity1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        CidadeCity1.setForeground(new java.awt.Color(255, 255, 255));
+        CidadeCity1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        CidadeCity1.setText("Cidade");
+        jPanel2.add(CidadeCity1);
+        CidadeCity1.setBounds(20, 40, 300, 22);
+
+        CidadeCity2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        CidadeCity2.setForeground(new java.awt.Color(255, 255, 255));
+        CidadeCity2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        CidadeCity2.setText("Cidade");
+        jPanel2.add(CidadeCity2);
+        CidadeCity2.setBounds(350, 40, 300, 22);
+
+        SiglaCity2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        SiglaCity2.setForeground(new java.awt.Color(255, 255, 255));
+        SiglaCity2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        SiglaCity2.setText("Sigla");
+        jPanel2.add(SiglaCity2);
+        SiglaCity2.setBounds(350, 80, 300, 22);
+
+        Distancia.setBackground(new java.awt.Color(204, 204, 204));
+        Distancia.setForeground(new java.awt.Color(0, 0, 0));
+        Distancia.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat(""))));
+        Distancia.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        Distancia.setText("");
+        Distancia.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        Distancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                DistanciaActionPerformed(evt);
+            }
+        });
+        jPanel2.add(Distancia);
+        Distancia.setBounds(80, 220, 170, 40);
+
+        Custo.setBackground(new java.awt.Color(204, 204, 204));
+        Custo.setForeground(new java.awt.Color(0, 0, 0));
+        Custo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat(""))));
+        Custo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        Custo.setText("");
+        Custo.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jPanel2.add(Custo);
+        Custo.setBounds(280, 220, 170, 40);
+
+        SiglaCity1.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        SiglaCity1.setForeground(new java.awt.Color(255, 255, 255));
+        SiglaCity1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        SiglaCity1.setText("Sigla");
+        jPanel2.add(SiglaCity1);
+        SiglaCity1.setBounds(20, 80, 300, 22);
+
+        DistanciaLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        DistanciaLabel.setForeground(new java.awt.Color(255, 255, 255));
+        DistanciaLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        DistanciaLabel.setText("Distância (KM)");
+        jPanel2.add(DistanciaLabel);
+        DistanciaLabel.setBounds(80, 190, 170, 22);
+
+        CuatoLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        CuatoLabel.setForeground(new java.awt.Color(255, 255, 255));
+        CuatoLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        CuatoLabel.setText("Custo");
+        jPanel2.add(CuatoLabel);
+        CuatoLabel.setBounds(280, 190, 170, 22);
+
+        AdicionarEnlaces.add(jPanel2);
+        jPanel2.setBounds(90, 100, 720, 640);
+
+        getContentPane().add(AdicionarEnlaces);
+        AdicionarEnlaces.setBounds(0, -50, 900, 980);
+        AdicionarEnlaces.setVisible(false);
 
         PanelMap.setBackground(new java.awt.Color(51, 51, 51));
         PanelMap.setLayout(null);
 
+        Listar.setBackground(new java.awt.Color(51, 51, 51));
+        Listar.setForeground(new java.awt.Color(255, 255, 255));
         Listar.setText("Listar conexões");
+        Listar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Listar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         Listar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 ListarMouseClicked(evt);
             }
         });
+        Listar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ListarActionPerformed(evt);
+            }
+        });
         PanelMap.add(Listar);
-        Listar.setBounds(760, 10, 130, 25);
+        Listar.setBounds(760, 10, 130, 20);
 
-        Title1.setFont(new java.awt.Font("Tahoma", 1, 15)); // NOI18N
+        Title1.setFont(new java.awt.Font("Dialog", 0, 15)); // NOI18N
         Title1.setForeground(new java.awt.Color(255, 255, 255));
         Title1.setText("Mapa Interativo:");
         PanelMap.add(Title1);
-        Title1.setBounds(0, 10, 190, 19);
+        Title1.setBounds(10, 10, 190, 20);
 
         Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
         Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        Map.setEnabled(false);
         Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
             public void mouseMoved(java.awt.event.MouseEvent evt) {
@@ -220,43 +325,287 @@ public class Principal extends javax.swing.JFrame{
         getContentPane().add(PanelMap);
         PanelMap.setBounds(0, 0, 900, 860);
 
+        AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
+        AdicionarPontos.setEnabled(false);
+        AdicionarPontos.setMinimumSize(new java.awt.Dimension(900, 934));
+        AdicionarPontos.setPreferredSize(new java.awt.Dimension(900, 934));
+        AdicionarPontos.setLayout(null);
+
+        ComboCitys.setBackground(new java.awt.Color(204, 204, 204));
+        ComboCitys.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
+        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboCitysActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(ComboCitys);
+        ComboCitys.setBounds(200, 380, 510, 40);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Cidade");
+        AdicionarPontos.add(jLabel3);
+        jLabel3.setBounds(200, 350, 60, 22);
+
+        jPanel1.setBackground(new java.awt.Color(49, 49, 49));
+        jPanel1.setLayout(null);
+
+        ButtonAdd.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonAdd.setText("Adicionar");
+        ButtonAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonAddMouseClicked(evt);
+            }
+        });
+        ButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonAddActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ButtonAdd);
+        ButtonAdd.setBounds(80, 380, 250, 40);
+
+        ButtonCancel.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonCancel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonCancel.setText("Cancelar");
+        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonCancelMouseClicked(evt);
+            }
+        });
+        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonCancelActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ButtonCancel);
+        ButtonCancel.setBounds(340, 380, 250, 40);
+
+        SiglaAdd.setBackground(new java.awt.Color(204, 204, 204));
+        try {
+            SiglaAdd.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("UUU")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        SiglaAdd.setText("");
+        SiglaAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jPanel1.add(SiglaAdd);
+        SiglaAdd.setBounds(80, 230, 510, 40);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Sigla");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(80, 200, 60, 22);
+
+        AdicionarPontos.add(jPanel1);
+        jPanel1.setBounds(120, 280, 680, 480);
+
+        getContentPane().add(AdicionarPontos);
+        AdicionarPontos.setBounds(0, -50, 900, 980);
+        AdicionarPontos.setVisible(false);
+
         SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
         SuperiorMenu.setBorder(null);
         SuperiorMenu.setForeground(new java.awt.Color(255, 255, 255));
-        SuperiorMenu.setPreferredSize(new java.awt.Dimension(66, 45));
+        SuperiorMenu.setPreferredSize(new java.awt.Dimension(66, 30));
 
-        jMenu5.setBackground(new java.awt.Color(51, 51, 51));
-        jMenu5.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu5.setText("Pontos");
-        jMenu5.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
-        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
+        PontosMenu.setBackground(new java.awt.Color(51, 51, 51));
+        PontosMenu.setForeground(new java.awt.Color(255, 255, 255));
+        PontosMenu.setText("Pontos");
+        PontosMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        PontosMenu.setEnabled(false);
+        PontosMenu.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        PontosMenu.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
+        PontosMenu.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu5MouseClicked(evt);
+                PontosMenuMouseClicked(evt);
             }
         });
 
-        jMenuItem1.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem1.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem1.setText("Adicionar Ponto");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        AddPontos.setBackground(new java.awt.Color(51, 51, 51));
+        AddPontos.setForeground(new java.awt.Color(255, 255, 255));
+        AddPontos.setText("Habilitar adição de pontos");
+        AddPontos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AddPontos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                AddPontosActionPerformed(evt);
             }
         });
-        jMenu5.add(jMenuItem1);
+        PontosMenu.add(AddPontos);
 
-        jMenuItem2.setBackground(new java.awt.Color(51, 51, 51));
-        jMenuItem2.setForeground(new java.awt.Color(255, 255, 255));
-        jMenuItem2.setText("Remover Ponto");
-        jMenu5.add(jMenuItem2);
+        RemovePontos.setBackground(new java.awt.Color(51, 51, 51));
+        RemovePontos.setForeground(new java.awt.Color(255, 255, 255));
+        RemovePontos.setText("Habilitar remoção de pontos");
+        RemovePontos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        RemovePontos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                RemovePontosMouseClicked(evt);
+            }
+        });
+        RemovePontos.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemovePontosActionPerformed(evt);
+            }
+        });
+        PontosMenu.add(RemovePontos);
 
-        SuperiorMenu.add(jMenu5);
+        SuperiorMenu.add(PontosMenu);
 
-        jMenu6.setBackground(new java.awt.Color(51, 51, 51));
-        jMenu6.setForeground(new java.awt.Color(255, 255, 255));
-        jMenu6.setText("Enlaces");
-        jMenu6.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
-        SuperiorMenu.add(jMenu6);
+        EnlacesMenu.setBackground(new java.awt.Color(51, 51, 51));
+        EnlacesMenu.setForeground(new java.awt.Color(255, 255, 255));
+        EnlacesMenu.setText("Enlaces");
+        EnlacesMenu.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        EnlacesMenu.setEnabled(false);
+        EnlacesMenu.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        EnlacesMenu.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+
+        AddEnlaces.setBackground(new java.awt.Color(51, 51, 51));
+        AddEnlaces.setForeground(new java.awt.Color(255, 255, 255));
+        AddEnlaces.setText("Habilitar adição de enlaces");
+        AddEnlaces.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AddEnlaces.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AddEnlacesActionPerformed(evt);
+            }
+        });
+        EnlacesMenu.add(AddEnlaces);
+
+        RemoveEnlaces.setBackground(new java.awt.Color(51, 51, 51));
+        RemoveEnlaces.setForeground(new java.awt.Color(255, 255, 255));
+        RemoveEnlaces.setText("Habilitar remoção de enlaces");
+        RemoveEnlaces.setActionCommand("Habilitar remoção de enlaces");
+        RemoveEnlaces.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        RemoveEnlaces.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                RemoveEnlacesActionPerformed(evt);
+            }
+        });
+        EnlacesMenu.add(RemoveEnlaces);
+
+        SuperiorMenu.add(EnlacesMenu);
+
+        CaminhoMinimo.setBackground(new java.awt.Color(51, 51, 51));
+        CaminhoMinimo.setForeground(new java.awt.Color(255, 255, 255));
+        CaminhoMinimo.setText("Caminho Mínimo");
+        CaminhoMinimo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        CaminhoMinimo.setEnabled(false);
+        CaminhoMinimo.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        CaminhoMinimo.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        CaminhoMinimo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                CaminhoMinimoMouseClicked(evt);
+            }
+        });
+        CaminhoMinimo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                CaminhoMinimoActionPerformed(evt);
+            }
+        });
+
+        AplicarDistancia.setBackground(new java.awt.Color(51, 51, 51));
+        AplicarDistancia.setForeground(new java.awt.Color(255, 255, 255));
+        AplicarDistancia.setText("Percorrer caminho mínimo com DISTANCIA");
+        AplicarDistancia.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AplicarDistancia.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AplicarDistanciaMouseClicked(evt);
+            }
+        });
+        AplicarDistancia.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AplicarDistanciaActionPerformed(evt);
+            }
+        });
+        CaminhoMinimo.add(AplicarDistancia);
+
+        AplicarCusto.setBackground(new java.awt.Color(51, 51, 51));
+        AplicarCusto.setForeground(new java.awt.Color(255, 255, 255));
+        AplicarCusto.setText("Percorrer caminho mínimo com CUSTO");
+        AplicarCusto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AplicarCusto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AplicarCustoMouseClicked(evt);
+            }
+        });
+        AplicarCusto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AplicarCustoActionPerformed(evt);
+            }
+        });
+        CaminhoMinimo.add(AplicarCusto);
+
+        AplicarHops.setBackground(new java.awt.Color(51, 51, 51));
+        AplicarHops.setForeground(new java.awt.Color(255, 255, 255));
+        AplicarHops.setText("Percorrer caminho mínimo com HOPS");
+        AplicarHops.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AplicarHops.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AplicarHopsMouseClicked(evt);
+            }
+        });
+        AplicarHops.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AplicarHopsActionPerformed(evt);
+            }
+        });
+        CaminhoMinimo.add(AplicarHops);
+
+        SuperiorMenu.add(CaminhoMinimo);
+
+        ReportErro.setBackground(new java.awt.Color(51, 51, 51));
+        ReportErro.setForeground(new java.awt.Color(255, 255, 255));
+        ReportErro.setText("Erro");
+        ReportErro.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ReportErro.setEnabled(false);
+        ReportErro.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        ReportErro.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
+        ReportErro.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ReportErroMouseClicked(evt);
+            }
+        });
+        ReportErro.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ReportErroActionPerformed(evt);
+            }
+        });
+
+        ErroPonto.setBackground(new java.awt.Color(51, 51, 51));
+        ErroPonto.setForeground(new java.awt.Color(255, 255, 255));
+        ErroPonto.setText("Reportar erro/ajuste em ponto");
+        ErroPonto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ErroPonto.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ErroPontoMouseClicked(evt);
+            }
+        });
+        ErroPonto.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ErroPontoActionPerformed(evt);
+            }
+        });
+        ReportErro.add(ErroPonto);
+
+        ErroEnlace.setBackground(new java.awt.Color(51, 51, 51));
+        ErroEnlace.setForeground(new java.awt.Color(255, 255, 255));
+        ErroEnlace.setText("Reportar erro/ajuste em enlace");
+        ErroEnlace.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ErroEnlace.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ErroEnlaceMouseClicked(evt);
+            }
+        });
+        ErroEnlace.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ErroEnlaceActionPerformed(evt);
+            }
+        });
+        ReportErro.add(ErroEnlace);
+
+        SuperiorMenu.add(ReportErro);
 
         setJMenuBar(SuperiorMenu);
 
@@ -264,13 +613,20 @@ public class Principal extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponents2(){
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width/2-this.getSize().width/2,dim.height/2-this.getSize().height/2);
         //Capturando grafico inicial para conseguir serem feitas as alterações a partir de um segundo grafico
         universal_graph =  Map.getGraphics();
     }
     
     private void initVertices(){
         //Adicionando os vertices ao grafico
-        System.out.println("Removendo");
+        try {
+            //Inicializando e mostrando grafo.
+            this.app.buscarCidades();
+        } catch (Exception ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         List<Vertice> vertices = app.getTodasCidades();
         for (int i=0; i<vertices.size(); i++) {
@@ -279,13 +635,12 @@ public class Principal extends javax.swing.JFrame{
     }
     
     private void initConections(){
-        //Adicionando as arestas ao grafico
-        
-        List<Aresta> conexoes = app.getTodasConexoes();
-        for (int i=0; i<conexoes.size(); i++) {
-            Vertice origem = conexoes.get(i).getOrigem();
-            Vertice destino = conexoes.get(i).getDestino();
-            add_line_aresta(origem.getCordenadaX(), origem.getCordenadaY(), destino.getCordenadaX(),destino.getCordenadaY());
+        atualizarConexoes();
+        for (int i=0; i<this.conexoes.size(); i++) {
+            Vertice origem = this.conexoes.get(i).getOrigem();
+            Vertice destino = this.conexoes.get(i).getDestino();
+            boolean status = this.conexoes.get(i).getArestaDisponivel();
+            add_line_aresta(origem.getCordenadaX(), origem.getCordenadaY(), destino.getCordenadaX(),destino.getCordenadaY(), status);
         }
     }
     
@@ -322,27 +677,42 @@ public class Principal extends javax.swing.JFrame{
         return names_city;
     }
     
-    private void add_line_aresta(int x, int y){
+    private void add_line_aresta(){
         //Adiciona linha de aresta a partir dos cliques
-        if(this.clicks == 1){
-            this.x_old = x;
-            this.y_old = y;
-        }
 
         if(this.clicks == 2){
-            ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
+            this.PanelMap.setVisible(false);
+            this.SuperiorMenu.setVisible(false);
+            this.AdicionarEnlaces.setVisible(true);
 
+            this.CidadeCity1.setText(this.vertice_old.getNomeCidade());
+            this.CidadeCity2.setText(this.vertice_now.getNomeCidade());
 
-            Line2D.Float line = new Line2D.Float(this.x_old, this.y_old, x, y);
-            this.lines.add(line);
-            ((Graphics2D)universal_graph).draw(line);
-            this.clicks = 0;
+            this.SiglaCity1.setText(this.vertice_old.getSigla());
+            this.SiglaCity2.setText(this.vertice_now.getSigla());
+            
+            
+        }
+    }
+
+    
+    private void configClicks(Vertice vertice){
+        if(this.clicks == 1){
+            this.vertice_old = vertice;
+        }
+        if(this.clicks == 2){
+            this.vertice_now = vertice;
         }
     }
     
-    private void add_line_aresta(int x1, int y1, int x2, int y2){
+    private void add_line_aresta(int x1, int y1, int x2, int y2, boolean status){
         //Adiciona linha de aresta a partir de coordenadas já conseguidas.
-        ((Graphics2D)universal_graph).setColor(color_activated);
+        if(status){
+            ((Graphics2D)universal_graph).setColor(color_activated);
+        }else{
+            ((Graphics2D)universal_graph).setColor(color_deactivated);
+        }
+        
         ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
         
         Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
@@ -358,6 +728,8 @@ public class Principal extends javax.swing.JFrame{
         AdicionarPontos.setVisible(false);
         SuperiorMenu.setVisible(true);
         PanelMap.setVisible(true);
+        reset_map();
+        
     }//GEN-LAST:event_ButtonCancelActionPerformed
 
     private void ComboCitysActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ComboCitysActionPerformed
@@ -371,7 +743,7 @@ public class Principal extends javax.swing.JFrame{
     private void MapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseClicked
         //Se permitida a inserção de ponto por clique, dará as opções de cidades para adição dos pontos
         if(this.allow_add_points){
-            this.x_now=evt.getX();
+            this.x_now =evt.getX();
             this.y_now=evt.getY();
             this.clicks = 0;
             int limite = 0;
@@ -396,25 +768,59 @@ public class Principal extends javax.swing.JFrame{
             AdicionarPontos.setVisible(true);
             SuperiorMenu.setVisible(false);
             PanelMap.setVisible(false);
+            
+            reset_map();
 
         }
+        
     }//GEN-LAST:event_MapMouseClicked
 
     private void MapMouseWheelMoved(java.awt.event.MouseWheelEvent evt) {//GEN-FIRST:event_MapMouseWheelMoved
         // TODO add your handling code here:
     }//GEN-LAST:event_MapMouseWheelMoved
 
-    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
+    private void PontosMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_PontosMenuMouseClicked
         
-    }//GEN-LAST:event_jMenu5MouseClicked
+    }//GEN-LAST:event_PontosMenuMouseClicked
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void AddPontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddPontosActionPerformed
         //Permitindo o clique para adição de novo ponto
-        this.allow_add_points = true;
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+        if(!this.allow_add_points){
+            this.allow_add_points = true;
+            AddPontos.setText("Desabilitar adição de pontos");
+            
+            EnlacesMenu.setEnabled(false);
+            ReportErro.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            
+            RemovePontos.setEnabled(false);
+        }else{
+            this.allow_add_points = false;
+            AddPontos.setText("Habilitar adição de pontos");
+            
+            EnlacesMenu.setEnabled(true);
+            ReportErro.setEnabled(true);
+            CaminhoMinimo.setEnabled(true);
+            
+            RemovePontos.setEnabled(true);
+        }
+    }//GEN-LAST:event_AddPontosActionPerformed
 
     private void ButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAddActionPerformed
-        // TODO add your handling code here:
+        this.Map.repaint();
+        this.Map.removeAll();
+        
+        try {
+            this.app.cadastrarCidade(ComboCitys.getSelectedItem().toString(), SiglaAdd.getText(), this.x_now, this.y_now);
+        } catch (Exception ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        AdicionarPontos.setVisible(false);
+        SuperiorMenu.setVisible(true);
+        PanelMap.setVisible(true);
+        JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
+        reset_map(); 
     }//GEN-LAST:event_ButtonAddActionPerformed
 
     private void ButtonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancelMouseClicked
@@ -425,19 +831,14 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_ButtonCancelMouseClicked
 
     private void ListarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ListarMouseClicked
-        try {
-            //Inicializando e mostrando grafo.
-            this.app.buscarCidades();
-            this.app.buscarConexoes();
-        } catch (Exception ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
-        reset_graph();
-        initVertices();
-        initConections();
-        Map.paintComponents(universal_graph);
-        
+        this.EnlacesMenu.setEnabled(true);
+        this.PontosMenu.setEnabled(true);
+        this.ReportErro.setEnabled(true);
+        this.CaminhoMinimo.setEnabled(true);
+        this.Map.setEnabled(true);
+        JOptionPane.showMessageDialog(null, "Mapa iniciado!");
+        atualizarConexoes();
+        reset_map();
     }//GEN-LAST:event_ListarMouseClicked
 
     private void MapMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseMoved
@@ -449,28 +850,381 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_minimizarMinimizeFrame
 
     private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonAddMouseClicked
-        this.Map.repaint();
-        this.Map.removeAll();
+               
+    }//GEN-LAST:event_ButtonAddMouseClicked
+
+    private void RemovePontosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_RemovePontosMouseClicked
+        
+    }//GEN-LAST:event_RemovePontosMouseClicked
+
+    private void RemovePontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemovePontosActionPerformed
+        //Permitindo o clique para adição de novo ponto
+        if(!this.allow_remove_points){
+            this.allow_remove_points = true;
+            RemovePontos.setText("Desabilitar remoção de pontos");
+            
+            
+            EnlacesMenu.setEnabled(false);
+            ReportErro.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            
+            AddPontos.setEnabled(false);
+        }else{
+            this.allow_remove_points = false;
+            RemovePontos.setText("Habilitar remoção de pontos");
+            EnlacesMenu.setEnabled(true);
+            ReportErro.setEnabled(true);
+            CaminhoMinimo.setEnabled(true);
+            
+            AddPontos.setEnabled(true);
+        }
+        
+    }//GEN-LAST:event_RemovePontosActionPerformed
+
+    private void ButtonAdd1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonAdd1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonAdd1MouseClicked
+
+    private void ButtonAdd1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAdd1ActionPerformed
         try {
-            this.app.cadastrarCidade(ComboCitys.getSelectedItem().toString(), SiglaAdd.getText(), this.x_now, this.y_now);
+            this.app.cadastrarConexao(this.vertice_old, this.vertice_now, Integer.parseInt(Distancia.getText()), Integer.parseInt(Custo.getText()));
+            ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
+            Line2D.Float line = new Line2D.Float(this.vertice_old.getCordenadaX(), this.vertice_old.getCordenadaY(), this.vertice_now.getCordenadaX(), this.vertice_now.getCordenadaY());
+            this.lines.add(line);
+            ((Graphics2D)universal_graph).draw(line);
         } catch (Exception ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
+        this.clicks = 0;
         
-        AdicionarPontos.setVisible(false);
-        SuperiorMenu.setVisible(true);
-        PanelMap.setVisible(true);
         
-        reset_graph();        
-    }//GEN-LAST:event_ButtonAddMouseClicked
+        
+        this.PanelMap.setVisible(true);
+        this.SuperiorMenu.setVisible(true);
+        this.AdicionarEnlaces.setVisible(false);
+        JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
+        reset_map();
+    }//GEN-LAST:event_ButtonAdd1ActionPerformed
 
+    private void ButtonCancel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancel1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ButtonCancel1MouseClicked
+
+    private void ButtonCancel1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCancel1ActionPerformed
+        this.PanelMap.setVisible(true);
+        this.SuperiorMenu.setVisible(true);
+        this.AdicionarEnlaces.setVisible(false);
+        JOptionPane.showMessageDialog(null,"Operação Cancelada");
+        reset_map();
+        this.clicks = 0;
+    }//GEN-LAST:event_ButtonCancel1ActionPerformed
+
+    private void DistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_DistanciaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_DistanciaActionPerformed
+
+    private void AddEnlacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddEnlacesActionPerformed
+        //Permitindo o clique para adição de novo ponto
+        if(!this.allow_add_conexion){
+            
+            this.allow_add_conexion = true;
+            AddEnlaces.setText("Desabilitar adição de enlaces");
+            
+            PontosMenu.setEnabled(false);
+            ReportErro.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            
+            RemoveEnlaces.setEnabled(false);
+            
+        }else{
+            this.allow_add_conexion = false;
+            AddEnlaces.setText("Habilitar adição de enlaces");
+            
+            PontosMenu.setEnabled(true);
+            ReportErro.setEnabled(true);
+            CaminhoMinimo.setEnabled(true);
+            
+            RemoveEnlaces.setEnabled(true);
+        }
+    }//GEN-LAST:event_AddEnlacesActionPerformed
+
+    private void CaminhoMinimoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_CaminhoMinimoActionPerformed
+        
+    }//GEN-LAST:event_CaminhoMinimoActionPerformed
+
+    private void CaminhoMinimoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_CaminhoMinimoMouseClicked
+        
+    }//GEN-LAST:event_CaminhoMinimoMouseClicked
+
+    private void AplicarDistanciaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AplicarDistanciaMouseClicked
+        
+    }//GEN-LAST:event_AplicarDistanciaMouseClicked
+
+    private void AplicarDistanciaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AplicarDistanciaActionPerformed
+        if(!this.allow_do_way_minimum){
+            this.allow_do_way_minimum = true;
+            this.allow_add_conexion = false;
+            this.metrica = MetricaCalculo.DISTANCIA;
+            AplicarDistancia.setText("Parar de percorrer caminho mínimo");
+            
+            AplicarHops.setEnabled(false);
+            AplicarCusto.setEnabled(false);
+            EnlacesMenu.setEnabled(false);
+            ReportErro.setEnabled(false);
+            
+        }else{
+            this.allow_do_way_minimum = false;
+            AplicarDistancia.setText("Percorrer caminho mínimo com DISTANCIA");
+            AplicarHops.setEnabled(true);
+            AplicarCusto.setEnabled(true);
+            EnlacesMenu.setEnabled(true);
+            ReportErro.setEnabled(true);
+        }
+    }//GEN-LAST:event_AplicarDistanciaActionPerformed
+
+    private void AplicarCustoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AplicarCustoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AplicarCustoMouseClicked
+
+    private void AplicarCustoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AplicarCustoActionPerformed
+        if(!this.allow_do_way_minimum){
+            this.allow_do_way_minimum = true;
+            this.allow_add_conexion = false;
+            AplicarCusto.setText("Parar de percorrer caminho mínimo");
+            this.metrica = MetricaCalculo.CUSTO;
+            
+            AplicarHops.setEnabled(false);
+            AplicarDistancia.setEnabled(false);
+            
+            EnlacesMenu.setEnabled(false);
+            
+        }else{
+            this.allow_do_way_minimum = false;
+            AplicarCusto.setText("Percorrer caminho mínimo com CUSTO");
+            AplicarHops.setEnabled(true);
+            AplicarDistancia.setEnabled(true);
+            EnlacesMenu.setEnabled(true);
+        }
+    }//GEN-LAST:event_AplicarCustoActionPerformed
+
+    private void AplicarHopsMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AplicarHopsMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_AplicarHopsMouseClicked
+
+    private void AplicarHopsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AplicarHopsActionPerformed
+        if(!this.allow_do_way_minimum){
+            this.allow_do_way_minimum = true;
+            this.allow_add_conexion = false;
+            AplicarHops.setText("Parar de percorrer caminho mínimo");
+            this.metrica = MetricaCalculo.SALTO;
+            
+            AplicarDistancia.setEnabled(false);
+            AplicarCusto.setEnabled(false);
+            
+            EnlacesMenu.setEnabled(false);
+            
+        }else{
+            this.allow_do_way_minimum = false;
+            AplicarHops.setText("Percorrer caminho mínimo com HOPS");
+            AplicarDistancia.setEnabled(true);
+            AplicarCusto.setEnabled(true);
+            EnlacesMenu.setEnabled(true);
+        }
+    }//GEN-LAST:event_AplicarHopsActionPerformed
+
+    private void ErroEnlaceMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ErroEnlaceMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ErroEnlaceMouseClicked
+
+    private void ErroEnlaceActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ErroEnlaceActionPerformed
+        if(!this.allow_report_erro_enlace){
+            this.allow_report_erro_enlace = true;
+            EnlacesMenu.setEnabled(false);
+            PontosMenu.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            
+            ErroPonto.setEnabled(false);
+            
+            ErroEnlace.setText("Desabilitar reporte de erro/ajuste enlace");
+            
+        }else{
+            this.allow_report_erro_enlace = false;
+            EnlacesMenu.setEnabled(true);
+            PontosMenu.setEnabled(true);
+            CaminhoMinimo.setEnabled(true);
+            
+            ErroPonto.setEnabled(true);
+            
+            ErroEnlace.setText("Reportar erro/ajuste em enlace");
+        }
+    }//GEN-LAST:event_ErroEnlaceActionPerformed
+
+    private void ErroPontoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ErroPontoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ErroPontoMouseClicked
+
+    private void ErroPontoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ErroPontoActionPerformed
+        if(!this.allow_report_erro_point){
+            this.allow_report_erro_point = true;
+            EnlacesMenu.setEnabled(false);
+            PontosMenu.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            
+            ErroEnlace.setEnabled(false);
+            
+            ErroPonto.setText("Desabilitar reporte de erro/ajuste ponto");
+            
+        }else{
+            this.allow_report_erro_point = false;
+            EnlacesMenu.setEnabled(true);
+            PontosMenu.setEnabled(true);
+            CaminhoMinimo.setEnabled(true);
+            
+            ErroEnlace.setEnabled(true);
+            
+            ErroPonto.setText("Reportar erro/ajuste em ponto");
+        }
+        
+    }//GEN-LAST:event_ErroPontoActionPerformed
+
+    private void ReportErroMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ReportErroMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReportErroMouseClicked
+
+    private void ReportErroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ReportErroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ReportErroActionPerformed
+
+    private void ListarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ListarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_ListarActionPerformed
+
+    private void RemoveEnlacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemoveEnlacesActionPerformed
+        if(!this.allow_remove_conexion){
+            
+            this.allow_remove_conexion = true;
+            RemoveEnlaces.setText("Desabilitar remoção de enlaces");
+            
+            PontosMenu.setEnabled(false);
+            ReportErro.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            
+            AddEnlaces.setEnabled(false);
+            
+        }else{
+            this.allow_remove_conexion = false;
+            RemoveEnlaces.setText("Habilitar remoção de enlaces");
+            
+            PontosMenu.setEnabled(true);
+            ReportErro.setEnabled(true);
+            CaminhoMinimo.setEnabled(true);
+            
+            AddEnlaces.setEnabled(true);
+        }
+    }//GEN-LAST:event_RemoveEnlacesActionPerformed
+    
+    private void fazerCaminhoMinimo(){
+        if(this.allow_do_way_minimum){
+            if(this.clicks == 2){
+                ResultCaminho rc = null;
+                List<Vertice> verticesResult = null;
+                Vertice olderVertice = null;
+                Vertice newVertice = null;
+
+                try {
+                    rc = this.app.bellmanFord(this.vertice_old, this.vertice_now, this.metrica);
+                    verticesResult = rc.getVertice();
+                } catch (Exception ex) {
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                for (int i=0; i<verticesResult.size();i++){
+                    if(i > 0){
+                        newVertice = verticesResult.get(i);
+                        olderVertice = verticesResult.get(i-1);
+                        ((Graphics2D)universal_graph).setColor(Color.GREEN);
+                        ((Graphics2D)universal_graph).setStroke(new BasicStroke(3));
+                        Line2D.Float line = new Line2D.Float(olderVertice.getCordenadaX(), olderVertice.getCordenadaY(), newVertice.getCordenadaX(), newVertice.getCordenadaY());
+                        ((Graphics2D)universal_graph).draw(line);
+                    }
+                }
+                JOptionPane.showMessageDialog(null, "Para a métrica utilizada: " + rc.getValorPercorrido());
+                this.clicks = 0;
+                reset_map();
+            }
+      }  
+    }
+    
+    private void reportarErroCaminho() throws Exception{
+        if(this.allow_report_erro_enlace){
+            if(this.clicks == 2){
+                this.app.alterarStatusConexao(procurarArestaPorVertices());
+                JOptionPane.showMessageDialog(null, "Erro/Ajuste reportado com sucesso!");
+                this.clicks = 0;
+                atualizarConexoes();
+                reset_map();
+            }
+        }
+    }
+    
+    
+    private void removerAresta() throws Exception{
+        if(this.allow_remove_conexion){
+            if(this.clicks == 2){
+                this.app.excluirConexao(procurarArestaPorVertices());
+                JOptionPane.showMessageDialog(null, "Enlace removida com sucesso!");
+                this.clicks = 0;
+                atualizarConexoes();
+                reset_map();
+            }
+        }
+    }
+    
+    private Aresta procurarArestaPorVertices(){
+        for (int i=0;i<this.conexoes.size();i++){
+            if(this.conexoes.get(i).getOrigem().getIdCidade() == this.vertice_old.getIdCidade() & this.conexoes.get(i).getDestino().getIdCidade() == this.vertice_now.getIdCidade()){
+                try {
+                    return this.conexoes.get(i);
+                } catch (Exception ex) {
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }else if(this.conexoes.get(i).getOrigem().getIdCidade() == this.vertice_now.getIdCidade() & this.conexoes.get(i).getDestino().getIdCidade() == this.vertice_old.getIdCidade()){
+                try {
+                    return this.conexoes.get(i);
+                } catch (Exception ex) {
+                    Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        }
+        return null;
+    }
+    
+    
+    
+    private void atualizarConexoes(){
+        try {
+            //Inicializando e mostrando grafo.
+            this.app.buscarCidades();
+            this.app.buscarConexoes();
+        } catch (Exception ex) {
+            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        this.conexoes = this.app.getTodasConexoes();
+    }
+    
+    private void reset_map(){
+        this.Map.removeAll();
+        reset_graph();
+        initVertices();
+        initConections();
+        Map.paintComponents(universal_graph);
+    }
     
     
     public ArrayList<String> viewTable(double latitude , double longitude) throws Exception {
         //Após a identificação da latitude e longitude, recolhe as cidades mais próximas das quais foi clicado.
         ArrayList<String> names_citys_around = new ArrayList();    
     
-        double compare = 1.5;
+        double compare = 3;
         double latitude_max = latitude + compare;
         double latitude_min = latitude - compare;
         double longitude_max = longitude + compare;
@@ -545,10 +1299,24 @@ public class Principal extends javax.swing.JFrame{
         private int id_cidade = 0;
         private javax.swing.JPanel princ; //Painel que armazena o ponto e sua sigla
         private javax.swing.JLabel princ_point; //Label que representa o pontp
+        Vertice vertice_now;
+        boolean status = true;
+        String imageMouseEntered, imageMouseReleased;
         
         Point(Vertice vertice){
             princ = new javax.swing.JPanel();
             princ_point = new javax.swing.JLabel();
+            this.vertice_now = vertice;
+            status = vertice.getAtivo();
+            
+            //Configurando imagens baseado no status
+            if(status){
+                imageMouseEntered = "/imgs/activated_point_mouseon.png";
+                imageMouseReleased = "/imgs/activated_point.png";
+            }else{
+                imageMouseEntered = "/imgs/deactivated_point_mouseon.png";
+                imageMouseReleased = "/imgs/deactivated_point_mouseoff.png";
+            }
             
             int tam_img = 20; //Tamanho da imagem referentes ao ponto
             
@@ -572,7 +1340,7 @@ public class Principal extends javax.swing.JFrame{
             princ.add(label_name);
             
             //Configurando Ponto em si
-            princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point.png")));
+            princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseReleased)));
             princ_point.setLayout(null);
             princ_point.setBounds(10, 20, tam_img, tam_img);
             princ_point.setVisible(true);
@@ -589,7 +1357,9 @@ public class Principal extends javax.swing.JFrame{
             //Quando o mouse passa por cima do ponto
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point_mouseon.png")));
+                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseEntered)));
+                    }
                     princ_point.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
                 }
             });
@@ -597,7 +1367,9 @@ public class Principal extends javax.swing.JFrame{
             //Quando o mouse sai de cima do ponto
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseExited(java.awt.event.MouseEvent evt) {
-                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point.png")));
+                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseReleased)));
+                    }
                 }
             });
             
@@ -605,22 +1377,85 @@ public class Principal extends javax.swing.JFrame{
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                     System.out.println(name);
-                    set_click();
-                    add_line_aresta(coordinates_x, coordinates_y);
+                    
+                    if(allow_add_conexion){
+                        set_click();
+                        configClicks(vertice_now);
+                        add_line_aresta();
+                        
+                    }
+                    
+                    if(allow_do_way_minimum){
+                        set_click();
+                        configClicks(vertice_now);
+                        fazerCaminhoMinimo();
+                    }
+                    
+                    if(allow_report_erro_enlace){
+                        try {
+                            set_click();
+                            configClicks(vertice_now);
+                            reportarErroCaminho();
+                        } catch (Exception ex) {
+                            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    if(allow_remove_conexion){
+                        try {
+                            set_click();
+                            configClicks(vertice_now);
+                            
+                            removerAresta();
+                            princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/deactivated_point_mouseoff.png")));
+                            reset_map();
+                        } catch (Exception ex) {
+                            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    if(allow_report_erro_point){
+                        try {
+                            app.alterarStatusCidade(vertice_now);
+                            status = !status;
+                            atualizarConexoes();
+                            reset_map();
+                        } catch (Exception ex) {
+                            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                    
+                    if(allow_remove_points){
+                        try {
+                            app.excluirCidade(vertice_now);
+                        } catch (Exception ex) {
+                            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        reset_map();
+                    }
                 }
             });
             
             //Quando o mouse é pressionado (clicando ou segurando)
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mousePressed(java.awt.event.MouseEvent evt) {
-                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mouse_clicking.png")));
+                    if(allow_do_way_minimum){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/selected_caminho.png")));
+                    }else if(allow_report_erro_enlace){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/deactivated_point_mouseoff.png")));
+                        System.out.println("troca");
+                    }else{
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mouse_clicking.png")));
+                    }
                 }
             });
             
             //Quando o mouse para de ser pressionado
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseReleased(java.awt.event.MouseEvent evt) {
-                    princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/activated_point.png")));
+                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseReleased)));   
+                    }
                 }
             });
             
@@ -649,22 +1484,46 @@ public class Principal extends javax.swing.JFrame{
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JMenuItem AddEnlaces;
+    private javax.swing.JMenuItem AddPontos;
+    private javax.swing.JPanel AdicionarEnlaces;
     private javax.swing.JPanel AdicionarPontos;
+    private javax.swing.JMenuItem AplicarCusto;
+    private javax.swing.JMenuItem AplicarDistancia;
+    private javax.swing.JMenuItem AplicarHops;
     private javax.swing.JButton ButtonAdd;
+    private javax.swing.JButton ButtonAdd1;
     private javax.swing.JButton ButtonCancel;
+    private javax.swing.JButton ButtonCancel1;
+    private javax.swing.JMenu CaminhoMinimo;
+    private javax.swing.JLabel CidadeCity1;
+    private javax.swing.JLabel CidadeCity2;
     private javax.swing.JComboBox<String> ComboCitys;
+    private javax.swing.JLabel CuatoLabel;
+    private javax.swing.JFormattedTextField Custo;
+    private javax.swing.JFormattedTextField Distancia;
+    private javax.swing.JLabel DistanciaLabel;
+    private javax.swing.JMenu EnlacesMenu;
+    private javax.swing.JMenuItem ErroEnlace;
+    private javax.swing.JMenuItem ErroPonto;
+    private javax.swing.JFormattedTextField Hops;
+    private javax.swing.JLabel HopsLabel;
     private javax.swing.JButton Listar;
     private javax.swing.JLabel Map;
     private javax.swing.JPanel PanelMap;
+    private javax.swing.JMenu PontosMenu;
+    private javax.swing.JMenuItem RemoveEnlaces;
+    private javax.swing.JMenuItem RemovePontos;
+    private javax.swing.JMenu ReportErro;
     private javax.swing.JFormattedTextField SiglaAdd;
+    private javax.swing.JLabel SiglaCity1;
+    private javax.swing.JLabel SiglaCity2;
     private javax.swing.JMenuBar SuperiorMenu;
     private javax.swing.JLabel Title1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
     private javax.swing.JLabel minimizar;
     // End of variables declaration//GEN-END:variables
 }
