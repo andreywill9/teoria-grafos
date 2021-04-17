@@ -58,16 +58,11 @@ public class Principal extends javax.swing.JFrame{
      * Creates new form Principal
      */
     public Principal() throws Exception {
-        
         conn = new ConnectionFactory();
         initComponents();
         initComponents2();
-        
         Listar.doClick();
     }
-    
-    
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -78,6 +73,19 @@ public class Principal extends javax.swing.JFrame{
     private void initComponents() {
 
         minimizar = new javax.swing.JLabel();
+        Listar = new javax.swing.JButton();
+        Title1 = new javax.swing.JLabel();
+        JScrollMap = new javax.swing.JScrollPane();
+        PanelMap = new javax.swing.JPanel();
+        Map = new javax.swing.JLabel();
+        AdicionarPontos = new javax.swing.JPanel();
+        ComboCitys = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        ButtonAdd = new javax.swing.JButton();
+        ButtonCancel = new javax.swing.JButton();
+        SiglaAdd = new javax.swing.JFormattedTextField();
+        jLabel2 = new javax.swing.JLabel();
         AdicionarEnlaces = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         ButtonAdd1 = new javax.swing.JButton();
@@ -92,18 +100,6 @@ public class Principal extends javax.swing.JFrame{
         SiglaCity1 = new javax.swing.JLabel();
         DistanciaLabel = new javax.swing.JLabel();
         CuatoLabel = new javax.swing.JLabel();
-        PanelMap = new javax.swing.JPanel();
-        Listar = new javax.swing.JButton();
-        Title1 = new javax.swing.JLabel();
-        Map = new javax.swing.JLabel();
-        AdicionarPontos = new javax.swing.JPanel();
-        ComboCitys = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
-        ButtonAdd = new javax.swing.JButton();
-        ButtonCancel = new javax.swing.JButton();
-        SiglaAdd = new javax.swing.JFormattedTextField();
-        jLabel2 = new javax.swing.JLabel();
         SuperiorMenu = new javax.swing.JMenuBar();
         PontosMenu = new javax.swing.JMenu();
         AddPontos = new javax.swing.JMenuItem();
@@ -118,14 +114,15 @@ public class Principal extends javax.swing.JFrame{
         ReportErro = new javax.swing.JMenu();
         ErroPonto = new javax.swing.JMenuItem();
         ErroEnlace = new javax.swing.JMenuItem();
+        SobreMenu = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Algoritmo");
-        setBackground(new java.awt.Color(127, 127, 127));
-        setMinimumSize(new java.awt.Dimension(900, 920));
-        setPreferredSize(new java.awt.Dimension(900, 920));
+        setBackground(new java.awt.Color(51, 51, 51));
+        setMinimumSize(new java.awt.Dimension(900, 760));
+        setPreferredSize(new java.awt.Dimension(900, 760));
         setResizable(false);
-        setSize(new java.awt.Dimension(900, 920));
+        setSize(new java.awt.Dimension(900, 760));
         getContentPane().setLayout(null);
 
         minimizar.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Documents\\NetBeansProjects\\Estrutura_De_Dados_2\\Liquid\\icones\\minimizar.png")); // NOI18N
@@ -138,6 +135,159 @@ public class Principal extends javax.swing.JFrame{
         });
         getContentPane().add(minimizar);
         minimizar.setBounds(540, 10, 20, 20);
+
+        Listar.setBackground(new java.awt.Color(51, 51, 51));
+        Listar.setForeground(new java.awt.Color(255, 255, 255));
+        Listar.setText("Listar conexões");
+        Listar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Listar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Listar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ListarMouseClicked(evt);
+            }
+        });
+        Listar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ListarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(Listar);
+        Listar.setBounds(760, 10, 130, 20);
+
+        Title1.setFont(new java.awt.Font("Dialog", 1, 15)); // NOI18N
+        Title1.setForeground(new java.awt.Color(0, 0, 0));
+        Title1.setText("Mapa Interativo:");
+        getContentPane().add(Title1);
+        Title1.setBounds(10, 10, 190, 20);
+
+        JScrollMap.setBorder(null);
+        JScrollMap.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollMap.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JScrollMapMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                JScrollMapMouseReleased(evt);
+            }
+        });
+
+        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
+        PanelMap.setPreferredSize(new java.awt.Dimension(900, 900));
+        PanelMap.setLayout(null);
+
+        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
+        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        Map.setEnabled(false);
+        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                MapMouseMoved(evt);
+            }
+        });
+        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                MapMouseWheelMoved(evt);
+            }
+        });
+        Map.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MapMouseClicked(evt);
+            }
+        });
+        Map.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                MapKeyPressed(evt);
+            }
+        });
+        PanelMap.add(Map);
+        Map.setBounds(0, 0, 900, 1200);
+
+        JScrollMap.setViewportView(PanelMap);
+
+        getContentPane().add(JScrollMap);
+        JScrollMap.setBounds(0, 40, 900, 660);
+
+        AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
+        AdicionarPontos.setEnabled(false);
+        AdicionarPontos.setMinimumSize(new java.awt.Dimension(880, 934));
+        AdicionarPontos.setPreferredSize(new java.awt.Dimension(880, 934));
+        AdicionarPontos.setLayout(null);
+
+        ComboCitys.setBackground(new java.awt.Color(204, 204, 204));
+        ComboCitys.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
+        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboCitysActionPerformed(evt);
+            }
+        });
+        AdicionarPontos.add(ComboCitys);
+        ComboCitys.setBounds(200, 380, 510, 40);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Cidade");
+        AdicionarPontos.add(jLabel3);
+        jLabel3.setBounds(200, 350, 60, 22);
+
+        jPanel1.setBackground(new java.awt.Color(49, 49, 49));
+        jPanel1.setLayout(null);
+
+        ButtonAdd.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonAdd.setText("Adicionar");
+        ButtonAdd.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonAddMouseClicked(evt);
+            }
+        });
+        ButtonAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonAddActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ButtonAdd);
+        ButtonAdd.setBounds(80, 380, 250, 40);
+
+        ButtonCancel.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonCancel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonCancel.setText("Cancelar");
+        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonCancelMouseClicked(evt);
+            }
+        });
+        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonCancelActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ButtonCancel);
+        ButtonCancel.setBounds(340, 380, 250, 40);
+
+        SiglaAdd.setBackground(new java.awt.Color(204, 204, 204));
+        try {
+            SiglaAdd.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("UUU")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        SiglaAdd.setText("");
+        SiglaAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jPanel1.add(SiglaAdd);
+        SiglaAdd.setBounds(80, 230, 510, 40);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setText("Sigla");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(80, 200, 60, 22);
+
+        AdicionarPontos.add(jPanel1);
+        jPanel1.setBounds(120, 280, 680, 480);
+
+        getContentPane().add(AdicionarPontos);
+        AdicionarPontos.setBounds(0, -50, 900, 980);
+        AdicionarPontos.setVisible(false);
 
         AdicionarEnlaces.setBackground(new java.awt.Color(51, 51, 51));
         AdicionarEnlaces.setEnabled(false);
@@ -221,7 +371,6 @@ public class Principal extends javax.swing.JFrame{
         Distancia.setForeground(new java.awt.Color(0, 0, 0));
         Distancia.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat(""))));
         Distancia.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        Distancia.setText("");
         Distancia.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         Distancia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -235,7 +384,6 @@ public class Principal extends javax.swing.JFrame{
         Custo.setForeground(new java.awt.Color(0, 0, 0));
         Custo.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter(new java.text.DecimalFormat(""))));
         Custo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        Custo.setText("");
         Custo.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         jPanel2.add(Custo);
         Custo.setBounds(280, 220, 170, 40);
@@ -267,145 +415,6 @@ public class Principal extends javax.swing.JFrame{
         getContentPane().add(AdicionarEnlaces);
         AdicionarEnlaces.setBounds(0, -50, 900, 980);
         AdicionarEnlaces.setVisible(false);
-
-        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
-        PanelMap.setLayout(null);
-
-        Listar.setBackground(new java.awt.Color(51, 51, 51));
-        Listar.setForeground(new java.awt.Color(255, 255, 255));
-        Listar.setText("Listar conexões");
-        Listar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        Listar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Listar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ListarMouseClicked(evt);
-            }
-        });
-        Listar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ListarActionPerformed(evt);
-            }
-        });
-        PanelMap.add(Listar);
-        Listar.setBounds(760, 10, 130, 20);
-
-        Title1.setFont(new java.awt.Font("Dialog", 0, 15)); // NOI18N
-        Title1.setForeground(new java.awt.Color(255, 255, 255));
-        Title1.setText("Mapa Interativo:");
-        PanelMap.add(Title1);
-        Title1.setBounds(10, 10, 190, 20);
-
-        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
-        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        Map.setEnabled(false);
-        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                MapMouseMoved(evt);
-            }
-        });
-        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                MapMouseWheelMoved(evt);
-            }
-        });
-        Map.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MapMouseClicked(evt);
-            }
-        });
-        Map.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                MapKeyPressed(evt);
-            }
-        });
-        PanelMap.add(Map);
-        Map.setBounds(0, 40, 900, 1200);
-
-        getContentPane().add(PanelMap);
-        PanelMap.setBounds(0, 0, 900, 860);
-
-        AdicionarPontos.setBackground(new java.awt.Color(51, 51, 51));
-        AdicionarPontos.setEnabled(false);
-        AdicionarPontos.setMinimumSize(new java.awt.Dimension(900, 934));
-        AdicionarPontos.setPreferredSize(new java.awt.Dimension(900, 934));
-        AdicionarPontos.setLayout(null);
-
-        ComboCitys.setBackground(new java.awt.Color(204, 204, 204));
-        ComboCitys.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        ComboCitys.setForeground(new java.awt.Color(255, 255, 255));
-        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboCitysActionPerformed(evt);
-            }
-        });
-        AdicionarPontos.add(ComboCitys);
-        ComboCitys.setBounds(200, 380, 510, 40);
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Cidade");
-        AdicionarPontos.add(jLabel3);
-        jLabel3.setBounds(200, 350, 60, 22);
-
-        jPanel1.setBackground(new java.awt.Color(49, 49, 49));
-        jPanel1.setLayout(null);
-
-        ButtonAdd.setBackground(new java.awt.Color(51, 51, 51));
-        ButtonAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        ButtonAdd.setText("Adicionar");
-        ButtonAdd.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ButtonAddMouseClicked(evt);
-            }
-        });
-        ButtonAdd.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonAddActionPerformed(evt);
-            }
-        });
-        jPanel1.add(ButtonAdd);
-        ButtonAdd.setBounds(80, 380, 250, 40);
-
-        ButtonCancel.setBackground(new java.awt.Color(51, 51, 51));
-        ButtonCancel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        ButtonCancel.setText("Cancelar");
-        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ButtonCancelMouseClicked(evt);
-            }
-        });
-        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonCancelActionPerformed(evt);
-            }
-        });
-        jPanel1.add(ButtonCancel);
-        ButtonCancel.setBounds(340, 380, 250, 40);
-
-        SiglaAdd.setBackground(new java.awt.Color(204, 204, 204));
-        try {
-            SiglaAdd.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("UUU")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        SiglaAdd.setText("");
-        SiglaAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jPanel1.add(SiglaAdd);
-        SiglaAdd.setBounds(80, 230, 510, 40);
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setText("Sigla");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(80, 200, 60, 22);
-
-        AdicionarPontos.add(jPanel1);
-        jPanel1.setBounds(120, 280, 680, 480);
-
-        getContentPane().add(AdicionarPontos);
-        AdicionarPontos.setBounds(0, -50, 900, 980);
-        AdicionarPontos.setVisible(false);
 
         SuperiorMenu.setBackground(new java.awt.Color(51, 51, 51));
         SuperiorMenu.setBorder(null);
@@ -476,7 +485,6 @@ public class Principal extends javax.swing.JFrame{
         RemoveEnlaces.setBackground(new java.awt.Color(51, 51, 51));
         RemoveEnlaces.setForeground(new java.awt.Color(255, 255, 255));
         RemoveEnlaces.setText("Habilitar remoção de enlaces");
-        RemoveEnlaces.setActionCommand("Habilitar remoção de enlaces");
         RemoveEnlaces.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         RemoveEnlaces.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -607,27 +615,38 @@ public class Principal extends javax.swing.JFrame{
 
         SuperiorMenu.add(ReportErro);
 
+        SobreMenu.setBackground(new java.awt.Color(51, 51, 51));
+        SobreMenu.setForeground(new java.awt.Color(255, 255, 255));
+        SobreMenu.setText("Sobre");
+        SobreMenu.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        SobreMenu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                SobreMenuMouseClicked(evt);
+            }
+        });
+        SobreMenu.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SobreMenuActionPerformed(evt);
+            }
+        });
+        SuperiorMenu.add(SobreMenu);
+
         setJMenuBar(SuperiorMenu);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponents2(){
+        //Capturando grafico inicial para conseguir serem feitas as alterações a partir de um segundo grafico
+        //Executando JFrame no meio da tela
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2,dim.height/2-this.getSize().height/2);
-        //Capturando grafico inicial para conseguir serem feitas as alterações a partir de um segundo grafico
         universal_graph =  Map.getGraphics();
     }
     
     private void initVertices(){
         //Adicionando os vertices ao grafico
-        try {
-            //Inicializando e mostrando grafo.
-            this.app.buscarCidades();
-        } catch (Exception ex) {
-            Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        
+        atualizarConexoes();
         List<Vertice> vertices = app.getTodasCidades();
         for (int i=0; i<vertices.size(); i++) {
             add_point(vertices.get(i));
@@ -635,6 +654,7 @@ public class Principal extends javax.swing.JFrame{
     }
     
     private void initConections(){
+        //Adicionando conexões ao gráfico
         atualizarConexoes();
         for (int i=0; i<this.conexoes.size(); i++) {
             Vertice origem = this.conexoes.get(i).getOrigem();
@@ -673,7 +693,6 @@ public class Principal extends javax.swing.JFrame{
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             System.out.println(ex);
         }
-
         return names_city;
     }
     
@@ -690,8 +709,6 @@ public class Principal extends javax.swing.JFrame{
 
             this.SiglaCity1.setText(this.vertice_old.getSigla());
             this.SiglaCity2.setText(this.vertice_now.getSigla());
-            
-            
         }
     }
 
@@ -750,9 +767,6 @@ public class Principal extends javax.swing.JFrame{
             ArrayList<String> names_city = new ArrayList();
             try {
                 names_city = search_city(this.x_now, this.y_now);
-                //Adicionar_Pontos_1 adc_pontos = ;
-                //adc_pontos.setVisible(true);
-                //this.setVisible(false);
             } catch (Exception ex) {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -1122,6 +1136,25 @@ public class Principal extends javax.swing.JFrame{
             AddEnlaces.setEnabled(true);
         }
     }//GEN-LAST:event_RemoveEnlacesActionPerformed
+
+    private void JScrollMapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JScrollMapMouseClicked
+        
+    }//GEN-LAST:event_JScrollMapMouseClicked
+
+    private void JScrollMapMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JScrollMapMouseReleased
+        reset_map();
+    }//GEN-LAST:event_JScrollMapMouseReleased
+
+    private void SobreMenuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SobreMenuActionPerformed
+        
+    }//GEN-LAST:event_SobreMenuActionPerformed
+
+    private void SobreMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SobreMenuMouseClicked
+        Sobre sobre = new Sobre();
+        sobre.setVisible(true);
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        sobre.setLocation(dim.width/2-sobre.getSize().width/2,dim.height/2-sobre.getSize().height/2);
+    }//GEN-LAST:event_SobreMenuMouseClicked
     
     private void fazerCaminhoMinimo(){
         if(this.allow_do_way_minimum){
@@ -1508,6 +1541,7 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JMenuItem ErroPonto;
     private javax.swing.JFormattedTextField Hops;
     private javax.swing.JLabel HopsLabel;
+    private javax.swing.JScrollPane JScrollMap;
     private javax.swing.JButton Listar;
     private javax.swing.JLabel Map;
     private javax.swing.JPanel PanelMap;
@@ -1518,6 +1552,7 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JFormattedTextField SiglaAdd;
     private javax.swing.JLabel SiglaCity1;
     private javax.swing.JLabel SiglaCity2;
+    private javax.swing.JMenu SobreMenu;
     private javax.swing.JMenuBar SuperiorMenu;
     private javax.swing.JLabel Title1;
     private javax.swing.JLabel jLabel2;
