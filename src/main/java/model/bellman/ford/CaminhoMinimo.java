@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class CaminhoMinimo {
 
-  public static void bellmanFord(List<Aresta> arestas, List<Vertice> vertices, Vertice origem, Vertice destino, MetricaCalculo metrica) throws Exception {
+  public static ResultCaminho bellmanFord(List<Aresta> arestas, List<Vertice> vertices, Vertice origem, Vertice destino, MetricaCalculo metrica) throws Exception {
     List<Node> verticesDisponiveis = vertices.stream().filter(Vertice::getAtivo).map(Node::new).collect(Collectors.toList());
     List<Edge> arestasDisponiveis = new ArrayList<>();
     arestas.stream().filter(Aresta::getArestaDisponivel).forEach(aresta -> {
@@ -22,8 +22,8 @@ public class CaminhoMinimo {
     Node nodeDestino = getNode(destino, verticesDisponiveis);
     if (nodeDestino == null || nodeOrigem == null) throw new Exception("Origem ou destino está inativo");
     bellmanFord(nodeOrigem, verticesDisponiveis, arestasDisponiveis, metrica);
-    nodeDestino.getCaminho().forEach(System.out::println);
-    System.out.println(nodeDestino.getValorPercorrido());
+    ResultCaminho rc = new ResultCaminho(nodeDestino.getCaminho(), nodeDestino.getValorPercorrido());
+    return rc;
   }
 
   public static Node getNode(Vertice vertice, List<Node> nodes) {
