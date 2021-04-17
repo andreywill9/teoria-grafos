@@ -72,7 +72,6 @@ public class Principal extends javax.swing.JFrame{
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        minimizar = new javax.swing.JLabel();
         Listar = new javax.swing.JButton();
         Title1 = new javax.swing.JLabel();
         JScrollMap = new javax.swing.JScrollPane();
@@ -124,17 +123,6 @@ public class Principal extends javax.swing.JFrame{
         setResizable(false);
         setSize(new java.awt.Dimension(900, 760));
         getContentPane().setLayout(null);
-
-        minimizar.setIcon(new javax.swing.ImageIcon("C:\\Users\\55119\\Documents\\NetBeansProjects\\Estrutura_De_Dados_2\\Liquid\\icones\\minimizar.png")); // NOI18N
-        minimizar.setText("jLabel9");
-        minimizar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        minimizar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                minimizarMinimizeFrame(evt);
-            }
-        });
-        getContentPane().add(minimizar);
-        minimizar.setBounds(540, 10, 20, 20);
 
         Listar.setBackground(new java.awt.Color(51, 51, 51));
         Listar.setForeground(new java.awt.Color(255, 255, 255));
@@ -859,10 +847,6 @@ public class Principal extends javax.swing.JFrame{
         // TODO add your handling code here:
     }//GEN-LAST:event_MapMouseMoved
 
-    private void minimizarMinimizeFrame(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_minimizarMinimizeFrame
-        this.setExtendedState(JFrame.HIDE_ON_CLOSE);
-    }//GEN-LAST:event_minimizarMinimizeFrame
-
     private void ButtonAddMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonAddMouseClicked
                
     }//GEN-LAST:event_ButtonAddMouseClicked
@@ -1559,6 +1543,5 @@ public class Principal extends javax.swing.JFrame{
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JLabel minimizar;
     // End of variables declaration//GEN-END:variables
 }
