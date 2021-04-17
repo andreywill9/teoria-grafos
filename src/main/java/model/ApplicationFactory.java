@@ -9,6 +9,7 @@ import model.bellman.ford.MetricaCalculo;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+import model.bellman.ford.ResultCaminho;
 
 public class ApplicationFactory {
 
@@ -40,8 +41,9 @@ public class ApplicationFactory {
     todasConexoes = svcConexoes.buscarTodas(mapa);
   }
 
-  public void bellmanFord(Vertice origem, Vertice destino, MetricaCalculo metrica) throws Exception {
-    CaminhoMinimo.bellmanFord(todasConexoes, todasCidades, origem, destino, metrica);
+  public ResultCaminho bellmanFord(Vertice origem, Vertice destino, MetricaCalculo metrica) throws Exception {
+    ResultCaminho rc = CaminhoMinimo.bellmanFord(todasConexoes, todasCidades, origem, destino, metrica);
+    return rc;
   }
 
   public List<Aresta> getTodasConexoes() {
@@ -68,7 +70,11 @@ public class ApplicationFactory {
     List<Aresta> listaArestas = getTodasConexoes().stream()
         .filter(aresta -> aresta.getOrigem().equals(cidade) || aresta.getDestino().equals(cidade))
         .collect(Collectors.toList());
-    svcConexoes.excluirConexoes(listaArestas);
+    try{
+        svcConexoes.excluirConexoes(listaArestas);
+    }catch(Exception ex){
+        System.out.println("O vértice não possue ligações");
+    }
     svcCidade.excluirCidade(cidade);
     getTodasConexoes().removeAll(listaArestas);
     getTodasCidades().remove(cidade);
