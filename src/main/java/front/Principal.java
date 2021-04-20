@@ -733,7 +733,6 @@ public class Principal extends javax.swing.JFrame{
             
             this.Distancia.setText("");
             this.Custo.setText("");
-            this.Hops.setText("");
 
             this.CidadeCity1.setText(this.vertice_old.getNomeCidade());
             this.CidadeCity2.setText(this.vertice_now.getNomeCidade());
@@ -1434,7 +1433,6 @@ public class Principal extends javax.swing.JFrame{
                         } catch (Exception ex) {
                             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        resetMap();
                     }
                     
                     if(allow_report_erro_point){
