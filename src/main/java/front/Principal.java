@@ -1195,10 +1195,10 @@ public class Principal extends javax.swing.JFrame{
     private void removerAresta(){
         if(this.allow_remove_conexion){
             if(this.clicks == 2){
+                this.clicks = 0;
                 try {
                     this.app.excluirConexao(procurarArestaPorVertices());
                     JOptionPane.showMessageDialog(null, "Enlace removida com sucesso!");
-                    this.clicks = 0;
                     atualizarConexoes();
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Tentando excluir enlaces não existentes?");
