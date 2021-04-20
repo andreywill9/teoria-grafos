@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.Box;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.bellman.ford.MetricaCalculo;
@@ -32,7 +30,7 @@ import model.bellman.ford.ResultCaminho;
  */
 public class Principal extends javax.swing.JFrame{
     ApplicationFactory app = new ApplicationFactory(); //Aplicação do grafo
-    ArrayList<Point> array_points = new ArrayList(); //Armazenando pontos adicionados no mapa
+    ArrayList<Point> arrayPoints = new ArrayList(); //Armazenando pontos adicionados no mapa
     Color color_activated  = Color.BLUE; //Cor quando a aresta está ativada
     Color color_deactivated  = Color.RED; //Cor quando a aresta está desativada
     MetricaCalculo metrica = MetricaCalculo.CUSTO;
@@ -51,7 +49,7 @@ public class Principal extends javax.swing.JFrame{
     boolean allow_report_erro_enlace = false;
     Graphics universal_graph; //grafico para desenhos das arestas e vértices
     Sobre sobre;
-    ArrayList<Line2D.Float> lines = new ArrayList();
+    ArrayList<Lines> arrayLines = new ArrayList();
     
     List<Aresta> conexoes = null;
     
@@ -623,7 +621,7 @@ public class Principal extends javax.swing.JFrame{
         //Ao Scroll vertical ser soltado, renovar mapa.
         JScrollMap.getVerticalScrollBar().addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseReleased(java.awt.event.MouseEvent evt) {
-                    reset_map();
+                    resetMapOnly();
                 }
             });
         sobre = new Sobre();
@@ -633,36 +631,52 @@ public class Principal extends javax.swing.JFrame{
     private void initVertices(){
         //Adicionando os vertices ao grafico
         atualizarConexoes();
+        this.arrayPoints = new ArrayList();
         List<Vertice> vertices = app.getTodasCidades();
         for (int i=0; i<vertices.size(); i++) {
-            add_point(vertices.get(i));
+            addPoint(vertices.get(i));
         }
     }
     
     private void initConections(){
         //Adicionando conexões ao gráfico
         atualizarConexoes();
+        this.arrayLines = new ArrayList();
         for (int i=0; i<this.conexoes.size(); i++) {
-            Vertice origem = this.conexoes.get(i).getOrigem();
-            Vertice destino = this.conexoes.get(i).getDestino();
-            boolean status = this.conexoes.get(i).getArestaDisponivel();
-            add_line_aresta(origem.getCordenadaX(), origem.getCordenadaY(), destino.getCordenadaX(),destino.getCordenadaY(), status);
+            addAresta(this.conexoes.get(i));
         }
     }
     
-    void add_point(Vertice vertice){
-        //Cria objeto point e adiciona na lista de pontos
-        Point point = new Point(vertice);
-        array_points.add(point);
+    private void addAresta(Aresta aresta){
+        Lines line = new Lines(aresta);
+        this.arrayLines.add(line);
     }
     
-    private void reset_graph(){
+    void addPoint(Vertice vertice){
+        //Cria objeto point e adiciona na lista de pontos
+        Point point = new Point(vertice);
+        arrayPoints.add(point);
+    }
+    
+    private void resetGraph(){
         //Irá resetar o grafico, removendo arestas
         universal_graph = Map.getGraphics();
         Map.paint(Map.getGraphics());
     }
     
-    private void set_click(){
+    void resetMapOnly(){
+        this.Map.removeAll();
+        resetGraph();
+        for (int i=0; i<arrayPoints.size(); i++) {
+            this.Map.add(arrayPoints.get(i).getPainelPrincipal());
+        }
+        for (int i=0; i<arrayLines.size(); i++) {
+            arrayLines.get(i).desenharLinha();
+        }
+        Map.paintComponents(universal_graph);
+    }
+    
+    private void setClick(){
         //Adiciona um click, contabilizando os clicks em vértices
         this.clicks +=1;
     }
@@ -702,7 +716,7 @@ public class Principal extends javax.swing.JFrame{
         
     }
     
-    private void add_line_aresta(){
+    private void addLinhaAresta(){
         //Adiciona linha de aresta a partir dos cliques
 
         if(this.clicks == 2){
@@ -729,21 +743,6 @@ public class Principal extends javax.swing.JFrame{
         }
     }
     
-    private void add_line_aresta(int x1, int y1, int x2, int y2, boolean status){
-        //Adiciona linha de aresta a partir de coordenadas já conseguidas.
-        if(status){
-            ((Graphics2D)universal_graph).setColor(color_activated);
-        }else{
-            ((Graphics2D)universal_graph).setColor(color_deactivated);
-        }
-        
-        ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
-        
-        Line2D.Float line = new Line2D.Float(x1, y1, x2, y2);
-        this.lines.add(line);
-        ((Graphics2D)universal_graph).draw(line);
-        //Map.paint(universal_graph);
-    }
 
     
     private void ButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCancelActionPerformed
@@ -753,7 +752,7 @@ public class Principal extends javax.swing.JFrame{
         this.SuperiorMenu.setVisible(true);
         this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null, "Operação cancelada com sucesso!");
-        reset_map();
+        resetMap();
         
     }//GEN-LAST:event_ButtonCancelActionPerformed
 
@@ -791,7 +790,7 @@ public class Principal extends javax.swing.JFrame{
             this.SuperiorMenu.setVisible(false);
             this.JScrollMap.setVisible(false);
             
-            reset_map();
+            resetMap();
 
         }
         
@@ -843,14 +842,14 @@ public class Principal extends javax.swing.JFrame{
         this.SuperiorMenu.setVisible(true);
         this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
-        reset_map(); 
+        resetMap(); 
     }//GEN-LAST:event_AdicionarPontosButtonActionPerformed
 
     private void ButtonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancelMouseClicked
         //Cancelando operação de adição de novo ponto
         LigarDesligarJanelas("JScrollPane", true);
         JOptionPane.showMessageDialog(null,"Operação cancelada com sucesso!");
-        reset_map();
+        resetMap();
     }//GEN-LAST:event_ButtonCancelMouseClicked
 
     private void ListarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ListarMouseClicked
@@ -862,7 +861,7 @@ public class Principal extends javax.swing.JFrame{
         this.Map.setEnabled(true);
         JOptionPane.showMessageDialog(null, "Mapa iniciado!");
         atualizarConexoes();
-        reset_map();
+        resetMap();
     }//GEN-LAST:event_ListarMouseClicked
 
     private void MapMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMouseMoved
@@ -908,10 +907,6 @@ public class Principal extends javax.swing.JFrame{
     private void AdicionarEnlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarEnlaceButtonActionPerformed
         try {
             this.app.cadastrarConexao(this.vertice_old, this.vertice_now, Integer.parseInt(Distancia.getText()), Integer.parseInt(Custo.getText()));
-            ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
-            Line2D.Float line = new Line2D.Float(this.vertice_old.getCordenadaX(), this.vertice_old.getCordenadaY(), this.vertice_now.getCordenadaX(), this.vertice_now.getCordenadaY());
-            this.lines.add(line);
-            ((Graphics2D)universal_graph).draw(line);
         } catch (Exception ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -922,7 +917,7 @@ public class Principal extends javax.swing.JFrame{
         this.SuperiorMenu.setVisible(true);
         this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
-        reset_map();
+        resetMap();
     }//GEN-LAST:event_AdicionarEnlaceButtonActionPerformed
 
     private void ButtonCancel1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancel1MouseClicked
@@ -936,7 +931,7 @@ public class Principal extends javax.swing.JFrame{
         this.SuperiorMenu.setVisible(true);
         this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null,"Operação Cancelada");
-        reset_map();
+        resetMap();
         
     }//GEN-LAST:event_ButtonCancel1ActionPerformed
 
@@ -978,6 +973,7 @@ public class Principal extends javax.swing.JFrame{
             
             AplicarHops.setEnabled(false);
             AplicarDistancia.setEnabled(false);
+            ReportErro.setEnabled(false);
             
             EnlacesMenu.setEnabled(false);
             
@@ -986,6 +982,7 @@ public class Principal extends javax.swing.JFrame{
             AplicarCusto.setText("Percorrer caminho mínimo com CUSTO");
             AplicarHops.setEnabled(true);
             AplicarDistancia.setEnabled(true);
+            ReportErro.setEnabled(true);
             EnlacesMenu.setEnabled(true);
         }
     }//GEN-LAST:event_AplicarCustoActionPerformed
@@ -999,6 +996,7 @@ public class Principal extends javax.swing.JFrame{
             
             AplicarDistancia.setEnabled(false);
             AplicarCusto.setEnabled(false);
+            ReportErro.setEnabled(false);
             
             EnlacesMenu.setEnabled(false);
             
@@ -1008,6 +1006,7 @@ public class Principal extends javax.swing.JFrame{
             AplicarDistancia.setEnabled(true);
             AplicarCusto.setEnabled(true);
             EnlacesMenu.setEnabled(true);
+            ReportErro.setEnabled(true);
         }
     }//GEN-LAST:event_AplicarHopsActionPerformed
 
@@ -1107,7 +1106,7 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_JScrollMapMouseClicked
 
     private void JScrollMapMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JScrollMapMouseReleased
-        reset_map();
+        resetMap();
     }//GEN-LAST:event_JScrollMapMouseReleased
 
     private void SobreMenuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_SobreMenuMouseClicked
@@ -1125,6 +1124,7 @@ public class Principal extends javax.swing.JFrame{
             
             AplicarHops.setEnabled(false);
             AplicarCusto.setEnabled(false);
+            ReportErro.setEnabled(false);
             
             EnlacesMenu.setEnabled(false);
             
@@ -1133,6 +1133,7 @@ public class Principal extends javax.swing.JFrame{
             AplicarDistancia.setText("Percorrer caminho mínimo com DISTANCIA");
             AplicarHops.setEnabled(true);
             AplicarCusto.setEnabled(true);
+            ReportErro.setEnabled(true);
             EnlacesMenu.setEnabled(true);
         }
     }//GEN-LAST:event_AplicarDistanciaActionPerformed
@@ -1163,7 +1164,7 @@ public class Principal extends javax.swing.JFrame{
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Ops... Acho que estes pontos não se dão muito bem rs");
                 }
-                reset_map();
+                resetMap();
             }
       }  
     }
@@ -1180,7 +1181,7 @@ public class Principal extends javax.swing.JFrame{
                 }
                 
                 atualizarConexoes();
-                reset_map();
+                resetMap();
             }
         }
     }
@@ -1197,7 +1198,7 @@ public class Principal extends javax.swing.JFrame{
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Tentando excluir enlaces não existentes?");
                 }
-                reset_map();
+                resetMap();
             }
         }
     }
@@ -1234,9 +1235,9 @@ public class Principal extends javax.swing.JFrame{
         this.conexoes = this.app.getTodasConexoes();
     }
     
-    private void reset_map(){
+    private void resetMap(){
         this.Map.removeAll();
-        reset_graph();
+        resetGraph();
         initVertices();
         initConections();
         Map.paintComponents(universal_graph);
@@ -1397,21 +1398,20 @@ public class Principal extends javax.swing.JFrame{
                     System.out.println(name);
                     
                     if(allow_add_conexion){
-                        set_click();
+                        setClick();
                         configClicks(vertice_now);
-                        add_line_aresta();
-                        
+                        addLinhaAresta();
                     }
                     
                     if(allow_do_way_minimum){
-                        set_click();
+                        setClick();
                         configClicks(vertice_now);
                         fazerCaminhoMinimo();
                     }
                     
                     if(allow_report_erro_enlace){
                         try {
-                            set_click();
+                            setClick();
                             configClicks(vertice_now);
                             reportarErroCaminho();
                         } catch (Exception ex) {
@@ -1421,15 +1421,14 @@ public class Principal extends javax.swing.JFrame{
                     
                     if(allow_remove_conexion){
                         try {
-                            set_click();
+                            setClick();
                             configClicks(vertice_now);
-                            
                             removerAresta();
                             princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/deactivated_point_mouseoff.png")));
-                            reset_map();
                         } catch (Exception ex) {
                             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                         }
+                        resetMap();
                     }
                     
                     if(allow_report_erro_point){
@@ -1437,7 +1436,7 @@ public class Principal extends javax.swing.JFrame{
                             app.alterarStatusCidade(vertice_now);
                             status = !status;
                             atualizarConexoes();
-                            reset_map();
+                            resetMap();
                         } catch (Exception ex) {
                             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                         }
@@ -1449,7 +1448,7 @@ public class Principal extends javax.swing.JFrame{
                         } catch (Exception ex) {
                             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        reset_map();
+                        resetMap();
                     }
                 }
             });
@@ -1481,7 +1480,10 @@ public class Principal extends javax.swing.JFrame{
             Map.add(princ);
             
         }
-       
+        
+        public javax.swing.JPanel getPainelPrincipal(){
+            return this.princ;
+        }
         
         public int getX(){
             return this.coordinates_x;
@@ -1500,6 +1502,35 @@ public class Principal extends javax.swing.JFrame{
         }
         
     }
+    
+class Lines{
+    private Aresta aresta = null;
+    private final java.awt.Color cor_ativada = java.awt.Color.BLUE;
+    private final java.awt.Color cor_desativada = java.awt.Color.RED;
+    private final java.awt.Color cor_caminho_minimo = java.awt.Color.GREEN;
+    Line2D.Float line = null;
+    
+    Lines (Aresta aresta){
+        this.aresta = aresta;
+        desenharLinha();
+    }
+    
+    private void desenharLinha(){
+        if(this.aresta.getArestaDisponivel()){
+            ((Graphics2D)universal_graph).setColor(cor_ativada);
+        }else{
+            ((Graphics2D)universal_graph).setColor(cor_desativada);
+        }
+        ((Graphics2D)universal_graph).setStroke(new BasicStroke(2));
+        this.line = new Line2D.Float(aresta.getOrigem().getCordenadaX(), aresta.getOrigem().getCordenadaY(), aresta.getDestino().getCordenadaX(), aresta.getDestino().getCordenadaY());
+        ((Graphics2D)universal_graph).draw(this.line);
+    }
+    
+    public Aresta getAresta(){
+        return this.aresta;
+    }
+    
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem AddEnlaces;
