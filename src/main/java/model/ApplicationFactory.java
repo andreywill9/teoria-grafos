@@ -1,9 +1,6 @@
 package model;
 
-import Connection.ConnectionFactory;
-import Connection.ServicoCidade;
-import Connection.ServicoConexoes;
-import Connection.ServicoEstados;
+import Connection.*;
 import model.bellman.ford.CaminhoMinimo;
 import model.bellman.ford.MetricaCalculo;
 
@@ -20,6 +17,8 @@ public class ApplicationFactory {
 
   private final ServicoEstados svcEstados;
 
+  private final ServicoMunicipios svcMunicipios;
+
   private final ConnectionFactory conexao;
 
   private List<Aresta> todasConexoes;
@@ -31,6 +30,7 @@ public class ApplicationFactory {
     svcCidade = new ServicoCidade(conexao);
     svcConexoes = new ServicoConexoes(conexao);
     svcEstados = new ServicoEstados(conexao);
+    svcMunicipios = new ServicoMunicipios(conexao);
     buscarCidades();
     buscarConexoes();
   }
