@@ -3,6 +3,7 @@ package model;
 import Connection.ConnectionFactory;
 import Connection.ServicoCidade;
 import Connection.ServicoConexoes;
+import Connection.ServicoEstados;
 import model.bellman.ford.CaminhoMinimo;
 import model.bellman.ford.MetricaCalculo;
 
@@ -17,6 +18,8 @@ public class ApplicationFactory {
 
   private final ServicoConexoes svcConexoes;
 
+  private final ServicoEstados svcEstados;
+
   private final ConnectionFactory conexao;
 
   private List<Aresta> todasConexoes;
@@ -27,6 +30,7 @@ public class ApplicationFactory {
     conexao = new ConnectionFactory();
     svcCidade = new ServicoCidade(conexao);
     svcConexoes = new ServicoConexoes(conexao);
+    svcEstados = new ServicoEstados(conexao);
     buscarCidades();
     buscarConexoes();
   }
@@ -42,8 +46,7 @@ public class ApplicationFactory {
   }
 
   public ResultCaminho bellmanFord(Vertice origem, Vertice destino, MetricaCalculo metrica) throws Exception {
-    ResultCaminho rc = CaminhoMinimo.bellmanFord(todasConexoes, todasCidades, origem, destino, metrica);
-    return rc;
+    return CaminhoMinimo.bellmanFord(todasConexoes, todasCidades, origem, destino, metrica);
   }
 
   public List<Aresta> getTodasConexoes() {
@@ -73,7 +76,7 @@ public class ApplicationFactory {
     try{
         svcConexoes.excluirConexoes(listaArestas);
     }catch(Exception ex){
-        System.out.println("O vértice não possue ligações");
+        System.out.println("O vï¿½rtice nï¿½o possue ligaï¿½ï¿½es");
     }
     svcCidade.excluirCidade(cidade);
     getTodasConexoes().removeAll(listaArestas);

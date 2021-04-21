@@ -22,8 +22,7 @@ public class CaminhoMinimo {
     Node nodeDestino = getNode(destino, verticesDisponiveis);
     if (nodeDestino == null || nodeOrigem == null) throw new Exception("Origem ou destino está inativo");
     bellmanFord(nodeOrigem, verticesDisponiveis, arestasDisponiveis, metrica);
-    ResultCaminho rc = new ResultCaminho(nodeDestino.getCaminho(), nodeDestino.getValorPercorrido());
-    return rc;
+    return ResultCaminho.instanciar(nodeDestino);
   }
 
   public static Node getNode(Vertice vertice, List<Node> nodes) {
