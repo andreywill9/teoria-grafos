@@ -689,15 +689,18 @@ public class Principal extends javax.swing.JFrame{
     }
     
     void resetMapOnly(){
-        this.Map.removeAll();
-        resetGraph();
-        for (int i=0; i<arrayPoints.size(); i++) {
-            this.Map.add(arrayPoints.get(i).getPainelPrincipal());
+        if(!(this.AdicionarPontos.isVisible() || this.AdicionarEnlaces.isVisible())){
+            this.Map.removeAll();
+            resetGraph();
+            for (int i=0; i<arrayPoints.size(); i++) {
+                this.Map.add(arrayPoints.get(i).getPainelPrincipal());
+            }
+            for (int i=0; i<arrayLines.size(); i++) {
+                arrayLines.get(i).desenharLinha();
+            }
+            Map.paintComponents(universal_graph);
         }
-        for (int i=0; i<arrayLines.size(); i++) {
-            arrayLines.get(i).desenharLinha();
-        }
-        Map.paintComponents(universal_graph);
+        
     }
     
     private void setClick(){
@@ -855,7 +858,6 @@ public class Principal extends javax.swing.JFrame{
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-        "[^A-Z]"
         
         this.AdicionarEnlaces.setVisible(false);
         this.AdicionarPontos.setVisible(false);
