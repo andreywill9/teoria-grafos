@@ -16,6 +16,7 @@ import java.awt.Toolkit;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.geom.Line2D;
+import java.nio.charset.StandardCharsets;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import model.bellman.ford.MetricaCalculo;
 import model.bellman.ford.ResultCaminho;
+
 /**
  *
  * @author 55119
@@ -76,17 +78,6 @@ public class Principal extends javax.swing.JFrame{
     private void initComponents() {
 
         Listar = new javax.swing.JButton();
-        JScrollMap = new javax.swing.JScrollPane();
-        PanelMap = new javax.swing.JPanel();
-        Map = new javax.swing.JLabel();
-        AdicionarPontos = new javax.swing.JPanel();
-        jPanel1 = new javax.swing.JPanel();
-        AdicionarPontosButton = new javax.swing.JButton();
-        ButtonCancel = new javax.swing.JButton();
-        SiglaAdd = new javax.swing.JFormattedTextField();
-        jLabel2 = new javax.swing.JLabel();
-        ComboCitys = new javax.swing.JComboBox<>();
-        jLabel3 = new javax.swing.JLabel();
         AdicionarEnlaces = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         AdicionarEnlaceButton = new javax.swing.JButton();
@@ -101,6 +92,19 @@ public class Principal extends javax.swing.JFrame{
         SiglaCity1 = new javax.swing.JLabel();
         DistanciaLabel = new javax.swing.JLabel();
         CuatoLabel = new javax.swing.JLabel();
+        AdicionarPontos = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
+        AdicionarPontosButton = new javax.swing.JButton();
+        ButtonCancel = new javax.swing.JButton();
+        SiglaAdd = new javax.swing.JFormattedTextField();
+        jLabel2 = new javax.swing.JLabel();
+        ComboCitys = new javax.swing.JComboBox<>();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel3 = new javax.swing.JPanel();
+        StatusGeral = new javax.swing.JLabel();
+        JScrollMap = new javax.swing.JScrollPane();
+        PanelMap = new javax.swing.JPanel();
+        Map = new javax.swing.JLabel();
         BackgroundMap = new javax.swing.JLabel();
         SuperiorMenu = new javax.swing.JMenuBar();
         PontosMenu = new javax.swing.JMenu();
@@ -121,9 +125,9 @@ public class Principal extends javax.swing.JFrame{
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Projeto Roteamento");
         setBackground(new java.awt.Color(51, 51, 51));
-        setMinimumSize(new java.awt.Dimension(905, 760));
+        setMinimumSize(new java.awt.Dimension(905, 795));
         setResizable(false);
-        setSize(new java.awt.Dimension(905, 760));
+        setSize(new java.awt.Dimension(905, 795));
         getContentPane().setLayout(null);
 
         Listar.setBackground(new java.awt.Color(51, 51, 51));
@@ -138,147 +142,6 @@ public class Principal extends javax.swing.JFrame{
         });
         getContentPane().add(Listar);
         Listar.setBounds(740, 10, 130, 20);
-
-        JScrollMap.setBorder(null);
-        JScrollMap.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        JScrollMap.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        JScrollMap.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        JScrollMap.setName("JScrollMap"); // NOI18N
-        JScrollMap.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JScrollMapMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                JScrollMapMouseReleased(evt);
-            }
-        });
-
-        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
-        PanelMap.setAutoscrolls(true);
-        PanelMap.setPreferredSize(new java.awt.Dimension(900, 900));
-        PanelMap.setLayout(null);
-
-        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
-        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        Map.setEnabled(false);
-        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                MapMouseMoved(evt);
-            }
-        });
-        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                MapMouseWheelMoved(evt);
-            }
-        });
-        Map.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MapMouseClicked(evt);
-            }
-        });
-        Map.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                MapKeyPressed(evt);
-            }
-        });
-        PanelMap.add(Map);
-        Map.setBounds(0, 0, 900, 1200);
-
-        JScrollMap.setViewportView(PanelMap);
-
-        getContentPane().add(JScrollMap);
-        JScrollMap.setBounds(0, 0, 900, 700);
-        JScrollMap.getVerticalScrollBar().setEnabled(false);
-
-        AdicionarPontos.setBackground(new java.awt.Color(0,0,0,200));
-        AdicionarPontos.setEnabled(false);
-        AdicionarPontos.setMinimumSize(new java.awt.Dimension(880, 934));
-        AdicionarPontos.setName("AdicionarPontos"); // NOI18N
-        AdicionarPontos.setPreferredSize(new java.awt.Dimension(880, 934));
-        AdicionarPontos.setLayout(null);
-
-        jPanel1.setBackground(new java.awt.Color(49, 49, 49));
-        jPanel1.setLayout(null);
-
-        AdicionarPontosButton.setBackground(new java.awt.Color(51, 51, 51));
-        AdicionarPontosButton.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        AdicionarPontosButton.setText("Adicionar");
-        AdicionarPontosButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        AdicionarPontosButton.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AdicionarPontosButtonMouseClicked(evt);
-            }
-        });
-        AdicionarPontosButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AdicionarPontosButtonActionPerformed(evt);
-            }
-        });
-        jPanel1.add(AdicionarPontosButton);
-        AdicionarPontosButton.setBounds(20, 330, 250, 40);
-
-        ButtonCancel.setBackground(new java.awt.Color(51, 51, 51));
-        ButtonCancel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        ButtonCancel.setText("Cancelar");
-        ButtonCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ButtonCancelMouseClicked(evt);
-            }
-        });
-        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ButtonCancelActionPerformed(evt);
-            }
-        });
-        jPanel1.add(ButtonCancel);
-        ButtonCancel.setBounds(280, 330, 250, 40);
-
-        SiglaAdd.setBackground(new java.awt.Color(204, 204, 204));
-        SiglaAdd.setColumns(3);
-        try {
-            SiglaAdd.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("UUU")));
-        } catch (java.text.ParseException ex) {
-            ex.printStackTrace();
-        }
-        SiglaAdd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        SiglaAdd.setText("");
-        SiglaAdd.setToolTipText("");
-        SiglaAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        jPanel1.add(SiglaAdd);
-        SiglaAdd.setBounds(170, 180, 220, 40);
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel2.setText("Sigla");
-        jPanel1.add(jLabel2);
-        jLabel2.setBounds(250, 140, 60, 22);
-
-        ComboCitys.setBackground(new java.awt.Color(204, 204, 204));
-        ComboCitys.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
-        ComboCitys.setForeground(new java.awt.Color(0, 0, 0));
-        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                ComboCitysActionPerformed(evt);
-            }
-        });
-        jPanel1.add(ComboCitys);
-        ComboCitys.setBounds(120, 60, 330, 40);
-
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Cidade");
-        jPanel1.add(jLabel3);
-        jLabel3.setBounds(250, 30, 60, 22);
-
-        AdicionarPontos.add(jPanel1);
-        jPanel1.setBounds(160, 190, 550, 390);
-
-        getContentPane().add(AdicionarPontos);
-        AdicionarPontos.setBounds(0, -50, 900, 980);
-        AdicionarPontos.setVisible(false);
 
         AdicionarEnlaces.setBackground(new java.awt.Color(0,0,0,200));
         AdicionarEnlaces.setEnabled(false);
@@ -411,6 +274,159 @@ public class Principal extends javax.swing.JFrame{
         getContentPane().add(AdicionarEnlaces);
         AdicionarEnlaces.setBounds(0, -50, 900, 980);
         AdicionarEnlaces.setVisible(false);
+
+        AdicionarPontos.setBackground(new java.awt.Color(0,0,0,200));
+        AdicionarPontos.setEnabled(false);
+        AdicionarPontos.setMinimumSize(new java.awt.Dimension(880, 934));
+        AdicionarPontos.setName("AdicionarPontos"); // NOI18N
+        AdicionarPontos.setPreferredSize(new java.awt.Dimension(880, 934));
+        AdicionarPontos.setLayout(null);
+
+        jPanel1.setBackground(new java.awt.Color(49, 49, 49));
+        jPanel1.setLayout(null);
+
+        AdicionarPontosButton.setBackground(new java.awt.Color(51, 51, 51));
+        AdicionarPontosButton.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        AdicionarPontosButton.setText("Adicionar");
+        AdicionarPontosButton.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        AdicionarPontosButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AdicionarPontosButtonMouseClicked(evt);
+            }
+        });
+        AdicionarPontosButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AdicionarPontosButtonActionPerformed(evt);
+            }
+        });
+        jPanel1.add(AdicionarPontosButton);
+        AdicionarPontosButton.setBounds(20, 330, 250, 40);
+
+        ButtonCancel.setBackground(new java.awt.Color(51, 51, 51));
+        ButtonCancel.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ButtonCancel.setText("Cancelar");
+        ButtonCancel.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        ButtonCancel.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ButtonCancelMouseClicked(evt);
+            }
+        });
+        ButtonCancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ButtonCancelActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ButtonCancel);
+        ButtonCancel.setBounds(280, 330, 250, 40);
+
+        SiglaAdd.setBackground(new java.awt.Color(204, 204, 204));
+        SiglaAdd.setColumns(3);
+        try {
+            SiglaAdd.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("UUU")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        SiglaAdd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        SiglaAdd.setText("");
+        SiglaAdd.setToolTipText("");
+        SiglaAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        jPanel1.add(SiglaAdd);
+        SiglaAdd.setBounds(170, 180, 220, 40);
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel2.setText("Sigla");
+        jPanel1.add(jLabel2);
+        jLabel2.setBounds(250, 140, 60, 22);
+
+        ComboCitys.setBackground(new java.awt.Color(204, 204, 204));
+        ComboCitys.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
+        ComboCitys.setForeground(new java.awt.Color(0, 0, 0));
+        ComboCitys.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                ComboCitysActionPerformed(evt);
+            }
+        });
+        jPanel1.add(ComboCitys);
+        ComboCitys.setBounds(120, 60, 330, 40);
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel3.setText("Cidade");
+        jPanel1.add(jLabel3);
+        jLabel3.setBounds(250, 30, 60, 22);
+
+        AdicionarPontos.add(jPanel1);
+        jPanel1.setBounds(160, 190, 550, 390);
+
+        getContentPane().add(AdicionarPontos);
+        AdicionarPontos.setBounds(0, -50, 900, 980);
+        AdicionarPontos.setVisible(false);
+
+        jPanel3.setBackground(new java.awt.Color(51, 51, 51));
+
+        StatusGeral.setBackground(new java.awt.Color(51, 51, 51));
+        StatusGeral.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
+        StatusGeral.setForeground(new java.awt.Color(255, 255, 255));
+        StatusGeral.setText("Bem vindo ao Projeto de Roteamento!");
+        StatusGeral.setToolTipText("");
+        jPanel3.add(StatusGeral);
+
+        getContentPane().add(jPanel3);
+        jPanel3.setBounds(0, 700, 900, 70);
+
+        JScrollMap.setBorder(null);
+        JScrollMap.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollMap.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        JScrollMap.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        JScrollMap.setName("JScrollMap"); // NOI18N
+        JScrollMap.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JScrollMapMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                JScrollMapMouseReleased(evt);
+            }
+        });
+
+        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
+        PanelMap.setAutoscrolls(true);
+        PanelMap.setPreferredSize(new java.awt.Dimension(900, 820));
+        PanelMap.setLayout(null);
+
+        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
+        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        Map.setEnabled(false);
+        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                MapMouseMoved(evt);
+            }
+        });
+        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                MapMouseWheelMoved(evt);
+            }
+        });
+        Map.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MapMouseClicked(evt);
+            }
+        });
+        Map.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                MapKeyPressed(evt);
+            }
+        });
+        PanelMap.add(Map);
+        Map.setBounds(0, 0, 900, 1200);
+
+        JScrollMap.setViewportView(PanelMap);
+
+        getContentPane().add(JScrollMap);
+        JScrollMap.setBounds(0, 0, 900, 700);
+        JScrollMap.getVerticalScrollBar().setEnabled(false);
 
         BackgroundMap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
         BackgroundMap.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -640,6 +656,8 @@ public class Principal extends javax.swing.JFrame{
         this.arrayPoints = new ArrayList();
         List<Vertice> vertices = app.getTodasCidades();
         for (int i=0; i<vertices.size(); i++) {
+            byte[] tempNome = vertices.get(i).getNomeCidade().getBytes();
+            vertices.get(i).setNomeCidade(new String(tempNome, StandardCharsets.UTF_8));
             addPoint(vertices.get(i));
         }
     }
@@ -702,26 +720,6 @@ public class Principal extends javax.swing.JFrame{
         return names_city;
     }
     
-    private void LigarDesligarJanelas(String nome, boolean superiorMenuAtivo){
-        this.SuperiorMenu.setVisible(superiorMenuAtivo);
-        
-        if(nome == "JScrollMap"){
-            this.AdicionarEnlaces.setVisible(false);
-            this.AdicionarPontos.setVisible(false);
-            this.JScrollMap.setVisible(true);
-        }else if(nome == "AdicionarEnlaces"){
-            this.AdicionarPontos.setVisible(false);
-            this.JScrollMap.setVisible(false);
-            this.AdicionarEnlaces.setVisible(true);
-        }else if(nome == "AdicionarPontos"){
-            this.JScrollMap.setVisible(false);
-            this.AdicionarEnlaces.setVisible(false);
-            this.AdicionarPontos.setVisible(true);
-        }
-        
-        
-    }
-    
     private void addLinhaAresta(){
         //Adiciona linha de aresta a partir dos cliques
 
@@ -744,12 +742,21 @@ public class Principal extends javax.swing.JFrame{
 
     
     private void configClicks(Vertice vertice){
+        boolean status = false;
+        System.out.println(this.clicks);
         if(this.clicks == 1){
             this.vertice_old = vertice;
+            
         }
         if(this.clicks == 2){
             this.vertice_now = vertice;
+            status = true;
         }
+        ReportErro.setEnabled(status);
+        EnlacesMenu.setEnabled(status);
+        PontosMenu.setEnabled(status);
+        CaminhoMinimo.setEnabled(status);
+        this.escreverStatusGeral();
     }
     
 
@@ -791,7 +798,10 @@ public class Principal extends javax.swing.JFrame{
 
             ComboCitys.removeAllItems();
             for (int i=0;i<limite;i++){
-                ComboCitys.addItem(names_city.get(i));
+                byte[] tempNome = names_city.get(i).getBytes();
+                String tempNomeString = new String(tempNome, StandardCharsets.UTF_8);
+                ComboCitys.addItem(tempNomeString);
+                
             }
 
             this.AdicionarEnlaces.setVisible(false);
@@ -845,6 +855,8 @@ public class Principal extends javax.swing.JFrame{
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
         
+        "[^A-Z]"
+        
         this.AdicionarEnlaces.setVisible(false);
         this.AdicionarPontos.setVisible(false);
         this.SuperiorMenu.setVisible(true);
@@ -855,7 +867,10 @@ public class Principal extends javax.swing.JFrame{
 
     private void ButtonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancelMouseClicked
         //Cancelando operação de adição de novo ponto
-        LigarDesligarJanelas("JScrollPane", true);
+        this.AdicionarEnlaces.setVisible(false);
+        this.AdicionarPontos.setVisible(false);
+        this.SuperiorMenu.setVisible(true);
+        this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null,"Operação cancelada com sucesso!");
         resetMap();
     }//GEN-LAST:event_ButtonCancelMouseClicked
@@ -926,6 +941,7 @@ public class Principal extends javax.swing.JFrame{
         this.SuperiorMenu.setVisible(true);
         this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
+        escreverStatusGeral("");
         resetMap();
     }//GEN-LAST:event_AdicionarEnlaceButtonActionPerformed
 
@@ -940,6 +956,7 @@ public class Principal extends javax.swing.JFrame{
         this.SuperiorMenu.setVisible(true);
         this.JScrollMap.setVisible(true);
         JOptionPane.showMessageDialog(null,"Operação Cancelada");
+        escreverStatusGeral("");
         resetMap();
         
     }//GEN-LAST:event_ButtonCancel1ActionPerformed
@@ -1169,6 +1186,7 @@ public class Principal extends javax.swing.JFrame{
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Ops... Acho que estes pontos não se dão muito bem rs");
                 }
+                escreverStatusGeral("");
                 resetMap();
             }
       }  
@@ -1186,6 +1204,7 @@ public class Principal extends javax.swing.JFrame{
                 }
                 
                 atualizarConexoes();
+                escreverStatusGeral("");
                 resetMap();
             }
         }
@@ -1203,6 +1222,7 @@ public class Principal extends javax.swing.JFrame{
                 } catch (Exception ex) {
                     JOptionPane.showMessageDialog(null, "Tentando excluir enlaces não existentes?");
                 }
+                escreverStatusGeral("");
                 resetMap();
             }
         }
@@ -1246,6 +1266,18 @@ public class Principal extends javax.swing.JFrame{
         initVertices();
         initConections();
         Map.paintComponents(universal_graph);
+    }
+    
+    private void escreverStatusGeral(){
+        if(this.clicks == 1){
+            this.StatusGeral.setText(String.format("Vertice(s) selecionado(s): %s", this.vertice_old.getNomeCidade()));
+        }else if(this.clicks == 2){
+            this.StatusGeral.setText(String.format("Vertice(s) selecionado(s): %s e %s", this.vertice_old.getNomeCidade(), this.vertice_now.getNomeCidade()));
+        }
+    }
+    
+    private void escreverStatusGeral(String texto){
+        this.StatusGeral.setText(texto);
     }
     
     
@@ -1378,25 +1410,6 @@ public class Principal extends javax.swing.JFrame{
             princ.add(princ_point);
             
             
-            //Quando o mouse passa por cima do ponto
-            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseEntered(java.awt.event.MouseEvent evt) {
-                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
-                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseEntered)));
-                    }
-                    princ_point.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-                }
-            });
-            
-            //Quando o mouse sai de cima do ponto
-            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
-                public void mouseExited(java.awt.event.MouseEvent evt) {
-                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
-                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseReleased)));
-                    }
-                }
-            });
-            
             //Quando o mouse é clicado
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -1455,10 +1468,8 @@ public class Principal extends javax.swing.JFrame{
                         resetMap();
                     }
                 }
-            });
-            
-            //Quando o mouse é pressionado (clicando ou segurando)
-            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                
+                //Quando o mouse é pressionado (clicando ou segurando)
                 public void mousePressed(java.awt.event.MouseEvent evt) {
                     if(allow_do_way_minimum){
                         princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/selected_caminho.png")));
@@ -1469,15 +1480,29 @@ public class Principal extends javax.swing.JFrame{
                         princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mouse_clicking.png")));
                     }
                 }
-            });
-            
-            //Quando o mouse para de ser pressionado
-            princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
+                
+                //Quando o mouse para de ser pressionado
                 public void mouseReleased(java.awt.event.MouseEvent evt) {
                     if(!allow_do_way_minimum&!allow_report_erro_enlace){
                         princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseReleased)));   
                     }
                 }
+                
+                //Quando o mouse passa por cima do ponto
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseEntered)));
+                    }
+                    princ_point.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+                }
+                
+                //Quando o mouse sai de cima do ponto
+                 public void mouseExited(java.awt.event.MouseEvent evt) {
+                    if(!allow_do_way_minimum&!allow_report_erro_enlace){
+                        princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource(imageMouseReleased)));
+                    }
+                }
+                
             });
             
             //Adicionando o componentes e renovando grafico
@@ -1574,10 +1599,12 @@ class Lines{
     private javax.swing.JLabel SiglaCity1;
     private javax.swing.JLabel SiglaCity2;
     private javax.swing.JMenu SobreMenu;
+    private javax.swing.JLabel StatusGeral;
     private javax.swing.JMenuBar SuperiorMenu;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     // End of variables declaration//GEN-END:variables
 }
