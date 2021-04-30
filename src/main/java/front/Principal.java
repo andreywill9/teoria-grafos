@@ -86,6 +86,10 @@ public class Principal extends javax.swing.JFrame{
         jLabel1 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        Listar = new javax.swing.JButton();
+        JScrollMap = new javax.swing.JScrollPane();
+        PanelMap = new javax.swing.JPanel();
+        Map = new javax.swing.JLabel();
         AdicionarPontos = new javax.swing.JPanel();
         jPanel1 = new javax.swing.JPanel();
         AdicionarPontosButton = new javax.swing.JButton();
@@ -110,10 +114,6 @@ public class Principal extends javax.swing.JFrame{
         ErroPonto = new javax.swing.JMenuItem();
         ErroEnlace = new javax.swing.JMenuItem();
         SobreMenu = new javax.swing.JMenu();
-        Listar = new javax.swing.JButton();
-        JScrollMap = new javax.swing.JScrollPane();
-        PanelMap = new javax.swing.JPanel();
-        Map = new javax.swing.JLabel();
         AdicionarEnlaces = new javax.swing.JPanel();
         jPanel2 = new javax.swing.JPanel();
         AdicionarEnlaceButton = new javax.swing.JButton();
@@ -193,6 +193,74 @@ public class Principal extends javax.swing.JFrame{
 
         getContentPane().add(TitleBar);
         TitleBar.setBounds(0, 0, 900, 30);
+
+        Listar.setBackground(new java.awt.Color(51, 51, 51));
+        Listar.setForeground(new java.awt.Color(255, 255, 255));
+        Listar.setText("Listar conexões");
+        Listar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        Listar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        Listar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                ListarMouseClicked(evt);
+            }
+        });
+        getContentPane().add(Listar);
+        Listar.setBounds(730, 70, 130, 20);
+
+        JScrollMap.setBorder(null);
+        JScrollMap.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        JScrollMap.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+        JScrollMap.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        JScrollMap.setName("JScrollMap"); // NOI18N
+        JScrollMap.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                JScrollMapMouseClicked(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                JScrollMapMouseReleased(evt);
+            }
+        });
+
+        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
+        PanelMap.setAutoscrolls(true);
+        PanelMap.setPreferredSize(new java.awt.Dimension(900, 820));
+        PanelMap.setLayout(null);
+
+        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
+        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        Map.setEnabled(false);
+        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
+        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                MapMouseMoved(evt);
+            }
+        });
+        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
+            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
+                MapMouseWheelMoved(evt);
+            }
+        });
+        Map.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                MapMouseClicked(evt);
+            }
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                MapMousePressed(evt);
+            }
+        });
+        Map.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                MapKeyPressed(evt);
+            }
+        });
+        PanelMap.add(Map);
+        Map.setBounds(0, 0, 900, 900);
+
+        JScrollMap.setViewportView(PanelMap);
+
+        getContentPane().add(JScrollMap);
+        JScrollMap.setBounds(0, 60, 900, 710);
+        JScrollMap.getVerticalScrollBar().setEnabled(false);
 
         AdicionarPontos.setBackground(new java.awt.Color(0,0,0,200));
         AdicionarPontos.setEnabled(false);
@@ -511,74 +579,6 @@ public class Principal extends javax.swing.JFrame{
         SuperiorMenuFrame.setBounds(0, 30, 900, 30);
         ((BasicInternalFrameUI)SuperiorMenuFrame.getUI()).setNorthPane(null);
         SuperiorMenuFrame.setBorder(null);
-
-        Listar.setBackground(new java.awt.Color(51, 51, 51));
-        Listar.setForeground(new java.awt.Color(255, 255, 255));
-        Listar.setText("Listar conexões");
-        Listar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-        Listar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
-        Listar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                ListarMouseClicked(evt);
-            }
-        });
-        getContentPane().add(Listar);
-        Listar.setBounds(730, 70, 130, 20);
-
-        JScrollMap.setBorder(null);
-        JScrollMap.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-        JScrollMap.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-        JScrollMap.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        JScrollMap.setName("JScrollMap"); // NOI18N
-        JScrollMap.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                JScrollMapMouseClicked(evt);
-            }
-            public void mouseReleased(java.awt.event.MouseEvent evt) {
-                JScrollMapMouseReleased(evt);
-            }
-        });
-
-        PanelMap.setBackground(new java.awt.Color(51, 51, 51));
-        PanelMap.setAutoscrolls(true);
-        PanelMap.setPreferredSize(new java.awt.Dimension(900, 820));
-        PanelMap.setLayout(null);
-
-        Map.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mapa_esse.png"))); // NOI18N
-        Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        Map.setEnabled(false);
-        Map.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
-        Map.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                MapMouseMoved(evt);
-            }
-        });
-        Map.addMouseWheelListener(new java.awt.event.MouseWheelListener() {
-            public void mouseWheelMoved(java.awt.event.MouseWheelEvent evt) {
-                MapMouseWheelMoved(evt);
-            }
-        });
-        Map.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                MapMouseClicked(evt);
-            }
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                MapMousePressed(evt);
-            }
-        });
-        Map.addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                MapKeyPressed(evt);
-            }
-        });
-        PanelMap.add(Map);
-        Map.setBounds(0, 0, 900, 1200);
-
-        JScrollMap.setViewportView(PanelMap);
-
-        getContentPane().add(JScrollMap);
-        JScrollMap.setBounds(0, 60, 900, 710);
-        JScrollMap.getVerticalScrollBar().setEnabled(false);
 
         AdicionarEnlaces.setBackground(new java.awt.Color(0,0,0,200));
         AdicionarEnlaces.setEnabled(false);
