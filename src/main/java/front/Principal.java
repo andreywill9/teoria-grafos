@@ -731,7 +731,7 @@ public class Principal extends javax.swing.JFrame{
         BackgroundMap.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         BackgroundMap.setHorizontalTextPosition(javax.swing.SwingConstants.LEFT);
         getContentPane().add(BackgroundMap);
-        BackgroundMap.setBounds(0, -60, 900, 1330);
+        BackgroundMap.setBounds(0, 20, 900, 900);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
