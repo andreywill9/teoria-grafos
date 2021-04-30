@@ -6,6 +6,7 @@
 package front;
 
 import Connection.ConnectionFactory;
+import front.Sobre;
 import model.*;
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -137,7 +138,6 @@ public class Principal extends javax.swing.JFrame{
         setBackground(new java.awt.Color(51, 51, 51));
         setMinimumSize(new java.awt.Dimension(900, 800));
         setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(900, 800));
         setResizable(false);
         setSize(new java.awt.Dimension(900, 800));
         getContentPane().setLayout(null);
