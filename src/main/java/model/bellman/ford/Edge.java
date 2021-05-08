@@ -2,6 +2,10 @@ package model.bellman.ford;
 
 import model.Aresta;
 
+/**
+ * Classe responsável pelo objeto referente a uma Aresta, sendo auxiliar somente para a execução do algoritmo de Bellman Ford.
+ * Possui atributos para a aresta a qual o Edge é referente e os Nodes de origem e destino
+ */
 public class Edge {
 
   public Aresta arestaAtual;
