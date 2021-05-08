@@ -1149,13 +1149,10 @@ public class Principal extends javax.swing.JFrame{
             } catch (Exception ex) {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
-            if(names_city.size() > limiteTotalCidadesNovas){limite = limiteTotalCidadesNovas;}
-            else{limite = names_city.size();}
 
             ComboCitys.removeAllItems();
-            for (int i=0;i<limite;i++){
-                String tempNomeString = names_city.get(i);
-                ComboCitys.addItem(tempNomeString);
+            for (int i=0;i<names_city.size();i++){
+                ComboCitys.addItem(names_city.get(i));
                 
             }
 
@@ -1370,7 +1367,7 @@ public class Principal extends javax.swing.JFrame{
         //Após a identificação da latitude e longitude, recolhe as cidades mais próximas das quais foi clicado.
         ArrayList<String> cidadesAoRedor = new ArrayList();    
         double compare = 0.1;
-        while(cidadesAoRedor.size() < 20 & compare < 3){
+        while(cidadesAoRedor.size() < limiteTotalCidadesNovas & compare < 3){
             cidadesAoRedor = new ArrayList();   
             double latitude_max = latitude + compare;
             double latitude_min = latitude - compare;
