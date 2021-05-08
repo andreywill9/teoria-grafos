@@ -43,6 +43,7 @@ public class Principal extends javax.swing.JFrame{
     int qtdeClicksNaTela = 0; //Ajuda a adicionar a aresta, sendo o segundo click em um vértice, que vai adicionar a aresta
     Vertice primeiroVerticeClicado = null;
     Vertice ultimoVerticeClicado = null;
+    int limiteTotalCidadesNovas = 20;
     int xNow = 0;
     int yNow = 0;
     ConnectionFactory conn;
@@ -1148,8 +1149,7 @@ public class Principal extends javax.swing.JFrame{
             } catch (Exception ex) {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
-            
-            if(names_city.size() > 10){limite = 10;}
+            if(names_city.size() > limiteTotalCidadesNovas){limite = limiteTotalCidadesNovas;}
             else{limite = names_city.size();}
 
             ComboCitys.removeAllItems();
