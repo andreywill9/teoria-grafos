@@ -774,7 +774,9 @@ public class Principal extends javax.swing.JFrame{
                 this.SiglaCity1.setText(this.primeiroVerticeClicado.getSigla());
                 this.SiglaCity2.setText(this.ultimoVerticeClicado.getSigla());
             }
+            this.EnlacesMenu.setEnabled(true);
         }
+        
     }
 
     
@@ -861,7 +863,7 @@ public class Principal extends javax.swing.JFrame{
                 escreverStatusGeral("O ponto de conexão não foi adicionado, verifique a sigla ou nome, e se já existem!");
             }else{
                 JOptionPane.showMessageDialog(null,"Ponto adicionado com sucesso!");
-                escreverStatusGeral(String.format("O ponto de conexão de %s foi adicionado com sucesso!", string_selecionado));
+                escreverStatusGeral(String.format("O ponto de conexão de %s foi adicionado com sucesso!", string_selecionado.toUpperCase()));
             }
             recarregarMapa(); 
         }
@@ -1294,11 +1296,11 @@ public class Principal extends javax.swing.JFrame{
                 this.qtdeClicksNaTela = 0;
                 try {
                     this.appBanco.excluirConexao(procurarArestaPorVertices());
-                    escreverStatusGeral(String.format("A conexão entre as cidades %s e %s foi removida!", this.primeiroVerticeClicado.getNomeCidade(), this.ultimoVerticeClicado.getNomeCidade()));
+                    escreverStatusGeral(String.format("A conexão entre as cidades %s e %s foi removida!", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
                     JOptionPane.showMessageDialog(null, "Enlace removida com sucesso!");
                     atualizarConexoes();
                 } catch (Exception ex) {
-                    escreverStatusGeral(String.format("A conexão entre as cidades %s e %s não existe!", this.primeiroVerticeClicado.getNomeCidade(), this.ultimoVerticeClicado.getNomeCidade()));
+                    escreverStatusGeral(String.format("A conexão entre as cidades %s e %s não existe!", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
                     JOptionPane.showMessageDialog(null, "Tentando excluir conexões não existentes?");
                 }
                 EnlacesMenu.setEnabled(true);
@@ -1353,9 +1355,9 @@ public class Principal extends javax.swing.JFrame{
     
     private void escreverStatusGeral(){
         if(this.qtdeClicksNaTela == 1){
-            this.StatusGeral.setText(String.format("Vertice(s) selecionado(s): %s", this.primeiroVerticeClicado.getNomeCidade()));
+            this.StatusGeral.setText(String.format("Vertice(s) selecionado(s): %s", this.primeiroVerticeClicado.getNomeCidade().toUpperCase()));
         }else if(this.qtdeClicksNaTela == 2){
-            this.StatusGeral.setText(String.format("Vertice(s) selecionado(s): %s e %s", this.primeiroVerticeClicado.getNomeCidade(), this.ultimoVerticeClicado.getNomeCidade()));
+            this.StatusGeral.setText(String.format("Vertice(s) selecionado(s): %s e %s", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
         }
     }
     
@@ -1542,13 +1544,13 @@ public class Principal extends javax.swing.JFrame{
                 addLinhaAresta();
             }
 
-            if(permitirCaminharMinimo){
+            else if(permitirCaminharMinimo){
                 setClick();
                 configurarClique(vertice_now);
                 fazerCaminhoMinimo();
             }
 
-            if(permitirReportarErroEnlace){
+            else if(permitirReportarErroEnlace){
                 try {
                     setClick();
                     configurarClique(vertice_now);
@@ -1558,7 +1560,7 @@ public class Principal extends javax.swing.JFrame{
                 }
             }
 
-            if(permitirRemocaoConexao){
+            else if(permitirRemocaoConexao){
                 try {
                     setClick();
                     configurarClique(vertice_now);
@@ -1569,7 +1571,7 @@ public class Principal extends javax.swing.JFrame{
                 }
             }
 
-            if(permitirReportarErroPonto){
+            else if(permitirReportarErroPonto){
                 try {
                     appBanco.alterarStatusCidade(vertice_now);
                     status = !status;
@@ -1586,7 +1588,7 @@ public class Principal extends javax.swing.JFrame{
                 }
             }
 
-            if(permitirRemocaoPontos){
+            else if(permitirRemocaoPontos){
                 try {
                     appBanco.excluirCidade(vertice_now);
                     escreverStatusGeral(String.format("A cidade %s foi removida", vertice_now.getNomeCidade().toUpperCase()));
@@ -1594,6 +1596,8 @@ public class Principal extends javax.swing.JFrame{
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 recarregarMapa();
+            }else{
+                escreverStatusGeral(name);
             }
         }
         
