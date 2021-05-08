@@ -154,6 +154,9 @@ public class Principal extends javax.swing.JFrame{
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 TitleBarMousePressed(evt);
             }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                TitleBarMouseReleased(evt);
+            }
         });
         TitleBar.setLayout(null);
 
@@ -314,10 +317,10 @@ public class Principal extends javax.swing.JFrame{
         SiglaAdd.setFont(new java.awt.Font("Dialog", 0, 18)); // NOI18N
         SiglaAdd.setHorizontalAlignment(javax.swing.JTextField.CENTER);
         SiglaAdd.addInputMethodListener(new java.awt.event.InputMethodListener() {
-            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
-            }
             public void inputMethodTextChanged(java.awt.event.InputMethodEvent evt) {
                 SiglaAddInputMethodTextChanged(evt);
+            }
+            public void caretPositionChanged(java.awt.event.InputMethodEvent evt) {
             }
         });
         SiglaAdd.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -1228,6 +1231,12 @@ public class Principal extends javax.swing.JFrame{
         atualizarConexoes();
         recarregarMapa();
     }//GEN-LAST:event_ListarMousePressed
+
+    private void TitleBarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_TitleBarMouseReleased
+        if(this.Map.isEnabled()){
+            resetarMapaSomente();
+        } 
+    }//GEN-LAST:event_TitleBarMouseReleased
     
     private void fazerCaminhoMinimo(){
         if(this.permitirCaminharMinimo){
