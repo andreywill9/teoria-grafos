@@ -782,6 +782,10 @@ public class Principal extends javax.swing.JFrame{
         boolean status = false;
         if(this.qtdeClicksNaTela == 1){
             this.primeiroVerticeClicado = vertice;
+            EnlacesMenu.setEnabled(false);
+            ReportErro.setEnabled(false);
+            CaminhoMinimo.setEnabled(false);
+            PontosMenu.setEnabled(false);
             
         }
         if(this.qtdeClicksNaTela == 2){
@@ -826,6 +830,7 @@ public class Principal extends javax.swing.JFrame{
             EnlacesMenu.setEnabled(true);
             ReportErro.setEnabled(true);
             CaminhoMinimo.setEnabled(true);
+            RemovePontos.setEnabled(true);
             this.Map.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
             RemovePontos.setEnabled(true);
         }
@@ -924,6 +929,7 @@ public class Principal extends javax.swing.JFrame{
                 JOptionPane.showMessageDialog(null,"Falha ao adicionar enlace!");
                 escreverStatusGeral(String.format("A conexão entre %s e %s foi parece que já existe...", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
             }
+            EnlacesMenu.setEnabled(true);
             recarregarMapa();   
         }
         
@@ -936,6 +942,7 @@ public class Principal extends javax.swing.JFrame{
         this.AdicionarPontos.setVisible(false);
         this.SuperiorMenuFrame.setVisible(true);
         this.JScrollMap.setVisible(true);
+        EnlacesMenu.setEnabled(true);
         escreverStatusGeral(String.format("O Enlace entre %s e %s foi cancelada com sucesso", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
         JOptionPane.showMessageDialog(null,"Operação Cancelada");
         recarregarMapa();
@@ -1248,7 +1255,7 @@ public class Principal extends javax.swing.JFrame{
                     escreverStatusGeral("Esses pontos não possuem ligação!");
                     JOptionPane.showMessageDialog(null, "Bom, não foi possível realizar o caminho mínimo entre esses dois pontos!");
                 }
-                
+                CaminhoMinimo.setEnabled(true);
                 recarregarMapa();
             }
       }  
@@ -1273,7 +1280,7 @@ public class Principal extends javax.swing.JFrame{
                     escreverStatusGeral(String.format("O caminho entre %s e %s não existe!", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
                     JOptionPane.showMessageDialog(null, "Tente novamente, este enlace não existe!");
                 }
-                
+                ReportErro.setEnabled(true);
                 atualizarConexoes();
                 recarregarMapa();
             }
@@ -1294,7 +1301,7 @@ public class Principal extends javax.swing.JFrame{
                     this.StatusGeral.setText(String.format("A conexão entre as cidades %s e %s não existe!", this.primeiroVerticeClicado.getNomeCidade(), this.ultimoVerticeClicado.getNomeCidade()));
                     JOptionPane.showMessageDialog(null, "Tentando excluir conexões não existentes?");
                 }
-                
+                EnlacesMenu.setEnabled(true);
                 recarregarMapa();
             }
         }
