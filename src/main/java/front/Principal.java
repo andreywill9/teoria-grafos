@@ -1149,19 +1149,22 @@ public class Principal extends javax.swing.JFrame{
             } catch (Exception ex) {
                 Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
+            if(names_city.size() > 0){
+                ComboCitys.removeAllItems();
+                for (int i=0;i<names_city.size();i++){
+                    ComboCitys.addItem(names_city.get(i));
 
-            ComboCitys.removeAllItems();
-            for (int i=0;i<names_city.size();i++){
-                ComboCitys.addItem(names_city.get(i));
-                
+                }
+                this.AdicionarEnlaces.setVisible(false);
+                this.AdicionarPontos.setVisible(true);
+                this.SiglaAdd.setText("");
+                this.SuperiorMenuFrame.setVisible(false);
+                this.JScrollMap.setVisible(false);
+                recarregarMapa();
+            }else{
+                escreverStatusGeral("Nenhuma cidade próxima...");
             }
-
-            this.AdicionarEnlaces.setVisible(false);
-            this.AdicionarPontos.setVisible(true);
-            this.SiglaAdd.setText("");
-            this.SuperiorMenuFrame.setVisible(false);
-            this.JScrollMap.setVisible(false);
-            recarregarMapa();
+            
         }
     }//GEN-LAST:event_MapMousePressed
 
