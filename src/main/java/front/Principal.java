@@ -1368,23 +1368,26 @@ public class Principal extends javax.swing.JFrame{
     
     public ArrayList<String> viewTable(double latitude , double longitude) throws Exception {
         //Após a identificação da latitude e longitude, recolhe as cidades mais próximas das quais foi clicado.
-        ArrayList<String> names_citys_around = new ArrayList();    
-    
-        double compare = 3;
-        double latitude_max = latitude + compare;
-        double latitude_min = latitude - compare;
-        double longitude_max = longitude + compare;
-        double longitude_min = longitude - compare;
+        ArrayList<String> cidadesAoRedor = new ArrayList();    
+        double compare = 0.1;
+        while(cidadesAoRedor.size() < 20 & compare < 3){
+            cidadesAoRedor = new ArrayList();   
+            double latitude_max = latitude + compare;
+            double latitude_min = latitude - compare;
+            double longitude_max = longitude + compare;
+            double longitude_min = longitude - compare;
 
-        String query = "select * from municipios WHERE latitude BETWEEN " + latitude_min + " and " + latitude_max + "" + " and " +
-                "longitude BETWEEN " + longitude_min + " and " + longitude_max + "";
+            String query = "select * from municipios WHERE latitude BETWEEN " + latitude_min + " and " + latitude_max + "" + " and " +
+                    "longitude BETWEEN " + longitude_min + " and " + longitude_max + "";
 
-        ResultSet rs = this.conn.buscar(query);
-        while (rs.next()) {
-          String nome = rs.getString("nome");
-          names_citys_around.add(nome);
+            ResultSet rs = this.conn.buscar(query);
+            while (rs.next()) {
+              String nome = rs.getString("nome");
+              cidadesAoRedor.add(nome);
+            }
+            compare += 0.1;
         }
-        return names_citys_around;
+        return cidadesAoRedor;
     }
     public static void main(String args[]) throws Exception {
         /* Set the Nimbus look and feel */
