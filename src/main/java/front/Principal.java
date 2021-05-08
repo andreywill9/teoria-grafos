@@ -35,29 +35,30 @@ import model.bellman.ford.ResultCaminho;
  * @author 55119
  */
 public class Principal extends javax.swing.JFrame{
-    ApplicationFactory appBanco = new ApplicationFactory(); //AplicaÁ„o do grafo
+    ApplicationFactory appBanco = new ApplicationFactory(); //Aplica√ß√£o do grafo
     ArrayList<Point> listaPontos = new ArrayList(); //Armazenando pontos adicionados no mapa
-    Color corAtiva  = Color.BLUE; //Cor quando a aresta est· ativada
-    Color corDesativa  = Color.RED; //Cor quando a aresta est· desativada
+    Color corAtiva  = Color.BLUE; //Cor quando a aresta est√° ativada
+    Color corDesativa  = Color.RED; //Cor quando a aresta est√° desativada
     MetricaCalculo metrica = MetricaCalculo.CUSTO;
-    int qtdeClicksNaTela = 0; //Ajuda a adicionar a aresta, sendo o segundo click em um vÈrtice, que vai adicionar a aresta
+    int qtdeClicksNaTela = 0; //Ajuda a adicionar a aresta, sendo o segundo click em um v√©rtice, que vai adicionar a aresta
     Vertice primeiroVerticeClicado = null;
     Vertice ultimoVerticeClicado = null;
     int xNow = 0;
     int yNow = 0;
     ConnectionFactory conn;
-    boolean permitirAdicaoPontos = false; //permitir adicionar vÈrtice
+    boolean permitirAdicaoPontos = false; //permitir adicionar v√©rtice
     boolean permitirRemocaoPontos = false;
     boolean permitirAdicaoConexao = false;
     boolean permitirRemocaoConexao = false;
     boolean permitirCaminharMinimo = false;
     boolean permitirReportarErroPonto = false;
     boolean permitirReportarErroEnlace = false;
-    Graphics graficoUniversal; //grafico para desenhos das arestas e vÈrtices
+    Graphics graficoUniversal; //grafico para desenhos das arestas e v√©rtices
     Sobre sobre;
     ArrayList<Lines> listaLinhasDoGrafico = new ArrayList();
     
     List<Aresta> listaArestasApp = null;
+    List<Vertice> listaVerticeApp = null;
     
     
     int xMouse = 0;
@@ -191,7 +192,7 @@ public class Principal extends javax.swing.JFrame{
 
         Listar.setBackground(new java.awt.Color(51, 51, 51));
         Listar.setForeground(new java.awt.Color(255, 255, 255));
-        Listar.setText("Listar conexıes");
+        Listar.setText("Listar conex√µes");
         Listar.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
         Listar.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         Listar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -355,7 +356,7 @@ public class Principal extends javax.swing.JFrame{
 
         AddPontos.setBackground(new java.awt.Color(51, 51, 51));
         AddPontos.setForeground(new java.awt.Color(255, 255, 255));
-        AddPontos.setText("Habilitar adiÁ„o de pontos");
+        AddPontos.setText("Habilitar adi√ß√£o de pontos");
         AddPontos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         AddPontos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -366,7 +367,7 @@ public class Principal extends javax.swing.JFrame{
 
         RemovePontos.setBackground(new java.awt.Color(51, 51, 51));
         RemovePontos.setForeground(new java.awt.Color(255, 255, 255));
-        RemovePontos.setText("Habilitar remoÁ„o de pontos");
+        RemovePontos.setText("Habilitar remo√ß√£o de pontos");
         RemovePontos.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         RemovePontos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -387,7 +388,7 @@ public class Principal extends javax.swing.JFrame{
 
         AddEnlaces.setBackground(new java.awt.Color(51, 51, 51));
         AddEnlaces.setForeground(new java.awt.Color(255, 255, 255));
-        AddEnlaces.setText("Habilitar adiÁ„o de enlaces");
+        AddEnlaces.setText("Habilitar adi√ß√£o de enlaces");
         AddEnlaces.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         AddEnlaces.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -398,7 +399,7 @@ public class Principal extends javax.swing.JFrame{
 
         RemoveEnlaces.setBackground(new java.awt.Color(51, 51, 51));
         RemoveEnlaces.setForeground(new java.awt.Color(255, 255, 255));
-        RemoveEnlaces.setText("Habilitar remoÁ„o de enlaces");
+        RemoveEnlaces.setText("Habilitar remo√ß√£o de enlaces");
         RemoveEnlaces.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         RemoveEnlaces.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -411,7 +412,7 @@ public class Principal extends javax.swing.JFrame{
 
         CaminhoMinimo.setBackground(new java.awt.Color(51, 51, 51));
         CaminhoMinimo.setForeground(new java.awt.Color(255, 255, 255));
-        CaminhoMinimo.setText("Caminho MÌnimo");
+        CaminhoMinimo.setText("Caminho M√≠nimo");
         CaminhoMinimo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         CaminhoMinimo.setEnabled(false);
         CaminhoMinimo.setFont(new java.awt.Font("Dialog", 0, 14)); // NOI18N
@@ -419,7 +420,7 @@ public class Principal extends javax.swing.JFrame{
 
         AplicarDistancia.setBackground(new java.awt.Color(51, 51, 51));
         AplicarDistancia.setForeground(new java.awt.Color(255, 255, 255));
-        AplicarDistancia.setText("Percorrer caminho mÌnimo com DISTANCIA");
+        AplicarDistancia.setText("Percorrer caminho m√≠nimo com DISTANCIA");
         AplicarDistancia.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         AplicarDistancia.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -430,7 +431,7 @@ public class Principal extends javax.swing.JFrame{
 
         AplicarCusto.setBackground(new java.awt.Color(51, 51, 51));
         AplicarCusto.setForeground(new java.awt.Color(255, 255, 255));
-        AplicarCusto.setText("Percorrer caminho mÌnimo com CUSTO");
+        AplicarCusto.setText("Percorrer caminho m√≠nimo com CUSTO");
         AplicarCusto.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         AplicarCusto.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -441,7 +442,7 @@ public class Principal extends javax.swing.JFrame{
 
         AplicarHops.setBackground(new java.awt.Color(51, 51, 51));
         AplicarHops.setForeground(new java.awt.Color(255, 255, 255));
-        AplicarHops.setText("Percorrer caminho mÌnimo com HOPS");
+        AplicarHops.setText("Percorrer caminho m√≠nimo com HOPS");
         AplicarHops.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         AplicarHops.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -587,7 +588,7 @@ public class Principal extends javax.swing.JFrame{
         DistanciaLabel.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         DistanciaLabel.setForeground(new java.awt.Color(255, 255, 255));
         DistanciaLabel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        DistanciaLabel.setText("Dist‚ncia (KM)");
+        DistanciaLabel.setText("Dist√¢ncia (KM)");
         jPanel2.add(DistanciaLabel);
         DistanciaLabel.setBounds(60, 140, 170, 22);
 
@@ -651,7 +652,7 @@ public class Principal extends javax.swing.JFrame{
     }// </editor-fold>//GEN-END:initComponents
 
     private void initComponents2(){
-        //Capturando grafico inicial para conseguir serem feitas as alteraÁıes a partir de um segundo grafico
+        //Capturando grafico inicial para conseguir serem feitas as altera√ß√µes a partir de um segundo grafico
         //Executando JFrame no meio da tela
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setLocation(dim.width/2-this.getSize().width/2,dim.height/2-this.getSize().height/2);
@@ -683,13 +684,13 @@ public class Principal extends javax.swing.JFrame{
         List<Vertice> vertices = appBanco.getTodasCidades();
         for (int i=0; i<vertices.size(); i++) {
             byte[] tempNome = vertices.get(i).getNomeCidade().getBytes();
-            vertices.get(i).setNomeCidade(new String(tempNome, StandardCharsets.UTF_8));
+            vertices.get(i).setNomeCidade(new String(tempNome));
             addPoint(vertices.get(i));
         }
     }
     
     private void initConections(){
-        //Adicionando conexıes ao gr·fico
+        //Adicionando conex√µes ao gr√°fico
         atualizarConexoes();
         this.listaLinhasDoGrafico = new ArrayList();
         for (int i=0; i<this.listaArestasApp.size(); i++) {
@@ -708,8 +709,8 @@ public class Principal extends javax.swing.JFrame{
         listaPontos.add(point);
     }
     
-    private void resetGraph(){
-        //Ir· resetar o grafico, removendo arestas
+    private void resetarGrafico(){
+        //Ir√° resetar o grafico, removendo arestas
         graficoUniversal = Map.getGraphics();
         Map.paint(Map.getGraphics());
     }
@@ -718,7 +719,7 @@ public class Principal extends javax.swing.JFrame{
     void resetarMapaSomente(){
         if(!(this.AdicionarPontos.isVisible() || this.AdicionarEnlaces.isVisible())){
             this.Map.removeAll();
-            resetGraph();
+            resetarGrafico();
             for (int i=0; i<listaPontos.size(); i++) {
                 this.Map.add(listaPontos.get(i).getPainelPrincipal());
             }
@@ -731,12 +732,12 @@ public class Principal extends javax.swing.JFrame{
     }
     
     private void setClick(){
-        //Adiciona um click, contabilizando os clicks em vÈrtices
+        //Adiciona um click, contabilizando os clicks em v√©rtices
         this.qtdeClicksNaTela +=1;
     }
     
     private ArrayList<String> search_city(int x, int y) throws Exception{
-        //Realiza os c·lculos de longitude e latitude e procura as cidades
+        //Realiza os c√°lculos de longitude e latitude e procura as cidades
         System.out.println(x + "," + y);
         ArrayList<String>  names_city = new ArrayList();
         double latitude = 5.48155495 + (y*-0.04885256);
@@ -745,7 +746,6 @@ public class Principal extends javax.swing.JFrame{
             names_city = viewTable(latitude, longitude);
         } catch (SQLException ex) {
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
-            System.out.println(ex);
         }
         return names_city;
     }
@@ -756,10 +756,10 @@ public class Principal extends javax.swing.JFrame{
         if(this.qtdeClicksNaTela == 2){
             if(procurarArestaPorVertices() != null){
                 this.qtdeClicksNaTela=0;
-                JOptionPane.showMessageDialog(null, "Bom, acho que esse enlace j· existe, n„o acha? rs");
+                escreverStatusGeral("Conex√£o j√° existente!");
+                JOptionPane.showMessageDialog(null, "Bom, acho que essa conex√£o j√° existe, n√£o acha? rs");
                 resetarMapaSomente();
             }else{
-                System.out.println("alo");
                 this.AdicionarEnlaces.setVisible(true);
                 this.AdicionarPontos.setVisible(false);
                 this.SuperiorMenuFrame.setVisible(false);
@@ -780,7 +780,6 @@ public class Principal extends javax.swing.JFrame{
     
     private void configurarClique(Vertice vertice){
         boolean status = false;
-        System.out.println(this.qtdeClicksNaTela);
         if(this.qtdeClicksNaTela == 1){
             this.primeiroVerticeClicado = vertice;
             
@@ -797,21 +796,22 @@ public class Principal extends javax.swing.JFrame{
     }
 
     private void ButtonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonCancelActionPerformed
-        //Adiciona novo ponto ao grafico a partir da entrada do usu·rio
+        //Adiciona novo ponto ao grafico a partir da entrada do usu√°rio
         this.AdicionarEnlaces.setVisible(false);
         this.AdicionarPontos.setVisible(false);
         this.SuperiorMenuFrame.setVisible(true);
         this.JScrollMap.setVisible(true);
-        JOptionPane.showMessageDialog(null, "OperaÁ„o cancelada com sucesso!");
+        escreverStatusGeral("Opera√ß√£o de adi√ß√£o de pontos foi cancelada!");
+        JOptionPane.showMessageDialog(null, "Opera√ß√£o cancelada com sucesso!");
         recarregarMapa();
         
     }//GEN-LAST:event_ButtonCancelActionPerformed
 
     private void AddPontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddPontosActionPerformed
-        //Permitindo o clique para adiÁ„o de novo ponto
+        //Permitindo o clique para adi√ß√£o de novo ponto
         if(!this.permitirAdicaoPontos){
             this.permitirAdicaoPontos = true;
-            AddPontos.setText("Desabilitar adiÁ„o de pontos");
+            AddPontos.setText("Desabilitar adi√ß√£o de pontos");
             
             EnlacesMenu.setEnabled(false);
             ReportErro.setEnabled(false);
@@ -821,7 +821,7 @@ public class Principal extends javax.swing.JFrame{
             RemovePontos.setEnabled(false);
         }else{
             this.permitirAdicaoPontos = false;
-            AddPontos.setText("Habilitar adiÁ„o de pontos");
+            AddPontos.setText("Habilitar adi√ß√£o de pontos");
             
             EnlacesMenu.setEnabled(true);
             ReportErro.setEnabled(true);
@@ -834,47 +834,50 @@ public class Principal extends javax.swing.JFrame{
     private void AdicionarPontosButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarPontosButtonActionPerformed
         this.Map.repaint();
         this.Map.removeAll();
-        
-        int pontosQuantidadeAntigo = this.listaPontos.size();
+        String string_selecionado = ComboCitys.getSelectedItem().toString();
+        int pontosQuantidadeAntigo = this.listaVerticeApp.size();
         if(this.SiglaAdd.getText().contains("[^A-Z]")){
-            JOptionPane.showMessageDialog(null, "Digite uma sigla v·lida, somente È permitido letras");
+            JOptionPane.showMessageDialog(null, "Digite uma sigla v√°lida, somente √© permitido letras");
         }else if(this.SiglaAdd.getText().length() > 3 || this.SiglaAdd.getText().length() < 3){
-            JOptionPane.showMessageDialog(null, "Digite uma sigla v·lida, È permitido somente 3 letras!");
+            JOptionPane.showMessageDialog(null, "Digite uma sigla v√°lida, √© permitido somente 3 letras!");
         }else{
             try {
-                this.appBanco.cadastrarCidade(ComboCitys.getSelectedItem().toString(), SiglaAdd.getText().toUpperCase(), this.xNow, this.yNow);
+                this.appBanco.cadastrarCidade(string_selecionado, SiglaAdd.getText().toUpperCase(), this.xNow, this.yNow);
             } catch (Exception ex) {
-                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.AdicionarEnlaces.setVisible(false);
             this.AdicionarPontos.setVisible(false);
             this.SuperiorMenuFrame.setVisible(true);
             this.JScrollMap.setVisible(true);
-            recarregarMapa();
-            if(pontosQuantidadeAntigo == this.listaPontos.size()){
-                JOptionPane.showMessageDialog(null,"Houve algum erro na adiÁ„o de pontos... Verifique a sigla ou nome, e se j· existem!");
+            atualizarConexoes();
+            if(pontosQuantidadeAntigo == this.listaVerticeApp.size()){
+                JOptionPane.showMessageDialog(null,"Houve algum erro na adi√ß√£o de pontos... ");
+                escreverStatusGeral("O ponto n√£o foi adicionado, verifique a sigla ou nome, e se j√° existem!");
             }else{
                 JOptionPane.showMessageDialog(null,"Ponto adicionado com sucesso!");
+                escreverStatusGeral(String.format("O ponto de conex√£o de %s foi adicionado com sucesso!", string_selecionado));
             }
             recarregarMapa(); 
         }
     }//GEN-LAST:event_AdicionarPontosButtonActionPerformed
 
     private void ButtonCancelMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_ButtonCancelMouseClicked
-        //Cancelando operaÁ„o de adiÁ„o de novo ponto
+        //Cancelando opera√ß√£o de adi√ß√£o de novo ponto
         this.AdicionarEnlaces.setVisible(false);
         this.AdicionarPontos.setVisible(false);
         this.SuperiorMenuFrame.setVisible(true);
         this.JScrollMap.setVisible(true);
-        JOptionPane.showMessageDialog(null,"OperaÁ„o cancelada com sucesso!");
+        escreverStatusGeral("Opera√ß√£o de adi√ß√£o de enlaces foi cancelada!");
+        JOptionPane.showMessageDialog(null,"Opera√ß√£o cancelada com sucesso!");
         recarregarMapa();
     }//GEN-LAST:event_ButtonCancelMouseClicked
 
     private void RemovePontosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_RemovePontosActionPerformed
-        //Permitindo o clique para adiÁ„o de novo ponto
+        //Permitindo o clique para adi√ß√£o de novo ponto
         if(!this.permitirRemocaoPontos){
             this.permitirRemocaoPontos = true;
-            RemovePontos.setText("Desabilitar remoÁ„o de pontos");
+            RemovePontos.setText("Desabilitar remo√ß√£o de pontos");
             
             
             EnlacesMenu.setEnabled(false);
@@ -884,7 +887,7 @@ public class Principal extends javax.swing.JFrame{
             AddPontos.setEnabled(false);
         }else{
             this.permitirRemocaoPontos = false;
-            RemovePontos.setText("Habilitar remoÁ„o de pontos");
+            RemovePontos.setText("Habilitar remo√ß√£o de pontos");
             EnlacesMenu.setEnabled(true);
             ReportErro.setEnabled(true);
             CaminhoMinimo.setEnabled(true);
@@ -896,23 +899,32 @@ public class Principal extends javax.swing.JFrame{
 
     private void AdicionarEnlaceButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AdicionarEnlaceButtonActionPerformed
         this.qtdeClicksNaTela = 0;
+        int quantidadeAntigaListaAresta = this.listaArestasApp.size();
         if(Distancia.getText().equals("")){
-            JOptionPane.showMessageDialog(null, "Preencha o campo de Dist‚ncia!");
+            JOptionPane.showMessageDialog(null, "Preencha o campo de Dist√¢ncia!");
         }else if(Custo.getText().equals("")){
             JOptionPane.showMessageDialog(null, "Preencha o campo de Custo!");
         }else{
             try {
                 this.appBanco.cadastrarConexao(this.primeiroVerticeClicado, this.ultimoVerticeClicado, Integer.parseInt(Distancia.getText()), Integer.parseInt(Custo.getText()));
             } catch (Exception ex) {
-                Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
+                //Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
             }
+            
             this.AdicionarEnlaces.setVisible(false);
             this.AdicionarPontos.setVisible(false);
             this.SuperiorMenuFrame.setVisible(true);
             this.JScrollMap.setVisible(true);
-            JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
-            escreverStatusGeral("");
-            recarregarMapa();
+            atualizarConexoes();
+            
+            if(quantidadeAntigaListaAresta != this.listaArestasApp.size()){
+                JOptionPane.showMessageDialog(null,"Adicionado com sucesso!");
+                escreverStatusGeral(String.format("O Enlace entre %s e %s foi adicionado com sucesso!", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
+            }else{
+                JOptionPane.showMessageDialog(null,"Falha ao adicionar enlace!");
+                escreverStatusGeral(String.format("A conex√£o entre %s e %s foi parece que j√° existe...", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
+            }
+            recarregarMapa();   
         }
         
         
@@ -924,18 +936,18 @@ public class Principal extends javax.swing.JFrame{
         this.AdicionarPontos.setVisible(false);
         this.SuperiorMenuFrame.setVisible(true);
         this.JScrollMap.setVisible(true);
-        JOptionPane.showMessageDialog(null,"OperaÁ„o Cancelada");
-        escreverStatusGeral("");
+        escreverStatusGeral(String.format("O Enlace entre %s e %s foi cancelada com sucesso", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
+        JOptionPane.showMessageDialog(null,"Opera√ß√£o Cancelada");
         recarregarMapa();
         
     }//GEN-LAST:event_ButtonCancel1ActionPerformed
 
     private void AddEnlacesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AddEnlacesActionPerformed
-        //Permitindo o clique para adiÁ„o de novo ponto
+        //Permitindo o clique para adi√ß√£o de novo ponto
         if(!this.permitirAdicaoConexao){
             
             this.permitirAdicaoConexao = true;
-            AddEnlaces.setText("Desabilitar adiÁ„o de enlaces");
+            AddEnlaces.setText("Desabilitar adi√ß√£o de enlaces");
             
             PontosMenu.setEnabled(false);
             ReportErro.setEnabled(false);
@@ -945,7 +957,7 @@ public class Principal extends javax.swing.JFrame{
             
         }else{
             this.permitirAdicaoConexao = false;
-            AddEnlaces.setText("Habilitar adiÁ„o de enlaces");
+            AddEnlaces.setText("Habilitar adi√ß√£o de enlaces");
             
             PontosMenu.setEnabled(true);
             ReportErro.setEnabled(true);
@@ -959,7 +971,7 @@ public class Principal extends javax.swing.JFrame{
         if(!this.permitirCaminharMinimo){
             this.permitirCaminharMinimo = true;
             this.permitirAdicaoConexao = false;
-            AplicarCusto.setText("Parar de percorrer caminho mÌnimo");
+            AplicarCusto.setText("Parar de percorrer caminho m√≠nimo");
             this.metrica = MetricaCalculo.CUSTO;
             
             AplicarHops.setEnabled(false);
@@ -971,7 +983,7 @@ public class Principal extends javax.swing.JFrame{
             
         }else{
             this.permitirCaminharMinimo = false;
-            AplicarCusto.setText("Percorrer caminho mÌnimo com CUSTO");
+            AplicarCusto.setText("Percorrer caminho m√≠nimo com CUSTO");
             AplicarHops.setEnabled(true);
             AplicarDistancia.setEnabled(true);
             ReportErro.setEnabled(true);
@@ -984,7 +996,7 @@ public class Principal extends javax.swing.JFrame{
         if(!this.permitirCaminharMinimo){
             this.permitirCaminharMinimo = true;
             this.permitirAdicaoConexao = false;
-            AplicarHops.setText("Parar de percorrer caminho mÌnimo");
+            AplicarHops.setText("Parar de percorrer caminho m√≠nimo");
             this.metrica = MetricaCalculo.SALTO;
             
             AplicarDistancia.setEnabled(false);
@@ -996,7 +1008,7 @@ public class Principal extends javax.swing.JFrame{
             
         }else{
             this.permitirCaminharMinimo = false;
-            AplicarHops.setText("Percorrer caminho mÌnimo com HOPS");
+            AplicarHops.setText("Percorrer caminho m√≠nimo com HOPS");
             AplicarDistancia.setEnabled(true);
             AplicarCusto.setEnabled(true);
             EnlacesMenu.setEnabled(true);
@@ -1056,7 +1068,7 @@ public class Principal extends javax.swing.JFrame{
         if(!this.permitirRemocaoConexao){
             
             this.permitirRemocaoConexao = true;
-            RemoveEnlaces.setText("Desabilitar remoÁ„o de enlaces");
+            RemoveEnlaces.setText("Desabilitar remo√ß√£o de enlaces");
             
             PontosMenu.setEnabled(false);
             ReportErro.setEnabled(false);
@@ -1066,7 +1078,7 @@ public class Principal extends javax.swing.JFrame{
             
         }else{
             this.permitirRemocaoConexao = false;
-            RemoveEnlaces.setText("Habilitar remoÁ„o de enlaces");
+            RemoveEnlaces.setText("Habilitar remo√ß√£o de enlaces");
             
             PontosMenu.setEnabled(true);
             ReportErro.setEnabled(true);
@@ -1077,7 +1089,7 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_RemoveEnlacesActionPerformed
 
     private void JScrollMapMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JScrollMapMouseClicked
-        System.out.println("alo");
+
     }//GEN-LAST:event_JScrollMapMouseClicked
 
     private void JScrollMapMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_JScrollMapMouseReleased
@@ -1094,7 +1106,7 @@ public class Principal extends javax.swing.JFrame{
         if(!this.permitirCaminharMinimo){
             this.permitirCaminharMinimo = true;
             this.permitirAdicaoConexao = false;
-            AplicarDistancia.setText("Parar de percorrer caminho mÌnimo");
+            AplicarDistancia.setText("Parar de percorrer caminho m√≠nimo");
             this.metrica = MetricaCalculo.DISTANCIA;
             
             AplicarHops.setEnabled(false);
@@ -1106,7 +1118,7 @@ public class Principal extends javax.swing.JFrame{
             
         }else{
             this.permitirCaminharMinimo = false;
-            AplicarDistancia.setText("Percorrer caminho mÌnimo com DISTANCIA");
+            AplicarDistancia.setText("Percorrer caminho m√≠nimo com DISTANCIA");
             AplicarHops.setEnabled(true);
             AplicarCusto.setEnabled(true);
             ReportErro.setEnabled(true);
@@ -1116,7 +1128,7 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_AplicarDistanciaActionPerformed
 
     private void MapMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_MapMousePressed
-        //Se permitida a inserÁ„o de ponto por clique, dar· as opÁıes de cidades para adiÁ„o dos pontos
+        //Se permitida a inser√ß√£o de ponto por clique, dar√° as op√ß√µes de cidades para adi√ß√£o dos pontos
         if(this.permitirAdicaoPontos){
             this.xNow =evt.getX();
             this.yNow=evt.getY();
@@ -1133,8 +1145,7 @@ public class Principal extends javax.swing.JFrame{
 
             ComboCitys.removeAllItems();
             for (int i=0;i<limite;i++){
-                byte[] tempNome = names_city.get(i).getBytes();
-                String tempNomeString = new String(tempNome, StandardCharsets.UTF_8);
+                String tempNomeString = names_city.get(i);
                 ComboCitys.addItem(tempNomeString);
                 
             }
@@ -1149,7 +1160,6 @@ public class Principal extends javax.swing.JFrame{
     }//GEN-LAST:event_MapMousePressed
 
     private void SiglaAddInputMethodTextChanged(java.awt.event.InputMethodEvent evt) {//GEN-FIRST:event_SiglaAddInputMethodTextChanged
-        System.out.println("alo");
     }//GEN-LAST:event_SiglaAddInputMethodTextChanged
 
     private void SiglaAddKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_SiglaAddKeyReleased
@@ -1232,11 +1242,13 @@ public class Principal extends javax.swing.JFrame{
                             ((Graphics2D)graficoUniversal).draw(line);
                         }
                     }
-                    JOptionPane.showMessageDialog(null, "Para a mÈtrica utilizada: " + rc.getValorPercorrido());
+                    escreverStatusGeral(String.format("Utilizando a m√©trica %s, o caminho entre %s e %s √© %s", this.metrica.toString(), this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase(), Integer.toString(rc.getValorPercorrido())));
+                    JOptionPane.showMessageDialog(null, "Para a m√©trica utilizada: " + rc.getValorPercorrido());
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Ops... Acho que estes pontos n„o se d„o muito bem rs");
+                    escreverStatusGeral("Esses pontos n√£o possuem liga√ß√£o!");
+                    JOptionPane.showMessageDialog(null, "Bom, n√£o foi poss√≠vel realizar o caminho m√≠nimo entre esses dois pontos!");
                 }
-                escreverStatusGeral("");
+                
                 recarregarMapa();
             }
       }  
@@ -1247,14 +1259,22 @@ public class Principal extends javax.swing.JFrame{
             if(this.qtdeClicksNaTela == 2){
                 this.qtdeClicksNaTela = 0;
                 try {
-                    this.appBanco.alterarStatusConexao(procurarArestaPorVertices());
+                    Aresta conexaoDosPontosClicados = procurarArestaPorVertices();
+                    this.appBanco.alterarStatusConexao(conexaoDosPontosClicados);
+                    //Negando pois n√£o foi armazenada a trc
+                    if(conexaoDosPontosClicados.getArestaDisponivel()){
+                        escreverStatusGeral(String.format("O caminho entre %s e %s foi ativado", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
+                    }else{
+                        escreverStatusGeral(String.format("O caminho entre %s e %s foi desativado", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
+                    }
+                    
                     JOptionPane.showMessageDialog(null, "Erro/Ajuste reportado com sucesso!");
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Tente novamente, este enlace n„o existe!");
+                    escreverStatusGeral(String.format("O caminho entre %s e %s n√£o existe!", this.primeiroVerticeClicado.getNomeCidade().toUpperCase(), this.ultimoVerticeClicado.getNomeCidade().toUpperCase()));
+                    JOptionPane.showMessageDialog(null, "Tente novamente, este enlace n√£o existe!");
                 }
                 
                 atualizarConexoes();
-                escreverStatusGeral("");
                 recarregarMapa();
             }
         }
@@ -1267,12 +1287,14 @@ public class Principal extends javax.swing.JFrame{
                 this.qtdeClicksNaTela = 0;
                 try {
                     this.appBanco.excluirConexao(procurarArestaPorVertices());
+                    this.StatusGeral.setText(String.format("A conex√£o entre as cidades %s e %s foi removida!", this.primeiroVerticeClicado.getNomeCidade(), this.ultimoVerticeClicado.getNomeCidade()));
                     JOptionPane.showMessageDialog(null, "Enlace removida com sucesso!");
                     atualizarConexoes();
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Tentando excluir enlaces n„o existentes?");
+                    this.StatusGeral.setText(String.format("A conex√£o entre as cidades %s e %s n√£o existe!", this.primeiroVerticeClicado.getNomeCidade(), this.ultimoVerticeClicado.getNomeCidade()));
+                    JOptionPane.showMessageDialog(null, "Tentando excluir conex√µes n√£o existentes?");
                 }
-                escreverStatusGeral("");
+                
                 recarregarMapa();
             }
         }
@@ -1308,11 +1330,15 @@ public class Principal extends javax.swing.JFrame{
             Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
         }
         this.listaArestasApp = this.appBanco.getTodasConexoes();
+        this.listaVerticeApp = this.appBanco.getTodasCidades();
     }
+    
+    
+    
     
     private void recarregarMapa(){
         this.Map.removeAll();
-        resetGraph();
+        resetarGrafico();
         initVertices();
         initConections();
         Map.paintComponents(graficoUniversal);
@@ -1332,7 +1358,7 @@ public class Principal extends javax.swing.JFrame{
     
     
     public ArrayList<String> viewTable(double latitude , double longitude) throws Exception {
-        //ApÛs a identificaÁ„o da latitude e longitude, recolhe as cidades mais prÛximas das quais foi clicado.
+        //Ap√≥s a identifica√ß√£o da latitude e longitude, recolhe as cidades mais pr√≥ximas das quais foi clicado.
         ArrayList<String> names_citys_around = new ArrayList();    
     
         double compare = 3;
@@ -1392,7 +1418,7 @@ public class Principal extends javax.swing.JFrame{
     }
     
     class Point{
-        //Classe de pontos, nos diz a respeito do vÈrtice, mas armazenando suas propriedades para que possamos mudar ou excluir durante a vontade do usu·rio.
+        //Classe de pontos, nos diz a respeito do v√©rtice, mas armazenando suas propriedades para que possamos mudar ou excluir durante a vontade do usu√°rio.
         private int coordinates_x = 0;
         private int coordinates_y = 0;
         private String name = "";
@@ -1420,7 +1446,7 @@ public class Principal extends javax.swing.JFrame{
             
             int tam_img = 20; //Tamanho da imagem referentes ao ponto
             
-            //Armazenando informaÁıes principais do vertice
+            //Armazenando informa√ß√µes principais do vertice
             this.coordinates_x = vertice.getCordenadaX();
             this.coordinates_y = vertice.getCordenadaY();
             this.name = vertice.getNomeCidade();
@@ -1457,18 +1483,17 @@ public class Principal extends javax.swing.JFrame{
             
             
             
-            //Quando o mouse È clicado
+            //Quando o mouse √© clicado
             princ_point.addMouseListener(new java.awt.event.MouseAdapter() {
                 public void mouseClicked(java.awt.event.MouseEvent evt) {
                 }
                 
-                //Quando o mouse È pressionado (clicando ou segurando)
+                //Quando o mouse √© pressionado (clicando ou segurando)
                 public void mousePressed(java.awt.event.MouseEvent evt) {
                     if(permitirCaminharMinimo){
                         princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/selected_caminho.png")));
                     }else if(permitirReportarErroEnlace){
                         princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/deactivated_point_mouseoff.png")));
-                        System.out.println("troca");
                     }else{
                         princ_point.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imgs/mouse_clicking.png")));
                     }
@@ -1504,8 +1529,6 @@ public class Principal extends javax.swing.JFrame{
         }
         
         private void actionsButton(){
-            System.out.println(name);
-
             if(permitirAdicaoConexao){
                 setClick();
                 configurarClique(vertice_now);
@@ -1545,6 +1568,12 @@ public class Principal extends javax.swing.JFrame{
                     status = !status;
                     atualizarConexoes();
                     recarregarMapa();
+                    if(status){
+                        escreverStatusGeral(String.format("A conex√£o de %s foi ativada", vertice_now.getNomeCidade().toUpperCase()));
+                    }
+                    else{
+                        escreverStatusGeral(String.format("A conex√£o de %s foi desativada", vertice_now.getNomeCidade().toUpperCase()));
+                    }
                 } catch (Exception ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -1553,6 +1582,7 @@ public class Principal extends javax.swing.JFrame{
             if(permitirRemocaoPontos){
                 try {
                     appBanco.excluirCidade(vertice_now);
+                    escreverStatusGeral(String.format("A cidade %s foi removida", vertice_now.getNomeCidade().toUpperCase()));
                 } catch (Exception ex) {
                     Logger.getLogger(Principal.class.getName()).log(Level.SEVERE, null, ex);
                 }
