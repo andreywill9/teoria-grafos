@@ -2,6 +2,13 @@ package model;
 
 import java.sql.ResultSet;
 
+/**
+ * Classe responsável pelo objeto que representa um Vértice
+ * É um objeto que representa diretamente como os dados sao armazenados no banco de dados,
+ * tendo a funçao de fazer a ponte entre o Vértice usado na aplicaçao com o que e armazenado no banco
+ * Possui como atributo o seu id na tabela Cidades, a sigla que representa a cidade, o nome da mesma, se está ativada e
+ * as coordenadas de x e y para serem mostradas na interface com o mapa
+ */
 public class Vertice {
 
   private String sigla;
@@ -9,6 +16,12 @@ public class Vertice {
   private Boolean ativo;
   private int idCidade, cordenadaX, cordenadaY;
 
+  /**
+   * Método que instancia um novo objeto Vértice a partir dos dados contidos no banco
+   * @param rs representa o ResultSet em uma determinada posição para que seja buscado os atributos das colunas
+   * @return um objeto Vértice
+   * @throws Exception caso a linha atual do Resultset seja nula ou com dados inválidos
+   */
   public static Vertice instanciarDeResultSet(ResultSet rs) throws Exception {
     Vertice cidade = new Vertice();
     cidade.setNomeCidade(rs.getString("nome_cidade"));
@@ -20,6 +33,14 @@ public class Vertice {
     return cidade;
   }
 
+  /**
+   * Método que instancia um novo Vértice com os dados fornecidos pelo usuário
+   * @param nomeCidade o nome da cidade que está sendo criada
+   * @param sigla a sigla que representa a cidade
+   * @param cordenadaX a coordenada em x do local em que a cidade é representada no mapa
+   * @param cordenadaY a coordenada y do local em que a cidade é representada no mapa
+   * @return um objeto Vértice
+   */
   public static Vertice instanciarNovo(String nomeCidade, String sigla, int cordenadaX, int cordenadaY) {
     Vertice cidade = new Vertice();
     cidade.setNomeCidade(nomeCidade);
@@ -27,12 +48,6 @@ public class Vertice {
     cidade.setCordenadaX(cordenadaX);
     cidade.setCordenadaY(cordenadaY);
     return cidade;
-  }
-
-  public Vertice(String sigla, String nomeCidade) {
-    this.sigla = sigla;
-    this.nomeCidade = nomeCidade;
-    this.ativo = true;
   }
 
   public Vertice() {}

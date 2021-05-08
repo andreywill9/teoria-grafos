@@ -28,7 +28,7 @@ public class Aresta {
    * @param mapaCidades um HashMap com todas as cidades (vertices) tendo o id delas como chave, assim e  buscado a origem
    *                    e destino a partir de seus ids
    * @return um objeto Aresta
-   * @throws Exception se a linha atual do ResultSet for nula
+   * @throws Exception caso a linha atual do ResultSet seja nula ou os dados inválidos
    */
   public static Aresta instanciarDeResultSet(ResultSet rs, Map<Integer, Vertice> mapaCidades) throws Exception {
     Aresta conexao = new Aresta();
