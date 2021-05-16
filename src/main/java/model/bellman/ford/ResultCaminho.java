@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package model.bellman.ford;
 
 import model.Vertice;
@@ -10,8 +5,9 @@ import model.Vertice;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Alvaro
+/*
+ * Classe que representa o resultado do cálculo do caminho mínimo, contento o valor percorrido na execução do algoritmo
+ * e também a ordem dos vértices que devem ser percorridos para que seja encontrado tal valor.
  */
 public class ResultCaminho {
   private int ValorPercorrido;
